@@ -67,7 +67,6 @@ def run_remote_command(command: str) -> str:
 
 
 def deploy_execution_client(execution_client: str) -> str:
-    # Example: Deploying geth and starting it on Goerli as placeholder. For Holesky, a custom genesis and flags may be needed.
     commands = [
         "sudo apt-get update -y",
         "sudo apt-get install -y software-properties-common",
@@ -83,7 +82,6 @@ def deploy_execution_client(execution_client: str) -> str:
 
 
 def deploy_consensus_client(consensus_client: str) -> str:
-    # Example: Deploying Prysm beacon node for Holesky (placeholder commands)
     commands = [
         "curl https://raw.githubusercontent.com/prysmaticlabs/prysm/master/prysm.sh --output prysm.sh",
         "chmod +x prysm.sh",
@@ -107,7 +105,6 @@ def generate_validator_keys(validator_keys_path: str) -> str:
 
 
 def start_validator_client(validator_keys_path: str) -> str:
-    # Example: Starting Prysm validator with placeholder password and keys
     commands = [
         f"./prysm.sh validator --datadir=/var/lib/prysm --accept-terms-of-use --wallet-dir={validator_keys_path} --wallet-password-file={validator_keys_path}/password.txt --network=holesky &> validator.log &"
     ]
@@ -120,7 +117,6 @@ def start_validator_client(validator_keys_path: str) -> str:
 def stake_eth(eth_deposit_contract_address: str, validator_keys_path: str) -> str:
     if not eth_deposit_contract_address:
         return "Error: deposit contract address required for staking."
-    # Placeholder: actual staking would require a deposit transaction on Holesky via CDP.
     return f"Attempting to stake 32 ETH to {eth_deposit_contract_address} (placeholder)"
 
 
