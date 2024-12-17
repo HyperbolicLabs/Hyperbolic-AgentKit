@@ -61,7 +61,7 @@ class HyperbolicTool(BaseTool):  # type: ignore[override]
     args_schema: type[BaseModel] | None = None
     func: Callable[..., str]
 
-    @timeout_decorator(timeout_seconds=10)
+    @timeout_decorator(timeout_seconds=1000)
     def _run(
         self,
         instructions: str | None = "",
