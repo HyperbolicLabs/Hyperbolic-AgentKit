@@ -64,18 +64,14 @@ class SSHManager:
             return "Error: No active SSH connection. Please connect first."
 
         try:
+            output = ""
             stdin, stdout, stderr = self._ssh_client.exec_command(command, get_pty=True)
             for line in iter(stdout.readline, ""):
+                output += line
                 print(line, end="")
 
-            output = stdout.read().decode()
             error = stderr.read().decode()
-            print(f"Output: {output}")
-            print(f"Error: {error}")
-
-            # TODO: Add a timeout here
-            # pass the data to the agent
-            # but also allow agent to continue
+            
             if error:
                 return f"Error: {error}\nOutput: {output}"
             return output

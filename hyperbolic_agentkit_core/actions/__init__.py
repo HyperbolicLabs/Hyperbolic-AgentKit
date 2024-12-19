@@ -7,6 +7,7 @@ from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.remote_shell import RemoteShellAction
 from hyperbolic_agentkit_core.actions.rent_compute import RentComputeAction
 from hyperbolic_agentkit_core.actions.ssh_access import SSHAccessAction
+from hyperbolic_agentkit_core.actions.terminate_instance import TerminateInstanceAction
 
 
 def get_all_hyperbolic_actions() -> list[type[HyperbolicAction]]:
@@ -27,4 +28,5 @@ __all__ = [
     "SSHAccessAction",
     "RemoteShellAction",
     "DeployValidatorNodeAction",
+    "TerminateInstanceAction",
 ]

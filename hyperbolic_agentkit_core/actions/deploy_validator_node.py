@@ -83,6 +83,7 @@ def deploy_execution_client(execution_client: str) -> str:
 
 def deploy_consensus_client(consensus_client: str) -> str:
     commands = [
+        "sudo apt-get install -y curl",
         "curl https://raw.githubusercontent.com/prysmaticlabs/prysm/master/prysm.sh --output prysm.sh",
         "chmod +x prysm.sh",
         "./prysm.sh beacon-chain --datadir=/var/lib/prysm --accept-terms-of-use --network=holesky &> beacon.log &",
@@ -93,10 +94,16 @@ def deploy_consensus_client(consensus_client: str) -> str:
     return "\n".join(output)
 
 
+# TODO: Refactor generating validator keys and storing validator keys in a separate action
 def generate_validator_keys(validator_keys_path: str) -> str:
     commands = [
+        "sudo apt-get install jq curl -y",
         f"mkdir -p {validator_keys_path}",
-        "echo 'Validator keys generated (placeholder)'",
+        "cd $HOME",
+        "wget https://github.com/ethereum/staking-deposit-cli/releases/download/v2.8.0/staking_deposit-cli-948d3fc-linux-amd64.tar.gz",
+        "tar -xzvf staking_deposit-cli-948d3fc-linux-amd64.tar.gz -C $HOME",
+        "cd staking_deposit-cli*amd64",
+        f"./deposit --language=english --non_interactive new-mnemonic --num_validators=1 --mnemonic_language=english --chain=holesky --folder={validator_keys_path} --keystore_password=aaaaaaaa | tee >(grep -oP '\"mnemonic\": \"\K[^\"]+' | read -r mnemonic && echo $mnemonic | tr ' ' '\\n' | head -n4 | cut -c1 | tr -d '\\n' | xargs -I{} expect -c 'spawn ./deposit; expect \"Enter the first letter of each word of your mnemonic\"; send \"{}\r\"; interact')",
     ]
     output = []
     for cmd in commands:
@@ -153,7 +160,7 @@ def deploy_validator_node(
     execution_client: str = "geth",
     consensus_client: str = "prysm",
     eth_deposit_contract_address: Optional[str] = None,
-    validator_keys_path: str = "~/.ethvalidator/keys",
+    validator_keys_path: str = "/home/ubuntu/.ethvalidator/keys",
     extra_flags: str = "",
 ) -> str:
     if action == "deploy":

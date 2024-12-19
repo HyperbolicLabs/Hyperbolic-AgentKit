@@ -53,7 +53,11 @@ class HyperbolicToolkit(BaseToolkit):
             get_available_gpus
             get_gpu_status
             ssh_access
-
+            terminate_instance
+            deploy_validator_node
+            remote_shell
+            ssh_manager
+            ssh_access
     Use within an agent:
         .. code-block:: python
 
