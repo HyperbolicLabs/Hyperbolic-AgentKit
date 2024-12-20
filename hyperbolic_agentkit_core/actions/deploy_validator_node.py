@@ -17,7 +17,8 @@ This tool automates the deployment and management of an Ethereum validator node 
 Prerequisites:
 - A Hyperbolic compute instance must be rented and SSH accessible (via `rent_compute` and `ssh_connect`).
 - This node requires an execution client (e.g., Geth) and a consensus client (e.g., Prysm).
-- Validator keys must be generated on the remote machine. (Placeholder steps included.)
+- Validator keys will be generated on the remote machine. IMPORTANT: The generated mnemonic phrase must be securely stored as it's required for key recovery.
+- The deposit CLI tool will prompt for confirmation after displaying the mnemonic. The agent must respond appropriately to continue.
 - 32 ETH must be deposited into the Holesky deposit contract to activate the validator (placeholder for integration with CDP).
 - This action also provides basic monitoring and maintenance commands.
 
@@ -93,9 +94,21 @@ def deploy_consensus_client(consensus_client: str) -> str:
         output.append(run_remote_command(cmd))
     return "\n".join(output)
 
-
-# TODO: Refactor generating validator keys and storing validator keys in a separate action
 def generate_validator_keys(validator_keys_path: str) -> str:
+    """
+    Generates validator keys on the remote machine.
+    IMPORTANT: The ./deposit command will output a mnemonic phrase that must be saved securely as it's required for key recovery.
+    After the mnemonic is displayed, follow the system prompts to complete the key generation process.
+    The generated mnemonic phrase must be securely stored as it's required for key recovery.
+    Returns:
+        str: The output of running the validator key generation commands, including:
+            - Installation of dependencies (jq, curl)
+            - Creation of validator keys directory
+            - Download and extraction of staking deposit CLI
+            - Generation of validator keys and mnemonic phrase
+            
+        Note: The mnemonic phrase output must be securely stored as it's required for key recovery.
+    """
     commands = [
         "sudo apt-get install jq curl -y",
         f"mkdir -p {validator_keys_path}",
@@ -103,13 +116,32 @@ def generate_validator_keys(validator_keys_path: str) -> str:
         "wget https://github.com/ethereum/staking-deposit-cli/releases/download/v2.8.0/staking_deposit-cli-948d3fc-linux-amd64.tar.gz",
         "tar -xzvf staking_deposit-cli-948d3fc-linux-amd64.tar.gz -C $HOME",
         "cd staking_deposit-cli*amd64",
-        f"./deposit --language=english --non_interactive new-mnemonic --num_validators=1 --mnemonic_language=english --chain=holesky --folder={validator_keys_path} --keystore_password=aaaaaaaa | tee >(grep -oP '\"mnemonic\": \"\K[^\"]+' | read -r mnemonic && echo $mnemonic | tr ' ' '\\n' | head -n4 | cut -c1 | tr -d '\\n' | xargs -I{} expect -c 'spawn ./deposit; expect \"Enter the first letter of each word of your mnemonic\"; send \"{}\r\"; interact')",
+        f"./deposit --language=english new-mnemonic --num_validators=1 --mnemonic_language=english --chain=holesky --folder={validator_keys_path} --keystore_password=aaaaaaaa"
     ]
     output = []
     for cmd in commands:
         output.append(run_remote_command(cmd))
     return "\n".join(output)
 
+def extract_and_verify_mnemonic(output: str) -> str:
+    """
+    Extracts mnemonic from the output and returns the first letters.
+    Example: If mnemonic is "abandon better call down", returns "abcd"
+    """
+    # Find the mnemonic in the output (usually preceded by a specific prompt)
+    mnemonic_lines = [line for line in output.split('\n') if "word #" in line.lower()]
+    if not mnemonic_lines:
+        return ""
+    
+    # Extract the first letter of each of the first 4 words
+    words = []
+    for line in mnemonic_lines[:4]:
+        # Extract word from format like "word #1: abandon"
+        word = line.split(":")[-1].strip()
+        if word:
+            words.append(word[0])
+    
+    return "".join(words)
 
 def start_validator_client(validator_keys_path: str) -> str:
     commands = [

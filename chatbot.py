@@ -444,7 +444,7 @@ def main():
     """Start the chatbot agent."""
     agent_executor, config = initialize_agent()
 
-    mode = choose_mode()
+    mode = "chat"
     if mode == "chat":
         run_chat_mode(agent_executor=agent_executor, config=config)
     elif mode == "auto":

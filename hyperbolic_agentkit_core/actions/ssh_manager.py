@@ -1,6 +1,6 @@
 import paramiko
 import os
-from typing import Optional
+from typing import Optional, Union, Callable
 
 class SSHManager:
     _instance = None
@@ -96,6 +96,53 @@ class SSHManager:
         if self.is_connected:
             return f"Connected to {self._host} as {self._username}"
         return "Not connected"
+
+    def execute_interactive(self, command: str, prompts: dict[str, Union[str, Callable]]) -> str:
+        """
+        Execute a command that requires interactive responses.
+        
+        Args:
+            command: The command to execute
+            prompts: Dictionary mapping prompt strings to either:
+                    - Static response strings
+                    - Callable that takes current output and returns response
+        
+        Returns:
+            The complete output from the command
+        """
+        if not self.client:
+            return "Error: No SSH connection established"
+        
+        # Get interactive shell with pseudo-terminal
+        shell = self.client.invoke_shell(get_pty=True)
+        output = ""
+        
+        # Send the command
+        shell.send(f"{command}\n")
+        
+        # Read output and handle prompts
+        while True:
+            if shell.recv_ready():
+                chunk = shell.recv(1024).decode('utf-8')
+                output += chunk
+                print(chunk, end="")
+                
+                # Check for any matching prompts
+                for prompt_text, response in prompts.items():
+                    if prompt_text in output:
+                        if callable(response):
+                            resp = response(output)
+                        else:
+                            resp = response
+                        shell.send(f"{resp}\n")
+            
+            # Break if channel is closed
+            if shell.exit_status_ready():
+                break
+                
+        # Close the channel
+        shell.close()
+        return output
 
 # Global instance
 ssh_manager = SSHManager() 
