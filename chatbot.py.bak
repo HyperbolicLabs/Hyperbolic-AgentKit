@@ -48,7 +48,7 @@ from hyperbolic_agentkit_core.actions.remote_shell import RemoteShellAction
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import SKLearnVectorStore
-from langchain_openai import OpenAIEmbeddings
+from langchain_nomic.embeddings import NomicEmbeddings
 from langchain.tools import Tool
 
 urls = [
@@ -68,7 +68,7 @@ doc_splits = text_splitter.split_documents(docs_list)
 # Add to vectorDB
 vectorstore = SKLearnVectorStore.from_documents(
     documents=doc_splits,
-    embedding=OpenAIEmbeddings(),
+    embedding=NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local"),
 )
 
 # Create retriever
