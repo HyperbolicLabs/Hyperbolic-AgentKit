@@ -21,13 +21,12 @@ langchain-community = "^0.3.11"
 langchain-experimental = "^0.3.3"
 paramiko = "^3.4.0"
 duckduckgo-search = "^6.4.1"
+langchain-nomic = "^0.1.4"
 beautifulsoup4 = "^4.12.3"
 scikit-learn = "^1.6.0"
+nomic = {extras = ["local"], version = "^3.3.4"}
 tiktoken = "^0.8.0"
 langchain-anthropic = "^0.3.0"
-langchain-nomic = "^0.1.4"
-nomic = {extras = ["local"], version = "^3.3.4"}
-gpt4all = "^2.8.2"
 
 [build-system]
 requires = ["poetry-core"]
