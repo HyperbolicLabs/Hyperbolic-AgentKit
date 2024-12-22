@@ -50,6 +50,7 @@ class HyperbolicToolkit(BaseToolkit):
         .. code-block:: none
 
             rent_compute
+            terminate_compute
             get_available_gpus
             get_gpu_status
             ssh_access
