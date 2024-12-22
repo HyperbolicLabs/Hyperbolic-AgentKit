@@ -1,8 +1,18 @@
 from collections.abc import Callable
+from typing import Optional
 from pydantic import BaseModel, Field
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.ssh_manager import ssh_manager
 from hyperbolic_agentkit_core.actions.utils import run_remote_command
+
+
+class SetupEthereumNodeInput(BaseModel):
+    """Input argument schema for setting up Ethereum node environment."""
+
+    instructions: Optional[str] = Field(
+        default="", description="Optional instructions for the action"
+    )
+
 
 RUN_FULL_ETHEREUM_NODE_PROMPT = """
 Responsible for starting the execution client on the remote server. The execution client is one of two components that make up the Ethereum node. The execution client is responsible for processing transactions and executing smart contracts.
@@ -27,7 +37,7 @@ class StartExecutionClientInput(BaseModel):
     """Input argument schema for running the execution client."""
 
 
-def run_full_ethereum_node() -> str:
+def run_full_ethereum_node(instructions: Optional[str] = "") -> str:
     """
     Start the Go Ethereum binary which will be used as the execution client on the remote server.
 
@@ -56,5 +66,5 @@ class RunFullEthereumNodeAction(HyperbolicAction):
 
     name: str = "run_full_ethereum_node"
     description: str = RUN_FULL_ETHEREUM_NODE_PROMPT
-    args_schema: type[BaseModel] | None = None
+    args_schema: type[BaseModel] | None = SetupEthereumNodeInput
     func: Callable[..., str] = run_full_ethereum_node

@@ -1,8 +1,18 @@
 from collections.abc import Callable
+from typing import Optional
 from pydantic import BaseModel, Field
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.ssh_manager import ssh_manager
 from hyperbolic_agentkit_core.actions.utils import run_remote_command
+
+
+class SetupEthereumNodeInput(BaseModel):
+    """Input argument schema for setting up Ethereum node environment."""
+
+    instructions: Optional[str] = Field(
+        default="", description="Optional instructions for the action"
+    )
+
 
 INSTALL_GETH_PROMPT = """
 Installs the Go Ethereum binary on the remote server.
@@ -21,16 +31,15 @@ Important notes:
 """
 
 
-class SetupEthNodeEnvironmentInput(BaseModel):
-    """Input argument schema for installing the Go Ethereum Binary."""
-
-
-def install_geth_binary() -> str:
+def install_geth_binary(instructions: Optional[str] = "") -> str:
     """
     Install the Go Ethereum binary on a remote server.
 
     Returns:
-        str: Command output or error message
+        str: JSON string containing installation results
+
+    Raises:
+        SSHConnectionError: If SSH connection is not active
     """
 
     # Verify SSH is connected before executing
@@ -48,10 +57,10 @@ def install_geth_binary() -> str:
     return "\n".join(output)
 
 
-class GenerateJWTAction(HyperbolicAction):
+class InstallGETHAction(HyperbolicAction):
     """Generate JWT token action."""
 
     name: str = "install_geth_binary"
     description: str = INSTALL_GETH_PROMPT
-    args_schema: type[BaseModel] | None = None
+    args_schema: type[BaseModel] | None = SetupEthereumNodeInput
     func: Callable[..., str] = install_geth_binary
