@@ -1,8 +1,18 @@
 from collections.abc import Callable
+from typing import Optional
 from pydantic import BaseModel, Field
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.ssh_manager import ssh_manager
 from hyperbolic_agentkit_core.actions.utils import run_remote_command
+
+
+class SetupEthereumNodeInput(BaseModel):
+    """Input argument schema for setting up Ethereum node environment."""
+
+    instructions: Optional[str] = Field(
+        default="", description="Optional instructions for the action"
+    )
+
 
 GENERATE_JWT_PROMPT = """
 Generates a JWT token and places it in the correct location. The JWT is used to authenticate between the ethereum execution and consensus nodes.
@@ -21,11 +31,7 @@ Important notes:
 """
 
 
-class SetupEthNodeEnvironmentInput(BaseModel):
-    """Input argument schema for setting up Ethereum node environment."""
-
-
-def generate_jwt() -> str:
+def generate_jwt(instructions: Optional[str] = "") -> str:
     """
     Execute a command on the remote server.
 
@@ -52,5 +58,5 @@ class GenerateJWTAction(HyperbolicAction):
 
     name: str = "generate_jwt_for_node"
     description: str = GENERATE_JWT_PROMPT
-    args_schema: type[BaseModel] | None = None
+    args_schema: type[BaseModel] | None = SetupEthereumNodeInput
     func: Callable[..., str] = generate_jwt

@@ -14,41 +14,49 @@ from langchain_core.callbacks import CallbackManagerForToolRun
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel
 
-from hyperbolic_langchain.utils.hyperbolic_agentkit_wrapper import HyperbolicAgentkitWrapper
+from hyperbolic_langchain.utils.hyperbolic_agentkit_wrapper import (
+    HyperbolicAgentkitWrapper,
+)
 
 
 class CommandTimeout(Exception):
     """Exception raised when a command execution times out."""
+
     pass
 
 
 def timeout_decorator(timeout_seconds=30):
     """Decorator to add timeout to functions."""
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             result = [None]
             error = [None]
-            
+
             def target():
                 try:
                     result[0] = func(*args, **kwargs)
                 except Exception as e:
                     error[0] = e
-            
+
             thread = threading.Thread(target=target)
             thread.daemon = True
             thread.start()
             thread.join(timeout_seconds)
-            
+
             if thread.is_alive():
-                raise CommandTimeout(f"Command timed out after {timeout_seconds} seconds")
-            
+                raise CommandTimeout(
+                    f"Command timed out after {timeout_seconds} seconds"
+                )
+
             if error[0] is not None:
                 raise error[0]
-                
+
             return result[0]
+
         return wrapper
+
     return decorator
 
 
@@ -77,4 +85,6 @@ class HyperbolicTool(BaseTool):  # type: ignore[override]
             parsed_input_args = validated_input_data.model_dump()
         else:
             parsed_input_args = {"instructions": instructions}
-        return self.hyperbolic_agentkit_wrapper.run_action(self.func, **parsed_input_args)
+        return self.hyperbolic_agentkit_wrapper.run_action(
+            self.func, **parsed_input_args
+        )

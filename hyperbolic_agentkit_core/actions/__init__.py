@@ -10,6 +10,14 @@ from hyperbolic_agentkit_core.actions.get_spend_history import GetSpendHistoryAc
 from hyperbolic_agentkit_core.actions.terminate_compute import TerminateComputeAction
 from hyperbolic_agentkit_core.actions.get_current_balance import GetCurrentBalanceAction
 from hyperbolic_agentkit_core.actions.ssh_access import SSHAccessAction
+from hyperbolic_agentkit_core.actions.generate_jwt import GenerateJWTAction
+from hyperbolic_agentkit_core.actions.install_geth import InstallGETHAction
+from hyperbolic_agentkit_core.actions.run_full_ethereum_node import (
+    RunFullEthereumNodeAction,
+)
+from hyperbolic_agentkit_core.actions.setup_ethereum_node_environment import (
+    SetupEthereumNodeAction,
+)
 
 
 def get_all_hyperbolic_actions() -> list[type[HyperbolicAction]]:
@@ -34,4 +42,9 @@ __all__ = [
     "GetSpendHistoryAction",
     "GetCurrentBalanceAction",
     "DeployValidatorNodeAction",
+    # "DeployValidatorNodeAction",
+    "GenerateJWTAction",
+    "InstallGETHAction",
+    "RunFullEthereumNodeAction",
+    "SetupEthereumNodeAction",
 ]

@@ -40,15 +40,19 @@ from custom_twitter_actions import create_delete_tweet_tool
 
 # Import local modules
 from utils import (
-    Colors, 
-    print_ai, 
-    print_system, 
-    print_error, 
-    ProgressIndicator, 
-    run_with_progress, 
-    format_ai_message_content
+    Colors,
+    print_ai,
+    print_system,
+    print_error,
+    ProgressIndicator,
+    run_with_progress,
+    format_ai_message_content,
 )
-from twitter_state import TwitterState, MENTION_CHECK_INTERVAL, MAX_MENTIONS_PER_INTERVAL
+from twitter_state import (
+    TwitterState,
+    MENTION_CHECK_INTERVAL,
+    MAX_MENTIONS_PER_INTERVAL,
+)
 
 # Constants
 ALLOW_DANGEROUS_REQUEST = True  # Set to False in production for security
@@ -61,13 +65,13 @@ twitter_state = TwitterState()
 check_replied_tool = Tool(
     name="has_replied_to",
     func=twitter_state.has_replied_to,
-    description="Check if we have already replied to a tweet. Input should be a tweet ID string."
+    description="Check if we have already replied to a tweet. Input should be a tweet ID string.",
 )
 
 add_replied_tool = Tool(
     name="add_replied_to",
     func=twitter_state.add_replied_tweet,
-    description="Add a tweet ID to the database of replied tweets."
+    description="Add a tweet ID to the database of replied tweets.",
 )
 
 # Knowledge base setup
@@ -94,7 +98,7 @@ retriever = vectorstore.as_retriever(k=3)
 retrieval_tool = Tool(
     name="retrieval_tool",
     description="Useful for retrieving information from the knowledge base about running Ethereum operations.",
-    func=retriever.get_relevant_documents
+    func=retriever.get_relevant_documents,
 )
 
 # Multi-token deployment setup
@@ -104,22 +108,26 @@ The base URI should be a template URL containing {id} which will be replaced wit
 For example: 'https://example.com/metadata/{id}.json'
 """
 
+
 class DeployMultiTokenInput(BaseModel):
     """Input argument schema for deploy multi-token contract action."""
+
     base_uri: str = Field(
         ...,
         description="The base URI template for token metadata. Must contain {id} placeholder.",
-        example="https://example.com/metadata/{id}.json"
+        example="https://example.com/metadata/{id}.json",
     )
+
 
 def deploy_multi_token(wallet: Wallet, base_uri: str) -> str:
     """Deploy a new multi-token contract with the specified base URI."""
     if "{id}" not in base_uri:
         raise ValueError("base_uri must contain {id} placeholder")
-    
+
     deployed_contract = wallet.deploy_multi_token(base_uri)
     result = deployed_contract.wait()
     return f"Successfully deployed multi-token contract at address: {result.contract_address}"
+
 
 def initialize_agent():
     """Initialize the agent with CDP Agentkit and Hyperbolic Agentkit."""
@@ -134,9 +142,9 @@ def initialize_agent():
     values = {}
     if wallet_data is not None:
         values = {"cdp_wallet_data": wallet_data}
-    
+
     agentkit = CdpAgentkitWrapper(**values)
-    
+
     # Save wallet data
     wallet_data = agentkit.export_wallet()
     with open(wallet_data_file, "w") as f:
@@ -148,7 +156,10 @@ def initialize_agent():
 
     # TODO abstract adding the tools into a function in a separate file and just need to call it with a list of needed tools here.
     hyperbolic_agentkit = HyperbolicAgentkitWrapper()
-    hyperbolic_toolkit = HyperbolicToolkit.from_hyperbolic_agentkit_wrapper(hyperbolic_agentkit)
+    hyperbolic_toolkit = HyperbolicToolkit.from_hyperbolic_agentkit_wrapper(
+        hyperbolic_agentkit
+    )
+
     tools.extend(hyperbolic_toolkit.get_tools())
 
     twitter_api_wrapper = TwitterApiWrapper()
@@ -165,39 +176,41 @@ def initialize_agent():
     )
 
     # Add additional tools
-    tools.extend([
-        deployMultiTokenTool,
-        DuckDuckGoSearchRun(
-            name="web_search",
-            description="Search the internet for current information."
-        ),
-        check_replied_tool,
-        add_replied_tool,
-        retrieval_tool
-    ])
+    tools.extend(
+        [
+            deployMultiTokenTool,
+            DuckDuckGoSearchRun(
+                name="web_search",
+                description="Search the internet for current information.",
+            ),
+            check_replied_tool,
+            add_replied_tool,
+            retrieval_tool,
+        ]
+    )
 
-        # Add our custom delete tweet tool
+    # Add our custom delete tweet tool
     delete_tweet_tool = create_delete_tweet_tool(twitter_api_wrapper)
     tools.append(delete_tweet_tool)
-    
 
     # Add request tools
     toolkit = RequestsToolkit(
         requests_wrapper=TextRequestsWrapper(headers={}),
         allow_dangerous_requests=ALLOW_DANGEROUS_REQUEST,
-    )   
+    )
     tools.extend(toolkit.get_tools())
 
     # Configure memory and agent
     memory = MemorySaver()
-    config = {"configurable": {"thread_id": "CDP and Hyperbolic Agentkit Chatbot Example!"}}
+    config = {
+        "configurable": {"thread_id": "CDP and Hyperbolic Agentkit Chatbot Example!"}
+    }
 
     return create_react_agent(
         llm,
         tools=tools,
         checkpointer=memory,
-        state_modifier=
-        f"""You are an autonomous agent that have your independent identity and can interact with multiple platforms and services:
+        state_modifier=f"""You are an autonomous agent that have your independent identity and can interact with multiple platforms and services:
 
         1. Blockchain Operations (via CDP):
         - Interact onchain via Coinbase Developer Platform
@@ -214,12 +227,31 @@ def initialize_agent():
         - Use 'ssh_status' to check current SSH connection
         - Search the internet for current information
         - Post your updates on X (Twitter)
+
+        4. Ethereum Node Setup:
+        - Setup Ethereum node environment
+        - Generate JWT token for Ethereum node
+        - Start necessary services for running an ethereum node and validator.
+
+        IMPORTANT: 
+        - When setting up an ethereum node and validator you must use the following tools in the same order as listed below:
+            1. `setup_ethereum_node_environment`
+            2. `install_geth_binary`
+            3. `generate_jwt_for_node`
+            4. `run_full_ethereum_node`
+        - It is important that once a command has been ran to start a service such as Go Ethereum or Prysm that you check the status of the service before attempting further action.
+        - Pay careful attention to the prerequisites of each tool and ensure that you have met them before attempting to run the tool.
+        - If you encounter errors, the commands `geth --help` and `prysm.sh --help` can be used for debugging.
+        - Lastly, if you are unsure about how to proceed seek guidance from the user.
+
     
         Extra available tools:
         {', '.join([str((tool.name, tool.description)) for tool in tools])}
 
         Be concise and helpful. Only describe your tools when explicitly asked.""",
-    ), config
+        config=config,
+    )
+
 
 def choose_mode():
     """Choose whether to run in autonomous or chat mode."""
@@ -235,41 +267,43 @@ def choose_mode():
             return "auto"
         print("Invalid choice. Please try again.")
 
+
 def run_chat_mode(agent_executor, config):
     """Run the agent interactively based on user input."""
     print_system("Starting chat mode... Type 'exit' to end.")
     print_system("Commands:")
     print_system("  exit     - Exit the chat")
     print_system("  status   - Check if agent is responsive")
-    
+
     while True:
         try:
             prompt = f"{Colors.BLUE}{Colors.BOLD}User: {Colors.ENDC}"
             user_input = input(prompt)
-            
+
             if not user_input:
                 continue
-            
+
             if user_input.lower() == "exit":
                 break
             elif user_input.lower() == "status":
                 print_system("Agent is responsive and ready for commands.")
                 continue
-            
+
             print_system(f"\nStarted at: {datetime.now().strftime('%H:%M:%S')}")
-            
+
             # Use run_with_progress to show activity while processing
             chunks = run_with_progress(
                 agent_executor.stream,
                 {"messages": [HumanMessage(content=user_input)]},
-                config
+                config,
             )
-                
+
         except KeyboardInterrupt:
             print_system("\nExiting chat mode...")
             break
         except Exception as e:
             print_error(f"Error: {str(e)}")
+
 
 def run_autonomous_mode(agent_executor, config):
     """Run the agent autonomously with specified intervals."""
@@ -280,14 +314,19 @@ def run_autonomous_mode(agent_executor, config):
     while True:
         try:
             if not twitter_state.can_check_mentions():
-                wait_time = MENTION_CHECK_INTERVAL - (datetime.now() - twitter_state.last_check_time).total_seconds()
-                print_system(f"Waiting {int(wait_time)} seconds before next mention check...")
+                wait_time = (
+                    MENTION_CHECK_INTERVAL
+                    - (datetime.now() - twitter_state.last_check_time).total_seconds()
+                )
+                print_system(
+                    f"Waiting {int(wait_time)} seconds before next mention check..."
+                )
                 time.sleep(wait_time)
                 continue
 
             print_system("Checking for new mentions...")
             progress.start()
-            
+
             thought = f"""You are an AI-powered Twitter bot designed to automatically scan for and reply to mentions using Twitter LangChain resources.
 
             - Account ID to monitor: run the twitter_lanchain function account_details to get the account ID
@@ -319,9 +358,9 @@ def run_autonomous_mode(agent_executor, config):
             chunks = run_with_progress(
                 agent_executor.stream,
                 {"messages": [HumanMessage(content=thought)]},
-                config
+                config,
             )
-            
+
             progress.stop()
 
             # Process the returned chunks
@@ -329,27 +368,34 @@ def run_autonomous_mode(agent_executor, config):
                 if "agent" in chunk:
                     response = chunk["agent"]["messages"][0].content
                     print_ai(format_ai_message_content(response))
-                    
+
                     # Handle tool responses
                     if isinstance(response, list):
                         for item in response:
-                            if item.get('type') == 'tool_use' and item.get('name') == 'add_replied_to':
-                                tweet_id = item['input'].get('__arg1')
+                            if (
+                                item.get("type") == "tool_use"
+                                and item.get("name") == "add_replied_to"
+                            ):
+                                tweet_id = item["input"].get("__arg1")
                                 if tweet_id:
-                                    print_system(f"Adding tweet {tweet_id} to database...")
+                                    print_system(
+                                        f"Adding tweet {tweet_id} to database..."
+                                    )
                                     result = twitter_state.add_replied_tweet(tweet_id)
                                     print_system(result)
-                                    
+
                                     # Update state after successful reply
                                     twitter_state.last_mention_id = tweet_id
                                     twitter_state.last_check_time = datetime.now()
                                     twitter_state.save()
-                
+
                 elif "tools" in chunk:
                     print_system(chunk["tools"]["messages"][0].content)
                 print_system("-------------------")
 
-            print_system(f"Processed mentions. Waiting {MENTION_CHECK_INTERVAL/60} minutes before next check...")
+            print_system(
+                f"Processed mentions. Waiting {MENTION_CHECK_INTERVAL/60} minutes before next check..."
+            )
             time.sleep(MENTION_CHECK_INTERVAL)
 
         except KeyboardInterrupt:
@@ -363,15 +409,17 @@ def run_autonomous_mode(agent_executor, config):
             print_system("Continuing after error...")
             time.sleep(MENTION_CHECK_INTERVAL)
 
+
 def main():
     """Start the chatbot agent."""
     agent_executor, config = initialize_agent()
     mode = choose_mode()
-    
+
     if mode == "chat":
         run_chat_mode(agent_executor=agent_executor, config=config)
     elif mode == "auto":
         run_autonomous_mode(agent_executor=agent_executor, config=config)
+
 
 if __name__ == "__main__":
     print("Starting Agent...")

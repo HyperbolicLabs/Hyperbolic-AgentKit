@@ -2,6 +2,7 @@ import paramiko
 import os
 from typing import Optional
 
+
 class SSHManager:
     _instance = None
     _ssh_client = None
@@ -19,35 +20,73 @@ class SSHManager:
         """Check if there's an active SSH connection."""
         if self._ssh_client and self._connected:
             try:
-                self._ssh_client.exec_command('echo 1', timeout=5)
+                self._ssh_client.exec_command("echo 1", timeout=5)
                 return True
             except:
                 self._connected = False
         return False
 
-    def connect(self, host: str, username: str, password: Optional[str] = None, 
-                private_key_path: Optional[str] = None, port: int = 22) -> str:
+    def connect(
+        self,
+        host: str,
+        username: str,
+        password: Optional[str] = None,
+        private_key_path: Optional[str] = None,
+        port: int = 22,
+    ) -> str:
         """Establish SSH connection."""
         try:
+            print(
+                f"Connecting to {host} as {username}... Port {port} Password {password} Key {private_key_path}"
+            )
             # Close existing connection if any
             self.disconnect()
-            
+
             # Initialize new client
             self._ssh_client = paramiko.SSHClient()
             self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
             # Get default key path from environment
-            default_key_path = os.getenv('SSH_PRIVATE_KEY_PATH', '~/.ssh/id_rsa')
+            default_key_path = os.getenv("SSH_PRIVATE_KEY_PATH", "~/.ssh/id_rsa")
             default_key_path = os.path.expanduser(default_key_path)
 
+            print(f"Default key path: {default_key_path} - Password: {password}")
             if password:
-                self._ssh_client.connect(host, port=port, username=username, password=password)
+                self._ssh_client.connect(
+                    host, port=port, username=username, password=password
+                )
             else:
                 key_path = private_key_path if private_key_path else default_key_path
+                print(f"Private key path: {key_path} - using key")
                 if not os.path.exists(key_path):
                     return f"SSH Key Error: Key file not found at {key_path}"
-                private_key = paramiko.RSAKey.from_private_key_file(key_path)
-                self._ssh_client.connect(host, port=port, username=username, pkey=private_key)
+
+                try:
+                    # Try different key types
+                    try:
+                        private_key = paramiko.RSAKey.from_private_key_file(
+                            key_path, password="password"
+                        )
+                    except paramiko.ssh_exception.SSHException:
+                        try:
+                            private_key = paramiko.Ed25519Key.from_private_key_file(
+                                key_path, password=None
+                            )
+                        except paramiko.ssh_exception.SSHException:
+                            try:
+                                private_key = paramiko.ECDSAKey.from_private_key_file(
+                                    key_path, password=None
+                                )
+                            except paramiko.ssh_exception.SSHException:
+                                private_key = paramiko.PKey.from_private_key_file(
+                                    key_path, password=None
+                                )
+
+                    self._ssh_client.connect(
+                        host, port=port, username=username, pkey=private_key
+                    )
+                except Exception as e:
+                    return f"SSH Key Error: Failed to load private key: {str(e)}"
 
             self._connected = True
             self._host = host
@@ -143,5 +182,6 @@ class SSHManager:
             return f"Connected to {self._host} as {self._username}"
         return "Not connected"
 
+
 # Global instance
-ssh_manager = SSHManager() 
+ssh_manager = SSHManager()

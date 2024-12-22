@@ -1,8 +1,18 @@
 from collections.abc import Callable
+from typing import Optional
 from pydantic import BaseModel, Field
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.ssh_manager import ssh_manager
 from hyperbolic_agentkit_core.actions.utils import run_remote_command
+
+
+class SetupEthereumNodeInput(BaseModel):
+    """Input argument schema for setting up Ethereum node environment."""
+
+    instructions: Optional[str] = Field(
+        default="", description="Optional instructions for the action"
+    )
+
 
 SETUP_ETH_ENV_PROMPT = """
 Install necessary requirements to run an Ethereum node.
@@ -10,7 +20,7 @@ Install necessary requirements to run an Ethereum node.
 Prerequisites:
 - A Hyperbolic compute instance must be rented and SSH accessible (via `rent_compute` and `ssh_connect`).
 
-It does not take any inputs
+This tool does not take any inputs.
 
 Important notes:
 - Requires an active SSH connection (use ssh_connect first)
@@ -20,11 +30,7 @@ Important notes:
 """
 
 
-class SetupEthNodeEnvironmentInput(BaseModel):
-    """Input argument schema for setting up Ethereum node environment."""
-
-
-def setup_ethereum_node_environment() -> str:
+def setup_ethereum_node_environment(instructions: Optional[str] = "") -> str:
     """
     Execute a command on the remote server.
 
@@ -53,5 +59,5 @@ class SetupEthereumNodeAction(HyperbolicAction):
 
     name: str = "setup_ethereum_node_environment"
     description: str = SETUP_ETH_ENV_PROMPT
-    args_schema: type[BaseModel] | None = None
+    args_schema: type[BaseModel] = SetupEthereumNodeInput
     func: Callable[..., str] = setup_ethereum_node_environment
