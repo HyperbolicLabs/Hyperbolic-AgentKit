@@ -7,7 +7,7 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.12,<3.13"
 cdp-langchain = "^0.0.8"
 cdp-agentkit-core = "^0.0.6"
 langchain-core = "^0.3.15"
