@@ -49,16 +49,19 @@ def run_full_ethereum_node(instructions: Optional[str] = "") -> str:
     if not ssh_manager.is_connected:
         return "Error: No active SSH connection. Please connect to a remote server first using ssh_connect."
 
-    commands = [
-        "cd ethereum/execution",
-        "nohup geth --holesky --http --http.api eth,net,engine,admin --authrpc.jwtsecret=../jwt.hex > geth.log 2>&1 &",
-        "cd ../",
-        "../prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --holesky --jwt-secret=./jwt.hex  --checkpoint-sync-url=https://holesky.beaconstate.info --genesis-beacon-api-url=https://holesky.beaconstate.info  &> beacon.log &",
-    ]
-    output = []
-    for cmd in commands:
-        output.append(run_remote_command(cmd))
-    return "\n".join(output)
+    if instructions:
+        return run_remote_command(instructions)
+    else:
+        commands = [
+            "cd ethereum/execution",
+            "nohup geth --holesky --http --http.api eth,net,engine,admin --authrpc.jwtsecret=../jwt.hex > geth.log 2>&1 &",
+            "cd ../",
+            "../prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --holesky --jwt-secret=./jwt.hex  --checkpoint-sync-url=https://holesky.beaconstate.info --genesis-beacon-api-url=https://holesky.beaconstate.info  &> beacon.log &",
+        ]
+        output = []
+        for cmd in commands:
+            output.append(run_remote_command(cmd))
+        return "\n".join(output)
 
 
 class RunFullEthereumNodeAction(HyperbolicAction):
