@@ -62,11 +62,8 @@ class SSHManager:
                     return f"SSH Key Error: Key file not found at {key_path}"
 
                 try:
-                    # Try different key types
                     try:
-                        private_key = paramiko.RSAKey.from_private_key_file(
-                            key_path, password="password"
-                        )
+                        private_key = paramiko.RSAKey.from_private_key_file(key_path)
                     except paramiko.ssh_exception.SSHException:
                         try:
                             private_key = paramiko.Ed25519Key.from_private_key_file(

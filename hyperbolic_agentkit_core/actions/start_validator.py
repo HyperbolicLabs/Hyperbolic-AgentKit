@@ -3,7 +3,6 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.ssh_manager import ssh_manager
-from hyperbolic_agentkit_core.actions.utils import run_remote_command
 
 
 class RemoteShellInput(BaseModel):
@@ -69,7 +68,7 @@ def execute_remote_command(command: str) -> str:
 class StartValidatorAction(HyperbolicAction):
     """Run steps necesarry to start a full ethereum node"""
 
-    name: str = "run_full_ethereum_node"
+    name: str = "start_validator"
     description: str = START_VALIDATOR_PROMPT
     args_schema: type[BaseModel] | None = RemoteShellInput
     func: Callable[..., str] = execute_remote_command
