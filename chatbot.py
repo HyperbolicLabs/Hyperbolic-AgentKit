@@ -151,6 +151,7 @@ def initialize_agent():
     cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(agentkit)
     tools = cdp_toolkit.get_tools()
 
+    # TODO abstract adding the tools into a function in a separate file and just need to call it with a list of needed tools here.
     # Initialize Hyperbolic Agentkit Toolkit and get tools.
     hyperbolic_agentkit = HyperbolicAgentkitWrapper()
     hyperbolic_toolkit = HyperbolicToolkit.from_hyperbolic_agentkit_wrapper(hyperbolic_agentkit)
