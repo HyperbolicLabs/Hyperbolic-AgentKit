@@ -1,10 +1,8 @@
 import requests
-import json
-from typing import Optional
 
 from collections.abc import Callable
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.utils import get_api_key

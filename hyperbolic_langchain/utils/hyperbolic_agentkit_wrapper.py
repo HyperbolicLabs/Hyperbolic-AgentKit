@@ -6,6 +6,7 @@ from collections.abc import Callable
 from typing import Any
 
 from langchain_core.utils import get_from_dict_or_env
+from langchain_core.tracers.context import tracing_v2_enabled
 from pydantic import BaseModel, model_validator
 
 from hyperbolic_langchain import __version__
@@ -27,4 +28,5 @@ class HyperbolicAgentkitWrapper(BaseModel):
 
     def run_action(self, func: Callable[..., str], **kwargs) -> str:
         """Run a Hyperbolic Action."""
-        return func(**kwargs)
+        with tracing_v2_enabled(project_name="Hyperbolic-AgentKit"):
+            return func(**kwargs)

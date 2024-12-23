@@ -46,8 +46,17 @@ class SSHManager:
                 key_path = private_key_path if private_key_path else default_key_path
                 if not os.path.exists(key_path):
                     return f"SSH Key Error: Key file not found at {key_path}"
-                private_key = paramiko.RSAKey.from_private_key_file(key_path)
-                self._ssh_client.connect(host, port=port, username=username, pkey=private_key)
+                
+                # Try loading the key based on its type
+                try:
+                    if 'ed25519' in key_path.lower():
+                        private_key = paramiko.Ed25519Key.from_private_key_file(key_path)
+                    else:
+                        private_key = paramiko.RSAKey.from_private_key_file(key_path)
+                    
+                    self._ssh_client.connect(host, port=port, username=username, pkey=private_key)
+                except Exception as key_error:
+                    return f"SSH Key Error: Failed to load key from {key_path}: {str(key_error)}"
 
             self._connected = True
             self._host = host
