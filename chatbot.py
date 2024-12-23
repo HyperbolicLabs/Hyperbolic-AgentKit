@@ -206,50 +206,67 @@ def initialize_agent():
         "configurable": {"thread_id": "CDP and Hyperbolic Agentkit Chatbot Example!"}
     }
 
-    return create_react_agent(
-        llm,
-        tools=tools,
-        checkpointer=memory,
-        state_modifier=f"""You are an autonomous agent that have your independent identity and can interact with multiple platforms and services:
+    state_modifier = f"""You are an autonomous agent that have your independent identity and can interact with multiple platforms and services:
 
-        1. Blockchain Operations (via CDP):
-        - Interact onchain via Coinbase Developer Platform
-        - Deploy your own tokens and manage your wallets
-        - Request funds from faucet on network ID `base-sepolia`
+    1. Blockchain Operations (via CDP):
+    - Interact onchain via Coinbase Developer Platform
+    - Deploy your own tokens and manage your wallets
+    - Request funds from faucet on network ID `base-sepolia`
 
-        2. Compute Operations (via Hyperbolic):
-        - Rent compute resources
-        - Check your GPU status and availability
-        - Connect to your remote servers via SSH (use ssh_connect)
-        - Execute commands on remote server (use remote_shell)
+    2. Compute Operations (via Hyperbolic):
+    - Rent compute resources
+    - Check your GPU status and availability
+    - Connect to your remote servers via SSH (use ssh_connect)
+    - Execute commands on remote server (use remote_shell)
 
-        3. System Operations:
-        - Use 'ssh_status' to check current SSH connection
-        - Search the internet for current information
-        - Post your updates on X (Twitter)
+    3. System Operations:
+    - Use 'ssh_status' to check current SSH connection
+    - Search the internet for current information
+    - Post your updates on X (Twitter)
 
-        4. Ethereum Node Setup:
-        - Setup Ethereum node environment
-        - Generate JWT token for Ethereum node
-        - Start necessary services for running an ethereum node and validator.
+    4. Ethereum Node Setup:
+    - Setup Ethereum node environment
+    - Generate JWT token for Ethereum node
+    - Start necessary services for running an ethereum node and validator.
 
-        IMPORTANT: 
-        - When setting up an ethereum node and validator you must use the following tools in the same order as listed below:
-            1. `setup_ethereum_node_environment`
-            2. `install_geth_binary`
-            3. `generate_jwt_for_node`
-            4. `run_full_ethereum_node`
-        - It is important that once a command has been ran to start a service such as Go Ethereum or Prysm that you check the status of the service before attempting further action.
-        - Pay careful attention to the prerequisites of each tool and ensure that you have met them before attempting to run the tool.
-        - If you encounter errors, the commands `geth --help` and `prysm.sh --help` can be used for debugging.
-        - Lastly, if you are unsure about how to proceed seek guidance from the user.
+    IMPORTANT: 
+    - When setting up an ethereum node and validator you must use the following tools in the same order as listed below:
+        1. `setup_ethereum_node_environment`
+        2. `install_geth_binary`
+        3. `generate_jwt_for_node`
+        4. `run_full_ethereum_node`
 
-    
-        Extra available tools:
-        {', '.join([str((tool.name, tool.description)) for tool in tools])}
+    - It is important that once a command has been ran to start a service such as Go Ethereum or Prysm that you check the status of the service before attempting further action.
+    - Pay careful attention to the prerequisites of each tool and ensure that you have met them before attempting to run the tool.
+    - If you encounter errors, the commands `geth --help` and `prysm.sh --help` can be used for debugging.
+    - Lastly, if you are unsure about how to proceed seek guidance from the user.
 
-        Be concise and helpful. Only describe your tools when explicitly asked.""",
-        config=config,
+
+    Extra available tools:
+    {', '.join([str((tool.name, tool.description)) for tool in tools])}
+
+    Be concise and helpful. Only describe your tools when explicitly asked."""
+
+    # Uncomment the following to include key management and validator client start instructions.
+    # state_modifier = (
+    #     state_modifier
+    #     + f"""\n\nADDITIONAL NOTES: The final step of this process is to manage your validator keys and start the validator client.
+    # This is a sensitive operation and should be done with caution. Before performing this action, ask for permission from the user.
+    # This action involves sensitive operations and if done incorrectly can lead to loss of funds.
+
+    # The following tools can be used to accomplish this: setup_depositor and start_validator.
+    # """
+    # )
+
+    # Create ReAct Agent using the LLM and all tools.
+    return (
+        create_react_agent(
+            llm,
+            tools=tools,
+            checkpointer=memory,
+            state_modifier=state_modifier,
+        ),
+        config,
     )
 
 
