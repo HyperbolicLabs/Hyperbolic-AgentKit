@@ -1,9 +1,7 @@
-import requests
 import json
-from typing import Optional
-
 from collections.abc import Callable
 
+import requests
 from pydantic import BaseModel, Field
 
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
@@ -28,34 +26,34 @@ class RentComputeInput(BaseModel):
     """Input argument schema for compute rental action."""
 
     cluster_name: str = Field(
-        ..., description="The cluster name that the user wants to rent from")
+        ..., description="The cluster name that the user wants to rent from"
+    )
     node_name: str = Field(
         ...,
         description="The node ID that the user wants to rent",
     )
     gpu_count: str = Field(
         ...,
-        description=
-        "The amount of GPUs that the user wants to rent from the node",
+        description="The amount of GPUs that the user wants to rent from the node",
     )
 
 
 def rent_compute(cluster_name: str, node_name: str, gpu_count: str) -> str:
     """
-   Creates a marketplace instance using the Hyperbolic API and returns the response as a formatted string.
+    Creates a marketplace instance using the Hyperbolic API and returns the response as a formatted string.
 
-   Args:
-       cluster_name (str): Name of the cluster to create
-       node_name (str): Name of the node
-       gpu_count (str): Number of GPUs to allocate
+    Args:
+        cluster_name (str): Name of the cluster to create
+        node_name (str): Name of the node
+        gpu_count (str): Number of GPUs to allocate
 
-   Returns:
-       str: A formatted string representation of the API response
+    Returns:
+        str: A formatted string representation of the API response
 
-   Raises:
-       requests.exceptions.RequestException: If the API request fails
-       ValueError: If required parameters are invalid
-   """
+    Raises:
+        requests.exceptions.RequestException: If the API request fails
+        ValueError: If required parameters are invalid
+    """
     # Input validation
     if not cluster_name or not node_name or not gpu_count:
         raise ValueError("cluster_name, node_name, and gpu_count are required")
@@ -64,15 +62,12 @@ def rent_compute(cluster_name: str, node_name: str, gpu_count: str) -> str:
     api_key = get_api_key()
 
     # Prepare the request
-    endpoint = f"https://api.hyperbolic.xyz/v1/marketplace/instances/create"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
+    endpoint = "https://api.hyperbolic.xyz/v1/marketplace/instances/create"
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}
     payload = {
         "cluster_name": cluster_name,
         "node_name": node_name,
-        "gpu_count": gpu_count
+        "gpu_count": gpu_count,
     }
 
     try:
@@ -92,7 +87,7 @@ def rent_compute(cluster_name: str, node_name: str, gpu_count: str) -> str:
     except requests.exceptions.RequestException as e:
         # For HTTP errors, we want to include the status code and response content if available
         error_message = f"Error renting compute from Hyperbolic marketplace: {str(e)}"
-        if hasattr(e, 'response') and e.response is not None:
+        if hasattr(e, "response") and e.response is not None:
             try:
                 # Try to get JSON error message if available
                 error_content = e.response.json()
