@@ -197,7 +197,10 @@ def initialize_agent():
     # Store buffered conversation history in memory.
     memory = MemorySaver()
     config = {
-        "configurable": {"thread_id": "CDP and Hyperbolic Agentkit Chatbot Example!"}
+        "configurable": {
+            "thread_id": "CDP and Hyperbolic Agentkit Chatbot Example!",
+        },
+        "recursion_limit": 35,
     }
 
     state_modifier = f"""You are an autonomous agent that have your independent identity and can interact with multiple platforms and services:
