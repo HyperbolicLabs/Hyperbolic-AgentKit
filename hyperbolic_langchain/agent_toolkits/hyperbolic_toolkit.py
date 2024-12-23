@@ -53,6 +53,7 @@ class HyperbolicToolkit(BaseToolkit):
             get_available_gpus
             get_gpu_status
             ssh_access
+            attach_wallet_address
 
     Use within an agent:
         .. code-block:: python
