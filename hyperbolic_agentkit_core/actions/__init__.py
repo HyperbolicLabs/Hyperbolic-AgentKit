@@ -21,5 +21,5 @@ HYPERBOLIC_ACTIONS = get_all_hyperbolic_actions()
 __all__ = [
     "HYPERBOLIC_ACTIONS", "HyperbolicAction", "RentComputeAction", "GetAvailableGpusAction",
     "GetGpuStatusAction", "SSHAccessAction", "RemoteShellAction",
-    "TerminateComputeAction", "GetSpendHistoryAction",
+    
 ]
