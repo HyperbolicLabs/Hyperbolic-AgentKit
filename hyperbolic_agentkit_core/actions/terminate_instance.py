@@ -1,9 +1,7 @@
-import requests
 import json
-from typing import Optional
-
 from collections.abc import Callable
 
+import requests
 from pydantic import BaseModel, Field
 
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
@@ -37,22 +35,24 @@ class InstanceTerminationInput(BaseModel):
     """Input argument schema for instance termination action."""
 
     instance_name: str = Field(
-        ..., description="The instance name that the user wants terminate")
+        ..., description="The instance name that the user wants terminate"
+    )
+
 
 def terminate_instance(instance_name: str) -> str:
     """
-   Terminates a marketplace instance using the Hyperbolic API and returns the response as a formatted string.
+    Terminates a marketplace instance using the Hyperbolic API and returns the response as a formatted string.
 
-   Args:
-       instance_name (str): Name of the instance to terminate
+    Args:
+        instance_name (str): Name of the instance to terminate
 
-   Returns:
-       str: A formatted string representation of the API response
+    Returns:
+        str: A formatted string representation of the API response
 
-   Raises:
-       requests.exceptions.RequestException: If the API request fails
-       ValueError: If required parameters are invalid
-   """
+    Raises:
+        requests.exceptions.RequestException: If the API request fails
+        ValueError: If required parameters are invalid
+    """
     # Input validation
     if not instance_name:
         raise ValueError("instance_name is required")
@@ -61,11 +61,8 @@ def terminate_instance(instance_name: str) -> str:
     api_key = get_api_key()
 
     # Prepare the request
-    endpoint = f"https://api.hyperbolic.xyz/v1/marketplace/instances/terminate"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
+    endpoint = "https://api.hyperbolic.xyz/v1/marketplace/instances/terminate"
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}
     payload = {
         "id": instance_name,
     }
@@ -87,7 +84,7 @@ def terminate_instance(instance_name: str) -> str:
     except requests.exceptions.RequestException as e:
         # For HTTP errors, we want to include the status code and response content if available
         error_message = f"Error renting compute from Hyperbolic marketplace: {str(e)}"
-        if hasattr(e, 'response') and e.response is not None:
+        if hasattr(e, "response") and e.response is not None:
             try:
                 # Try to get JSON error message if available
                 error_content = e.response.json()
