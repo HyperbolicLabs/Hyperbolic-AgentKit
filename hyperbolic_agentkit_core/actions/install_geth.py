@@ -9,10 +9,6 @@ from hyperbolic_agentkit_core.actions.utils import run_remote_command
 class SetupEthereumNodeInput(BaseModel):
     """Input argument schema for setting up Ethereum node environment."""
 
-    instructions: Optional[str] = Field(
-        default="", description="Optional instructions for the action"
-    )
-
 
 INSTALL_GETH_PROMPT = """
 Installs the Go Ethereum binary on the remote server.
@@ -31,7 +27,7 @@ Important notes:
 """
 
 
-def install_geth_binary(instructions: Optional[str] = "") -> str:
+def install_geth_binary() -> str:
     """
     Install the Go Ethereum binary on a remote server.
 

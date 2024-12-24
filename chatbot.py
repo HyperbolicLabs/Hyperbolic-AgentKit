@@ -238,6 +238,9 @@ def initialize_agent():
         2. `install_geth_binary`
         3. `generate_jwt_for_node`
         4. `run_full_ethereum_node`
+        5. `setup_depositor`
+        6. `start_validator`
+        7. `deposit_eth`
 
     - It is important that once a command has been ran to start a service such as Go Ethereum or Prysm that you check the status of the service before attempting further action.
     - Pay careful attention to the prerequisites of each tool and ensure that you have met them before attempting to run the tool.
