@@ -7,17 +7,13 @@ from hyperbolic_agentkit_core.actions.utils import run_remote_command
 
 
 class SetupDepositorInput(BaseModel):
-    """Input argument schema for setting up Ethereum node environment."""
-
-    instructions: Optional[str] = Field(
-        default="", description="Optional instructions for the action"
-    )
+    """Input argument schema for setting up Depositor CLI."""
 
 
 SETUP_DEPOSITOR_PROMPT = """
 IMPORTANT: ANY OPERATION INVOLVING GENERATION OF PRIVATE KEYS SHOULD BE INVOLVE APPROVAL BY THE USER. before performing this action, ask for permission from the user. This action involves sensitive operations and if done incorrectly can lead to loss of funds. 
 
-This action is responsible for downloading and installing the `deposit` cli. The deposit cli is responsible for generating a public / private key pare responsible for securing your validator. 
+This action is responsible for downloading and installing the `deposit` cli. The deposit cli is responsible for generating a public / private key pare responsible for securing your validator as well as the deposit data necessary for `deposit_eth_action` tool. 
 
 Once the deposit cli is installed, you can use it to generate a deposit data file which is used to deposit 32 ETH into the Ethereum 2.0 deposit contract. This is the command for reference: ./deposit new-mnemonic --num_validators=1 --mnemonic_language=english --chain=holesky
 
@@ -37,9 +33,9 @@ Important notes:
 """
 
 
-def setup_depositor(instructions: Optional[str] = "") -> str:
+def setup_depositor() -> str:
     """
-    Start the Go Ethereum binary which will be used as the execution client on the remote server.
+    Setup the deposit cli on the remote server.
 
     Returns:
         str: Command output or error message

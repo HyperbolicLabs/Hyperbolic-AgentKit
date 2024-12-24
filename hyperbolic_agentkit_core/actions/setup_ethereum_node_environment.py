@@ -9,10 +9,6 @@ from hyperbolic_agentkit_core.actions.utils import run_remote_command
 class SetupEthereumNodeInput(BaseModel):
     """Input argument schema for setting up Ethereum node environment."""
 
-    instructions: Optional[str] = Field(
-        default="", description="Optional instructions for the action"
-    )
-
 
 SETUP_ETH_ENV_PROMPT = """
 Install necessary requirements to run an Ethereum node.
@@ -30,7 +26,7 @@ Important notes:
 """
 
 
-def setup_ethereum_node_environment(instructions: Optional[str] = "") -> str:
+def setup_ethereum_node_environment() -> str:
     """
     Execute a command on the remote server.
 
@@ -59,5 +55,5 @@ class SetupEthereumNodeAction(HyperbolicAction):
 
     name: str = "setup_ethereum_node_environment"
     description: str = SETUP_ETH_ENV_PROMPT
-    args_schema: type[BaseModel] = SetupEthereumNodeInput
+    args_schema: type[BaseModel] | None = SetupEthereumNodeInput
     func: Callable[..., str] = setup_ethereum_node_environment
