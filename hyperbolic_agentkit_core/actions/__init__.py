@@ -7,6 +7,18 @@ from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.remote_shell import RemoteShellAction
 from hyperbolic_agentkit_core.actions.rent_compute import RentComputeAction
 from hyperbolic_agentkit_core.actions.ssh_access import SSHAccessAction
+from hyperbolic_agentkit_core.actions.generate_jwt import GenerateJWTAction
+from hyperbolic_agentkit_core.actions.install_geth import InstallGETHAction
+from hyperbolic_agentkit_core.actions.run_full_ethereum_node import (
+    RunFullEthereumNodeAction,
+)
+from hyperbolic_agentkit_core.actions.setup_ethereum_node_environment import (
+    SetupEthereumNodeAction,
+)
+
+from hyperbolic_agentkit_core.actions.setup_depositor import SetupDepositorAction
+from hyperbolic_agentkit_core.actions.start_validator import StartValidatorAction
+from hyperbolic_agentkit_core.actions.deposit_eth_action import DepositEthInput
 
 
 def get_all_hyperbolic_actions() -> list[type[HyperbolicAction]]:
@@ -26,5 +38,13 @@ __all__ = [
     "GetGpuStatusAction",
     "SSHAccessAction",
     "RemoteShellAction",
-    "DeployValidatorNodeAction",
+    # "DeployValidatorNodeAction",
+    "GenerateJWTAction",
+    "InstallGETHAction",
+    "RunFullEthereumNodeAction",
+    "SetupEthereumNodeAction",
+    # INVOLVE PRIVATE KEY MANAGEMENT USE WITH EXTREME CAUTION
+    "SetupDepositorAction",
+    "StartValidatorAction",
+    "DepositEthInput",
 ]
