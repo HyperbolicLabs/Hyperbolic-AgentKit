@@ -6,6 +6,7 @@ from collections.abc import Callable
 from pydantic import BaseModel
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.utils import get_api_key
+from hyperbolic_agentkit_core.config import HYPERBOLIC_API_V1_URL
 
 GET_SPEND_HISTORY_PROMPT = """
 This tool retrieves and analyzes your GPU rental spending history from the Hyperbolic platform.
@@ -38,7 +39,7 @@ def get_spend_history() -> str:
     """
     api_key = get_api_key()
 
-    url = "https://api.hyperbolic.xyz/v1/marketplace/instances/history"
+    url = f"{HYPERBOLIC_API_V1_URL}/marketplace/instances/history"
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"

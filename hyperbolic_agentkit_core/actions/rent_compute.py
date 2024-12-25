@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.utils import get_api_key
+from hyperbolic_agentkit_core.config import HYPERBOLIC_API_V1_URL
 
 RENT_COMPUTE_PROMPT = """
 This tool will allow you to rent a GPU machine on Hyperbolic platform. 
@@ -64,7 +65,7 @@ def rent_compute(cluster_name: str, node_name: str, gpu_count: str) -> str:
     api_key = get_api_key()
 
     # Prepare the request
-    endpoint = f"https://api.hyperbolic.xyz/v1/marketplace/instances/create"
+    endpoint = f"{HYPERBOLIC_API_V1_URL}/marketplace/instances/create"
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"

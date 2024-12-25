@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.utils import get_api_key
+from hyperbolic_agentkit_core.config import HYPERBOLIC_API_V1_URL
 
 GET_GPU_STATUS_PROMPT = """
 This tool will get all the the status and ssh commands of you currently rented GPUs on the Hyperbolic platform.
@@ -35,7 +36,7 @@ def get_gpu_status() -> str:
   # Get API key from environment
   api_key = get_api_key()
 
-  url = "https://api.hyperbolic.xyz/v1/marketplace/instances"
+  url = f"{HYPERBOLIC_API_V1_URL}/marketplace/instances"
   headers = {
       "Content-Type": "application/json",
       "Authorization": f"Bearer {api_key}"

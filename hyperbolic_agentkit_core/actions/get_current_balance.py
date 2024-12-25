@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Callable
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.utils import get_api_key
+from hyperbolic_agentkit_core.config import HYPERBOLIC_API_BASE_URL
 
 GET_CURRENT_BALANCE_PROMPT = """
 This tool retrieves your current Hyperbolic platform credit balance.
@@ -34,13 +35,13 @@ def get_current_balance() -> str:
 
     try:
         # Get current balance
-        balance_url = "https://api.hyperbolic.xyz/billing/get_current_balance"
+        balance_url = f"{HYPERBOLIC_API_BASE_URL}/billing/get_current_balance"
         balance_response = requests.get(balance_url, headers=headers)
         balance_response.raise_for_status()
         balance_data = balance_response.json()
         
         # Get purchase history
-        history_url = "https://api.hyperbolic.xyz/billing/purchase_history"
+        history_url = f"{HYPERBOLIC_API_BASE_URL}/billing/purchase_history"
         history_response = requests.get(history_url, headers=headers)
         history_response.raise_for_status()
         history_data = history_response.json()

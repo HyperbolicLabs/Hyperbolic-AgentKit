@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.utils import get_api_key
+from hyperbolic_agentkit_core.config import HYPERBOLIC_API_V1_URL
 
 TERMINATE_COMPUTE_PROMPT = """
 This tool allows you to terminate a GPU instance on the Hyperbolic platform.
@@ -45,7 +46,7 @@ def terminate_compute(instance_id: str) -> str:
     api_key = get_api_key()
 
     # Prepare the request
-    endpoint = "https://api.hyperbolic.xyz/v1/marketplace/instances/terminate"
+    endpoint = f"{HYPERBOLIC_API_V1_URL}/marketplace/instances/terminate"
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
