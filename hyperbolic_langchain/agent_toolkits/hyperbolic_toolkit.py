@@ -2,6 +2,7 @@
 
 from langchain_core.tools import BaseTool
 from langchain_core.tools.base import BaseToolkit
+from typing import List, Dict, Any
 
 from hyperbolic_agentkit_core.actions import HYPERBOLIC_ACTIONS
 from hyperbolic_langchain.tools import HyperbolicTool

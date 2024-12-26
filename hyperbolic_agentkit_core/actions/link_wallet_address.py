@@ -1,40 +1,38 @@
 import requests
 import json
 from typing import Optional
-
 from collections.abc import Callable
-
 from pydantic import BaseModel, Field
-
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.utils import get_api_key
+from hyperbolic_agentkit_core.config import HYPERBOLIC_API_BASE_URL
 
-ATTACH_WALLET_ADDRESS_PROMPT = """
-This tool will allow you to attach a wallet address to your Hyperbolic account. 
+LINK_WALLET_ADDRESS_PROMPT = """
+This tool will allow you to link a wallet address to your Hyperbolic account. 
 
 It takes the following inputs:
-- wallet_address: The wallet address to attach to your Hyperbolic account
+- wallet_address: The wallet address to link to your Hyperbolic account
 
 Important notes:        
-- All inputs must be recognized in order to process the attachment
+- All inputs must be recognized in order to process the linking
 - The user is identified by the bearer token in the request header
+- If the wallet address is not provided, use your own wallet address
 """
 
 
-class AttachWalletAddressInput(BaseModel):
-    """Input argument schema for compute rental action."""
+class LinkWalletAddressInput(BaseModel):
+    """Input argument schema for wallet linking action."""
 
     wallet_address: str = Field(
-        ..., description="The wallet address to attach to your Hyperbolic account")
+        ..., description="The wallet address to link to your Hyperbolic account")
 
 
-
-def attach_wallet_address(wallet_address: str) -> str:
+def link_wallet_address(wallet_address: str) -> str:
     """
-   Attaches a wallet address to your Hyperbolic account and returns the response as a formatted string.
+   Links a wallet address to your Hyperbolic account and returns the response as a formatted string.
 
    Args:
-       wallet_address (str): The wallet address to attach to your Hyperbolic account
+       wallet_address (str): The wallet address to link to your Hyperbolic account
 
    Returns:
        str: A formatted string representation of the API response
@@ -51,7 +49,7 @@ def attach_wallet_address(wallet_address: str) -> str:
     api_key = get_api_key()
 
     # Prepare the request
-    endpoint = f"https://api.dev-hyperbolic.xyz/settings/crypto-address"
+    endpoint = f"{HYPERBOLIC_API_BASE_URL}/settings/crypto-address"
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
@@ -76,7 +74,7 @@ def attach_wallet_address(wallet_address: str) -> str:
 
     except requests.exceptions.RequestException as e:
         # For HTTP errors, we want to include the status code and response content if available
-        error_message = f"Error attaching wallet address to your Hyperbolic account: {str(e)}"
+        error_message = f"Error linking wallet address to your Hyperbolic account: {str(e)}"
         if hasattr(e, 'response') and e.response is not None:
             try:
                 # Try to get JSON error message if available
@@ -89,10 +87,10 @@ def attach_wallet_address(wallet_address: str) -> str:
         raise requests.exceptions.RequestException(error_message)
 
 
-class AttachWalletAddressAction(HyperbolicAction):
-    """Attach wallet address action."""
+class LinkWalletAddressAction(HyperbolicAction):
+    """Link wallet address action."""
 
-    name: str = "attach_wallet_address"
-    description: str = ATTACH_WALLET_ADDRESS_PROMPT
-    args_schema: type[BaseModel] | None = AttachWalletAddressInput
-    func: Callable[..., str] = attach_wallet_address
+    name: str = "link_wallet_address"
+    description: str = LINK_WALLET_ADDRESS_PROMPT
+    args_schema: type[BaseModel] | None = LinkWalletAddressInput
+    func: Callable[..., str] = link_wallet_address 
