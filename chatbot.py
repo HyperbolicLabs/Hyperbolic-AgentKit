@@ -45,6 +45,7 @@ from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
 from hyperbolic_langchain.utils import HyperbolicAgentkitWrapper
 
 from twitter_langchain import (TwitterApiWrapper, TwitterToolkit)
+from custom_twitter_actions import create_delete_tweet_tool
 from hyperbolic_agentkit_core.actions.remote_shell import RemoteShellAction
 
 
@@ -163,6 +164,10 @@ def initialize_agent():
     twitter_toolkit = TwitterToolkit.from_twitter_api_wrapper(
         twitter_api_wrapper)
     tools.extend(twitter_toolkit.get_tools())
+
+    # Add our custom delete tweet tool
+    delete_tweet_tool = create_delete_tweet_tool(twitter_api_wrapper)
+    tools.append(delete_tweet_tool)
     
     deployMultiTokenTool = CdpTool(
         name="deploy_multi_token",
