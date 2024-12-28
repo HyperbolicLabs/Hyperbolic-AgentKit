@@ -96,11 +96,17 @@ def deploy_consensus_client(consensus_client: str) -> str:
 def generate_validator_keys(validator_keys_path: str) -> str:
     commands = [
         f"mkdir -p {validator_keys_path}",
-        "echo 'Validator keys generated (placeholder)'",
+        (f"./prysm.sh validator wallet create --wallet-dir={validator_keys_path} --keymanager-kind=derived --wallet-password-file=password.txt --skip-mnemonic-25th-word-check 1 --accept-terms-of-use",
+        {"Enter how many accounts": "1",
+          "Confirm you have written down": "y"}
+        )
     ]
     output = []
     for cmd in commands:
-        output.append(run_remote_command(cmd))
+        if isinstance(cmd, tuple):
+            output.append(run_remote_command(cmd[0], interactive=True, questions_and_responses=cmd[1]))
+        else:
+            output.append(run_remote_command(cmd))
     return "\n".join(output)
 
 
