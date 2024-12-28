@@ -36,6 +36,7 @@ from cdp import Wallet
 from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
 from hyperbolic_langchain.utils import HyperbolicAgentkitWrapper
 from twitter_langchain import TwitterApiWrapper, TwitterToolkit
+from custom_twitter_actions import create_delete_tweet_tool
 
 # Import local modules
 from utils import (
@@ -173,6 +174,10 @@ def initialize_agent():
         add_replied_tool,
         retrieval_tool
     ])
+
+        # Add our custom delete tweet tool
+    delete_tweet_tool = create_delete_tweet_tool(twitter_api_wrapper)
+    tools.append(delete_tweet_tool)
     
 
     # Add request tools
