@@ -8,6 +8,7 @@ from hyperbolic_agentkit_core.actions.remote_shell import RemoteShellAction
 from hyperbolic_agentkit_core.actions.get_spend_history import GetSpendHistoryAction
 from hyperbolic_agentkit_core.actions.terminate_compute import TerminateComputeAction
 from hyperbolic_agentkit_core.actions.get_current_balance import GetCurrentBalanceAction
+from hyperbolic_agentkit_core.actions.ssh_access import SSHAccessAction
 
 
 def get_all_hyperbolic_actions() -> list[type[HyperbolicAction]]:

@@ -61,10 +61,10 @@ class DeployValidatorNodeInput(BaseModel):
     )
 
 
-def run_remote_command(command: str) -> str:
+def run_remote_command(command: str, interactive: bool = False, questions_and_responses: dict = None) -> str:
     if not ssh_manager.is_connected:
         return "Error: No active SSH connection. Please connect first."
-    return ssh_manager.execute(command)
+    return ssh_manager.execute(command, interactive, questions_and_responses)
 
 
 def deploy_execution_client(execution_client: str) -> str:
