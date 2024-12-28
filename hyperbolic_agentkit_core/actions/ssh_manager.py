@@ -58,7 +58,7 @@ class SSHManager:
             self._connected = False
             return f"SSH Connection Error: {str(e)}"
 
-    def execute(self, command: str, interactive: bool = True, questions_and_responses: dict = None) -> str:
+    def execute(self, command: str, interactive: bool = False, questions_and_responses: dict = None) -> str:
         """Execute command on connected server.
         
         Args:

@@ -23,6 +23,7 @@ Prerequisites:
 
 Actions:
 - deploy: Install and start execution+consensus clients, generate validator keys, and start the validator client.
+- generating_validator_keys: Generate validator keys on the remote machine.
 - stake: Stake 32 ETH to the Holesky deposit contract (placeholder, requires CDP integration).
 - status: Check if the validator is running.
 - monitor: Query basic metrics from the validator.
@@ -168,6 +169,9 @@ def deploy_validator_node(
         key_out = generate_validator_keys(validator_keys_path)
         val_out = start_validator_client(validator_keys_path)
         return f"Deployment complete.\n\nExecution client:\n{exec_out}\n\nConsensus client:\n{cons_out}\n\nKeys:\n{key_out}\n\nValidator:\n{val_out}"
+    
+    if action == "generating_validator_keys":
+        return generate_validator_keys(validator_keys_path)
 
     elif action == "stake":
         return stake_eth(eth_deposit_contract_address, validator_keys_path)
