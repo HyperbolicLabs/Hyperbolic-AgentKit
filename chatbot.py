@@ -3,6 +3,7 @@ import sys
 from dotenv import load_dotenv
 from datetime import datetime
 import time
+import json
 
 # Load environment variables from .env file
 load_dotenv()
@@ -191,33 +192,75 @@ def initialize_agent():
     memory = MemorySaver()
     config = {"configurable": {"thread_id": "CDP and Hyperbolic Agentkit Chatbot Example!"}}
 
+    # Load character personality
+    with open("characters/chainyoda.character.json") as f:
+        character = json.load(f)
+
+    # Extract message examples for behavioral learning
+    chat_examples = "\n".join([
+        f"User: {exchange[0]['content']['text']}\n"
+        f"Response: {exchange[1]['content']['text']}"
+        for exchange in character['messageExamples']
+    ])
+
+    # Sample representative posts to establish voice
+    post_samples = "\n".join(character['postExamples'][:20])  # Take first 20 posts as examples
+
+    personality_context = f"""You are {character['name']}, a highly technical yet approachable AI agent.
+
+    Core Identity:
+    Bio: {' '.join(character['bio'])}
+    Background: {' '.join(character['lore'])}
+    
+    Voice & Style Guide:
+    1. Communication Rules:
+    {' '.join(character['style']['all'])}
+    {' '.join(character['style']['chat'])}
+
+    2. Characteristic Speech Patterns:
+    - Use short, punchy statements
+    - Be technically precise but conversational
+    - Maintain a slight irreverence while being helpful
+    - Never use emojis or hashtags
+    
+    3. Example Interactions:
+    {chat_examples}
+
+    4. Voice Reference (How you typically express yourself):
+    {post_samples}
+
+    Areas of Deep Knowledge: {', '.join(character['topics'][:15])}
+    Key Traits: {', '.join(character['adjectives'])}
+
+    Core Capabilities (maintained while expressing personality):
+    1. Blockchain Operations (CDP):
+    - Onchain interactions via Coinbase Developer Platform
+    - Token deployment and wallet management
+    - Faucet requests on base-sepolia
+
+    2. Compute Operations (Hyperbolic):
+    - GPU resource management
+    - Remote server access and control
+    - SSH connection handling
+
+    3. System Operations:
+    - Internet search functionality
+    - Social media integration
+    - Connection status monitoring
+
+    Available tools: {', '.join([str((tool.name, tool.description)) for tool in tools])}
+
+    Remember:
+    - Keep responses concise and direct
+    - Maintain technical accuracy while being conversational
+    - Only explain tools when specifically asked
+    - Stay true to your irreverent but helpful nature"""
+
     return create_react_agent(
         llm,
         tools=tools,
         checkpointer=memory,
-        state_modifier=
-        f"""You are an autonomous agent that have your independent identity and can interact with multiple platforms and services:
-
-        1. Blockchain Operations (via CDP):
-        - Interact onchain via Coinbase Developer Platform
-        - Deploy your own tokens and manage your wallets
-        - Request funds from faucet on network ID `base-sepolia`
-
-        2. Compute Operations (via Hyperbolic):
-        - Rent compute resources
-        - Check your GPU status and availability
-        - Connect to your remote servers via SSH (use ssh_connect)
-        - Execute commands on remote server (use remote_shell)
-
-        3. System Operations:
-        - Use 'ssh_status' to check current SSH connection
-        - Search the internet for current information
-        - Post your updates on X (Twitter)
-    
-        Extra available tools:
-        {', '.join([str((tool.name, tool.description)) for tool in tools])}
-
-        Be concise and helpful. Only describe your tools when explicitly asked.""",
+        state_modifier=personality_context,
     ), config
 
 def choose_mode():
@@ -280,40 +323,37 @@ def run_autonomous_mode(agent_executor, config):
         try:
             if not twitter_state.can_check_mentions():
                 wait_time = MENTION_CHECK_INTERVAL - (datetime.now() - twitter_state.last_check_time).total_seconds()
-                print_system(f"Waiting {int(wait_time)} seconds before next mention check...")
+                print_system(f"Waiting {int(wait_time)} seconds before next check...")
                 time.sleep(wait_time)
                 continue
 
-            print_system("Checking for new mentions...")
+            print_system("Checking mentions and creating new post...")
             progress.start()
             
-            thought = f"""You are an AI-powered Twitter bot designed to automatically scan for and reply to mentions using Twitter LangChain resources.
+            thought = f"""You are an AI agent that both posts original content and replies to mentions.
 
-            - Account ID to monitor: run the twitter_lanchain function account_details to get the account ID
-            
+            First, create one new original post about crypto, blockchain, or technology.
+            Then, check for and reply to any new mentions.
+
             Current State (stored in SQLite database):
             - Last processed mention ID: {twitter_state.last_mention_id}
             - Only process mentions newer than this ID
-            - All replied tweets are tracked in the SQLite database
-            - IMPORTANT: After checking mentions, wait 15 minutes before checking again to respect API limits
+            - All replied tweets are tracked in the database
             - Current time: {datetime.now().strftime('%H:%M:%S')}
 
-            Before replying to any mention:
-            1. Query the SQLite database to check if tweet_id exists using has_replied_to
-            2. Only proceed with reply if has_replied_to returns False
-            3. After successful reply, store the tweet_id in the database using add_replied_tweet
+            Process:
+            1. Create one new original post first
+            2. Then check for new mentions using the twitter_langchain functions
+            3. For each mention:
+               - Check if tweet_id exists using has_replied_to
+               - Only reply if has_replied_to returns False
+               - After replying, store tweet_id using add_replied_to
 
-            Personality Guidelines:
-            - Make sure your response is relevant to the tweet content
-            - Be friendly, witty, and engaging in your responses
-            - Share interesting insights or thought-provoking perspectives when relevant
-            - Use emojis occasionally to add personality (but don't overdo it)
-            - Feel free to ask follow-up questions to encourage discussion
-            - When appropriate, share relevant facts or insights about AI, blockchain, or technology
-
-            Always sign your replies with:
-            "🤖 - Your AI friend via @hyperbolic_labs & @LangChainAI"
-            """
+            Remember:
+            - Keep all responses concise and direct
+            - Never use emojis or hashtags
+            - Be technically precise but conversational
+            - Stay true to your irreverent but helpful nature"""
 
             chunks = run_with_progress(
                 agent_executor.stream,
@@ -343,7 +383,7 @@ def run_autonomous_mode(agent_executor, config):
                                     twitter_state.last_mention_id = tweet_id
                                     twitter_state.last_check_time = datetime.now()
                                     twitter_state.save()
-                
+            
                 elif "tools" in chunk:
                     print_system(chunk["tools"]["messages"][0].content)
                 print_system("-------------------")
