@@ -142,7 +142,7 @@ def setup_depositor_interactive(keystore_password: str) -> str:
         final_output = ""
         # Start the deposit command
         output, error = ssh_manager.interactive_command(
-            command="./staking_deposit-cli-948d3fc-linux-amd64/deposit --language=English new-mnemonic --num_validators=1 --mnemonic_language=english --chain=holesky --keystore_password=password"
+            command=f"./staking_deposit-cli-948d3fc-linux-amd64/deposit --language=English new-mnemonic --num_validators=1 --mnemonic_language=english --chain=holesky --keystore_password={keystore_password}"
         )
         output, error = ssh_manager.interactive_command(command="")
         if error:
@@ -182,6 +182,7 @@ def setup_depositor_interactive(keystore_password: str) -> str:
     finally:
         # Always close the interactive session when done
         ssh_manager.close_interactive_session()
+        return final_output
 
 
 class SetupDepositorAction(HyperbolicAction):

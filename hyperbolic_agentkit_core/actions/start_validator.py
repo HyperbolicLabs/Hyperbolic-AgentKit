@@ -70,7 +70,7 @@ def start_validator(consensus_dir: str, fee_recipient: str) -> str:
     try:
         # Build the validator start command with all necessary parameters
         start_cmd = (
-            f"./prysm.sh validator "
+            f"$HOME/ethereum/consensus/prysm.sh validator "
             f"--wallet-dir={consensus_dir} "
             f"--holesky "
             f"--suggested-fee-recipient={fee_recipient}"

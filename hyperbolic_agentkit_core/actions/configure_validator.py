@@ -9,8 +9,14 @@ from hyperbolic_agentkit_core.actions.ssh_manager import ssh_manager
 class ConfigureValidatorInput(BaseModel):
     """Input argument schema for remote shell commands."""
 
-    validator: str = Field(
-        ..., description="The shell command to execute on the remote server"
+    keystore_path: str = Field(
+        ...,
+        description="The absolute path to the directory containing the validator keystores. You may need to use `ls` to find this directory. It should have been generated in the $HOME directory, but confirm before using.",
+    )
+
+    keystore_password: str = Field(
+        ...,
+        description="The password used to secure the account used for your validator",
     )
 
 
@@ -28,7 +34,8 @@ Prerequisites:
 - Private keystore have been generated, are accessible, are backed up, and are accessible (via `setup_depositor`).
 
 Input parameters:
-- key_store_path: The absolute path to the directory containing the validator keystores
+- keystore_path: The absolute path to the directory containing the validator keystores
+- keystore_password: The password that will be used secure the account used for your validator
 
 Important notes:
 - Requires an active SSH connection (use ssh_connect first)
@@ -38,7 +45,7 @@ Important notes:
 """
 
 
-def configure_validator(key_store_path: str, keystore_password: str) -> str:
+def configure_validator(keystore_path: str, keystore_password: str) -> str:
     """
     Import the validator keystores and start the validator client.
 
@@ -52,43 +59,54 @@ def configure_validator(key_store_path: str, keystore_password: str) -> str:
     if not ssh_manager.is_connected:
         return "Error: No active SSH connection. Please connect first."
 
+    final_output = ""
+
     try:
         # Start the deposit command
         output, error = ssh_manager.interactive_command(
-            command=f"./prysm.sh validator accounts import --keys-dir={key_store_path} --holesky"
+            command=f"$HOME/ethereum/consensus/prysm.sh validator accounts import --keys-dir={keystore_path} --holesky"
         )
+        final_output += output
         output, error = ssh_manager.interactive_command(command="")
+        final_output += output
+
         if "Enter a wallet directory" in output:
             # You’ll be prompted to specify a wallet directory twice. Provide the path to your consensus folder for both prompts. You should see Imported accounts [...] view all of them by running accounts list when your account has been successfully imported into Prysm.
             output, error = ssh_manager.interactive_command(
                 command="$HOME/ethereum/consensus"
             )
+            final_output += output
 
         if "New wallet password" in output:
+
             output, error = ssh_manager.interactive_command(command=keystore_password)
+            final_output += output
 
         if "Confirm password" in output:
             output, error = ssh_manager.interactive_command(command=keystore_password)
+            final_output += output
 
         if "Enter the password for your imported accounts" in output:
             output, error = ssh_manager.interactive_command(command=keystore_password)
+            final_output += output
             # Wait for import to complete
             time.sleep(10)
             # check that the import was successful
-            output, error = ssh_manager.interactive_command(command=keystore_password)
+            output, error = ssh_manager.interactive_command(command="")
+            final_output += output
 
         if "Imported accounts" in output:
-            print("Imported accounts successfully")
+            final_output += "Imported accounts successfully"
 
     finally:
         # Always close the interactive session when done
         ssh_manager.close_interactive_session()
 
-    return output
+    return final_output
 
 
 class ConfigureValidatorAction(HyperbolicAction):
-    """Run steps necesarry to start a full ethereum node"""
+    """Run steps necessary to start a full ethereum node"""
 
     name: str = "configure_validator"
     description: str = CONFIGURE_VALIDATOR_PROMPT
