@@ -43,9 +43,6 @@ class SSHManager:
     ) -> str:
         """Establish SSH connection."""
         try:
-            print(
-                f"Connecting to {host} as {username}... Port {port} Password {password} Key {private_key_path}"
-            )
             # Close existing connection if any
             self.disconnect()
 
@@ -53,7 +50,6 @@ class SSHManager:
             self._ssh_client = paramiko.SSHClient()
             self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-            print(f"Private key path: {private_key_path} - using key")
             if not os.path.exists(private_key_path):
                 return f"SSH Key Error: Key file not found at {private_key_path}"
 
@@ -173,8 +169,19 @@ class SSHManager:
             self._interactive_channel.close()
             self._interactive_channel = None
 
-    def execute(self, command: str) -> str:
-        """Execute command on connected server."""
+    def execute(
+        self,
+        command: str,
+        interactive: bool = False,
+        questions_and_responses: dict = None,
+    ) -> str:
+        """Execute command on connected server.
+
+        Args:
+            command: The command to execute
+            interactive: Whether to handle interactive prompts
+            questions_and_responses: Dictionary of expected questions and their responses
+        """
         if not self.is_connected:
             return "Error: No active SSH connection. Please connect first."
 
