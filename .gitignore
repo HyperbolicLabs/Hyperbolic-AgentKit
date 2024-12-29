@@ -56,3 +56,7 @@ wallet_data.txt
 
 # Ignore SQLite database file
 twitter_state.db
+
+# Character embedding caches
+character_caches/
+*_embeddings.pkl
