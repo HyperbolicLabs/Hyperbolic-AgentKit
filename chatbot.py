@@ -13,8 +13,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
 from langchain_core.messages import HumanMessage
-from langchain_openai import ChatOpenAI
-from langchain_nomic.embeddings import NomicEmbeddings
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+# from langchain_nomic.embeddings import NomicEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
@@ -87,7 +87,7 @@ doc_splits = text_splitter.split_documents(docs_list)
 
 vectorstore = SKLearnVectorStore.from_documents(
     documents=doc_splits,
-    embedding=NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local"),
+    embedding=OpenAIEmbeddings(model="text-embedding-3-small"),
 )
 
 retriever = vectorstore.as_retriever(k=3)
@@ -332,22 +332,21 @@ def run_autonomous_mode(agent_executor, config):
             
             thought = f"""You are an AI agent that both posts original content and replies to mentions.
 
-            First, create one new original post about crypto, blockchain, or technology.
-            Then, check for and reply to any new mentions.
+            Process:
+            1. Fetch twitter account information 
+            2. Create one new original post first
+            3. Then check for new mentions using the twitter_langchain functions
+            4. For each mention:
+               - Check if tweet_id exists using has_replied_to
+               - Only reply if has_replied_to returns False
+               - After replying, store tweet_id using add_replied_to
+
 
             Current State (stored in SQLite database):
             - Last processed mention ID: {twitter_state.last_mention_id}
             - Only process mentions newer than this ID
             - All replied tweets are tracked in the database
             - Current time: {datetime.now().strftime('%H:%M:%S')}
-
-            Process:
-            1. Create one new original post first
-            2. Then check for new mentions using the twitter_langchain functions
-            3. For each mention:
-               - Check if tweet_id exists using has_replied_to
-               - Only reply if has_replied_to returns False
-               - After replying, store tweet_id using add_replied_to
 
             Remember:
             - Keep all responses concise and direct
