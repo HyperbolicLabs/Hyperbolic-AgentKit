@@ -143,7 +143,7 @@ class DepositEthInput(BaseModel):
 
     deposit_data_path: str = Field(
         default="",
-        description="The path to the deposit data file that will be used to deposit 32 ETH into the Ethereum 2.0 deposit contract. This file was generated using the `setup_depositor` action. This is the sample value: /home/validator_keys/deposit_data-1735413397.json",
+        description="The path to the deposit data file that will be used to deposit 32 ETH into the Ethereum 2.0 deposit contract. This file was generated using the `setup_depositor` action. This is a sample value: /home/validator_keys/deposit_data-1735413397.json",
     )
 
 

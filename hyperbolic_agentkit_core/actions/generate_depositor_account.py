@@ -59,5 +59,5 @@ class GenerateEthKeyAction(HyperbolicAction):
 
     name: str = "generate_eth_key"
     description: str = GENERATE_ETH_KEY_PROMPT
-    args_schema: type[BaseModel] | None = None  # No inputs required
+    args_schema: type[BaseModel] = GenerateEthKeyOutput
     func: Callable[..., str] = generate_eth_key

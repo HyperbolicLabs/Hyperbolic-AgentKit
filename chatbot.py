@@ -147,7 +147,6 @@ def initialize_agent():
         values["network_id"] = os.getenv("NETWORK_ID")
 
     agentkit = CdpAgentkitWrapper(**values)
-    breakpoint()
 
     # Save wallet data
     wallet_data = agentkit.export_wallet()
