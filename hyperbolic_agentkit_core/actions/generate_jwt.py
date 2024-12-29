@@ -40,7 +40,7 @@ def generate_jwt() -> str:
         return "Error: No active SSH connection. Please connect to a remote server first using ssh_connect."
 
     commands = [
-        "./prysm.sh beacon-chain generate-auth-secret",
+        "$HOME/ethereum/consensus/prysm.sh beacon-chain generate-auth-secret",
         "mv jwt.hex ethereum/",
     ]
     output = []

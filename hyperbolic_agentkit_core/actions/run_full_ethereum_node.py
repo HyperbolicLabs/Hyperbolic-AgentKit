@@ -6,12 +6,8 @@ from hyperbolic_agentkit_core.actions.ssh_manager import ssh_manager
 from hyperbolic_agentkit_core.actions.utils import run_remote_command
 
 
-class SetupEthereumNodeInput(BaseModel):
+class RunFullEthereumNodeInput(BaseModel):
     """Input argument schema for setting up Ethereum node environment."""
-
-    instructions: Optional[str] = Field(
-        default="", description="Optional instructions for the action"
-    )
 
 
 RUN_FULL_ETHEREUM_NODE_PROMPT = """
@@ -37,7 +33,7 @@ class StartExecutionClientInput(BaseModel):
     """Input argument schema for running the execution client."""
 
 
-def run_full_ethereum_node(instructions: Optional[str] = "") -> str:
+def run_full_ethereum_node() -> str:
     """
     Start the Go Ethereum binary which will be used as the execution client on the remote server.
 
@@ -49,19 +45,14 @@ def run_full_ethereum_node(instructions: Optional[str] = "") -> str:
     if not ssh_manager.is_connected:
         return "Error: No active SSH connection. Please connect to a remote server first using ssh_connect."
 
-    if instructions:
-        return run_remote_command(instructions)
-    else:
-        commands = [
-            "cd ethereum/execution",
-            "nohup geth --holesky --http --http.api eth,net,engine,admin --authrpc.jwtsecret=../jwt.hex > geth.log 2>&1 &",
-            "cd ../",
-            "../prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --holesky --jwt-secret=./jwt.hex  --checkpoint-sync-url=https://holesky.beaconstate.info --genesis-beacon-api-url=https://holesky.beaconstate.info  &> beacon.log &",
-        ]
-        output = []
-        for cmd in commands:
-            output.append(run_remote_command(cmd))
-        return "\n".join(output)
+    commands = [
+        "cd ethereum/execution && echo $$ > geth.pid && exec nohup geth --holesky --http --http.api eth,net,engine,admin --authrpc.jwtsecret=$HOME/ethereum/jwt.hex > geth.log 2>&1 &",
+        "cd ethereum/consensus && echo $$ > beacon.pid && exec $HOME/ethereum/consensus/prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --holesky --jwt-secret=$HOME/ethereum/jwt.hex --checkpoint-sync-url=https://holesky.beaconstate.info --accept-terms-of-use --genesis-beacon-api-url=https://holesky.beaconstate.info &> beacon.log &",
+    ]
+    output = []
+    for cmd in commands:
+        output.append(run_remote_command(cmd))
+    return "\n".join(output)
 
 
 class RunFullEthereumNodeAction(HyperbolicAction):
@@ -69,5 +60,5 @@ class RunFullEthereumNodeAction(HyperbolicAction):
 
     name: str = "run_full_ethereum_node"
     description: str = RUN_FULL_ETHEREUM_NODE_PROMPT
-    args_schema: type[BaseModel] | None = SetupEthereumNodeInput
+    args_schema: type[BaseModel] | None = RunFullEthereumNodeInput
     func: Callable[..., str] = run_full_ethereum_node

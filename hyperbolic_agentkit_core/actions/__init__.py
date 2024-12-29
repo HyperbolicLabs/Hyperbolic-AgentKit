@@ -20,8 +20,14 @@ from hyperbolic_agentkit_core.actions.setup_ethereum_node_environment import (
 )
 
 from hyperbolic_agentkit_core.actions.setup_depositor import SetupDepositorAction
+from hyperbolic_agentkit_core.actions.configure_validator import (
+    ConfigureValidatorAction,
+)
+from hyperbolic_agentkit_core.actions.deposit_eth_action import DepositETHAction
 from hyperbolic_agentkit_core.actions.start_validator import StartValidatorAction
-from hyperbolic_agentkit_core.actions.deposit_eth_action import DepositEthInput
+from hyperbolic_agentkit_core.actions.generate_depositor_account import (
+    GenerateEthKeyAction,
+)
 
 
 def get_all_hyperbolic_actions() -> list[type[HyperbolicAction]]:
@@ -51,8 +57,9 @@ __all__ = [
     "InstallGETHAction",
     "RunFullEthereumNodeAction",
     "SetupEthereumNodeAction",
-    # INVOLVE PRIVATE KEY MANAGEMENT USE WITH EXTREME CAUTION
     "SetupDepositorAction",
     "StartValidatorAction",
-    "DepositEthInput",
+    "DepositETHAction",
+    "ConfigureValidatorAction",
+    "GenerateEthKeyAction",
 ]

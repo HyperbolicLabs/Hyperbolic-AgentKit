@@ -43,13 +43,16 @@ def install_geth_binary() -> str:
         return "Error: No active SSH connection. Please connect to a remote server first using ssh_connect."
 
     commands = [
+        "sudo -n true",
         "sudo add-apt-repository -y ppa:ethereum/ethereum",
         "sudo apt-get update -y",
         "sudo apt-get install ethereum -y",
     ]
     output = []
     for cmd in commands:
+        print(f"Running command: {cmd}")
         output.append(run_remote_command(cmd))
+        print(f"Command output: {output[-1]}")
     return "\n".join(output)
 
 

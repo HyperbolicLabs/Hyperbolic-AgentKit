@@ -42,7 +42,7 @@ def setup_ethereum_node_environment() -> str:
         "mkdir ethereum",
         "mkdir ethereum/consensus",
         "mkdir ethereum/execution",
-        "curl https://raw.githubusercontent.com/prysmaticlabs/prysm/master/prysm.sh --output prysm.sh && chmod +x prysm.sh",
+        "cd ethereum/consensus && curl https://raw.githubusercontent.com/prysmaticlabs/prysm/master/prysm.sh --output prysm.sh && chmod +x prysm.sh",
     ]
     output = []
     for cmd in commands:

@@ -88,7 +88,7 @@ def deploy_consensus_client(consensus_client: str) -> str:
     commands = [
         "curl https://raw.githubusercontent.com/prysmaticlabs/prysm/master/prysm.sh --output prysm.sh",
         "chmod +x prysm.sh",
-        "./prysm.sh beacon-chain --datadir=/var/lib/prysm --accept-terms-of-use --network=holesky &> beacon.log &",
+        "$HOME/prysm.sh beacon-chain --datadir=/var/lib/prysm --accept-terms-of-use --network=holesky &> beacon.log &",
     ]
     output = []
     for cmd in commands:
@@ -119,7 +119,7 @@ def generate_validator_keys(validator_keys_path: str) -> str:
 
 def start_validator_client(validator_keys_path: str) -> str:
     commands = [
-        f"./prysm.sh validator --datadir=/var/lib/prysm --accept-terms-of-use --wallet-dir={validator_keys_path} --wallet-password-file={validator_keys_path}/password.txt --network=holesky &> validator.log &"
+        f"$HOME/prysm.sh validator --datadir=/var/lib/prysm --accept-terms-of-use --wallet-dir={validator_keys_path} --wallet-password-file={validator_keys_path}/password.txt --network=holesky &> validator.log &"
     ]
     output = []
     for cmd in commands:

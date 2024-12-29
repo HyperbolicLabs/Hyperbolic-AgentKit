@@ -28,6 +28,8 @@ langchain-anthropic = "^0.3.0"
 langchain-nomic = "^0.1.4"
 nomic = {extras = ["local"], version = "^3.3.4"}
 gpt4all = "^2.8.2"
+pexpect = "^4.9.0"
+web3 = "^7.6.1"
 
 [build-system]
 requires = ["poetry-core"]

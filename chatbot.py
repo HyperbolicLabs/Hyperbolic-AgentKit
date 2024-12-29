@@ -143,7 +143,11 @@ def initialize_agent():
     if wallet_data is not None:
         values = {"cdp_wallet_data": wallet_data}
 
+    if os.getenv("NETWORK_ID"):
+        values["network_id"] = os.getenv("NETWORK_ID")
+
     agentkit = CdpAgentkitWrapper(**values)
+    breakpoint()
 
     # Save wallet data
     wallet_data = agentkit.export_wallet()
@@ -162,9 +166,9 @@ def initialize_agent():
 
     tools.extend(hyperbolic_toolkit.get_tools())
 
-    twitter_api_wrapper = TwitterApiWrapper()
-    twitter_toolkit = TwitterToolkit.from_twitter_api_wrapper(twitter_api_wrapper)
-    tools.extend(twitter_toolkit.get_tools())
+    # twitter_api_wrapper = TwitterApiWrapper()
+    # twitter_toolkit = TwitterToolkit.from_twitter_api_wrapper(twitter_api_wrapper)
+    # tools.extend(twitter_toolkit.get_tools())
 
     # Create deploy multi-token tool
     deployMultiTokenTool = CdpTool(
@@ -231,20 +235,23 @@ def initialize_agent():
     - Setup Ethereum node environment
     - Generate JWT token for Ethereum node
     - Start necessary services for running an ethereum node and validator.
+    - Deposit 32 ETH into the Ethereum 2.0 deposit contract.
 
     IMPORTANT: 
     - When setting up an ethereum node and validator you must use the following tools in the same order as listed below:
-        1. `setup_ethereum_node_environment`
-        2. `install_geth_binary`
-        3. `generate_jwt_for_node`
-        4. `run_full_ethereum_node`
-        5. `setup_depositor`
-        6. `start_validator`
-        7. `deposit_eth`
+        1. `generate_eth_key` - IMPORTANT: pause after running this tool so that the operator can fund the account
+        2. `setup_ethereum_node_environment`
+        3. `install_geth_binary`
+        4. `generate_jwt_for_node`
+        5. `run_full_ethereum_node`
+        6. `setup_depositor`
+        7. `configure_validator`
+        8. `deposit_eth`
+        9. `start_validator`
 
     - It is important that once a command has been ran to start a service such as Go Ethereum or Prysm that you check the status of the service before attempting further action.
     - Pay careful attention to the prerequisites of each tool and ensure that you have met them before attempting to run the tool.
-    - If you encounter errors, the commands `geth --help` and `prysm.sh --help` can be used for debugging.
+    - If you encounter errors, the commands `geth --help` and `$HOME/ethereum/consensus/prysm.sh --help` can be used for debugging.
     - Lastly, if you are unsure about how to proceed seek guidance from the user.
 
 
