@@ -193,8 +193,8 @@ def initialize_agent():
     )
 
     # Add our custom delete tweet tool
-    delete_tweet_tool = create_delete_tweet_tool(twitter_api_wrapper)
-    tools.append(delete_tweet_tool)
+    # delete_tweet_tool = create_delete_tweet_tool(twitter_api_wrapper)
+    # tools.append(delete_tweet_tool)
 
     # Add request tools
     toolkit = RequestsToolkit(
@@ -258,17 +258,6 @@ def initialize_agent():
     {', '.join([str((tool.name, tool.description)) for tool in tools])}
 
     Be concise and helpful. Only describe your tools when explicitly asked."""
-
-    # Uncomment the following to include key management and validator client start instructions.
-    # state_modifier = (
-    #     state_modifier
-    #     + f"""\n\nADDITIONAL NOTES: The final step of this process is to manage your validator keys and start the validator client.
-    # This is a sensitive operation and should be done with caution. Before performing this action, ask for permission from the user.
-    # This action involves sensitive operations and if done incorrectly can lead to loss of funds.
-
-    # The following tools can be used to accomplish this: setup_depositor and start_validator.
-    # """
-    # )
 
     # Create ReAct Agent using the LLM and all tools.
     return (
