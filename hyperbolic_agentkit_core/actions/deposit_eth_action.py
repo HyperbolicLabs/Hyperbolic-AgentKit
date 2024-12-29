@@ -1,4 +1,5 @@
 from collections.abc import Callable
+import os
 from typing import Optional
 from pydantic import BaseModel, Field
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
@@ -175,6 +176,12 @@ Important notes:
 """
 
 
+def get_rpc_url() -> str:
+    if os.getenv("RPC_URL"):
+        return os.getenv("RPC_URL")
+    raise ValueError("RPC_URL environment variable is not set")
+
+
 def deposit_eth(sender: str, private_key: str, deposit_data_path: str) -> str:
     """
     Start the Go Ethereum binary which will be used as the execution client on the remote server.
@@ -187,7 +194,7 @@ def deposit_eth(sender: str, private_key: str, deposit_data_path: str) -> str:
     if not ssh_manager.is_connected:
         return "Error: No active SSH connection. Please connect to a remote server first using ssh_connect."
 
-    rpc_url = "http://localhost:8545"  # Example Holesky RPC
+    rpc_url = get_rpc_url()
     depositor = ValidatorDeposit(rpc_url)
 
     try:
