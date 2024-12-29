@@ -56,16 +56,7 @@ Blockchain Operations (via CDP):
    # Copy the example environment file
    cp .env.example .env
    ```
-   Then edit the `.env` file and add your API keys. Additionally, you will need to manually export the following Twitter API credentials in your terminal:
-   ```bash
-   export TWITTER_ACCESS_TOKEN='...'
-   export TWITTER_API_KEY='...'
-   export TWITTER_API_SECRET='...'
-   export TWITTER_ACCESS_TOKEN_SECRET='...'
-   export TWITTER_BEARER_TOKEN='...'
-   export TWITTER_CLIENT_ID='...'
-   export TWITTER_CLIENT_SECRET='...'
-   ```
+   Then edit the `.env` file and add your API keys. 
 
 2. **Install Dependencies**
    ```bash
@@ -108,7 +99,7 @@ To create a custom AI personality for your bot based on an existing Twitter acco
      ```
    Note: This is different from the account that will be used for posting.
 
-3. **Generate Character File**
+3. **Generate Character Files**
    Run these commands in sequence:
    ```bash
    # 1. Collect tweets (replace target_username with the account you want to mimic)
@@ -117,27 +108,34 @@ To create a custom AI personality for your bot based on an existing Twitter acco
    # 2. Generate Virtuals character card (date should be in the format of YYYY-MM-DD)
    npm run generate-virtuals -- target_username date
 
-   # 3. Generate final character file
+   # 3. Generate final character files
    npm run character -- target_username date
    ```
 
-4. **Import Character to Agentkit**
-   - In Finder, navigate to `twitter-scraper-finetune/characters`
-   - Copy the generated `target_username.json` file
-   - Paste the file into the `characters` folder of the Hyperbolic Agentkit project
-   - Update the file path in `chatbot.py`:
-     ```python
-     # Update this line with your character file name
-     with open("characters/your_character.json") as f:
-     ```
+4. **Import Character Files to Agentkit**
+   You'll need two files for full functionality:
+   - From twitter-scraper-finetune:
+     - Navigate to `pipeline/[username]/[date]/character/character.json`
+     - Copy to `characters/[username].character.json` in the Agentkit project
+   - From the template:
+     - Copy `chainyoda.json` template
+     - Rename to `characters/[username].json`
+     - Update the metadata section to match your character
 
-This process will create a personality model based on the target account's posting history and communication style.
+   Update the file paths in `chatbot.py`:
+   ```python
+   # Update these lines with your character file names
+   character_file = "characters/your_username.json"
+   character_style_file = "characters/your_username.character.json"
+   ```
+
+The `.json` file contains the character's metadata and configuration, while the `.character.json` file contains the learned style patterns and post examples.
 
 ## Modifying the Character File
 
-After importing the generated `target_username.json` file into the `characters` folder, you may need to modify the first few lines to match the structure of the `chainyoda.character.json` file. This ensures that the new character file is compatible with the existing setup.
+After importing the generated `target_username.character.json` file into the `characters` folder, you may need to modify the first few lines to match the structure of the `chainyoda.character.json` file. This ensures that the new character file is compatible with the existing setup.
 
-1. Open the `target_username.json` file in a text editor.
+1. Open the `target_username.character.json` file.
 2. Modify the top section above the `bio` tag to match the following structure:
 
 ```json
@@ -153,6 +151,6 @@ After importing the generated `target_username.json` file into the `characters` 
 }
 ```
 
-3. Save the changes to the `target_username.json` file.
+3. Save the changes to the `target_username.character.json` file.
 
 This modification will help ensure that the character behaves as expected within the Hyperbolic Agentkit framework, maintaining consistency with the `chainyoda.character.json` file.
