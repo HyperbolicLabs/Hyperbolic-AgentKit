@@ -58,23 +58,73 @@ class SSHManager:
             self._connected = False
             return f"SSH Connection Error: {str(e)}"
 
-    def execute(self, command: str) -> str:
-        """Execute command on connected server."""
+    def execute(self, command: str, interactive: bool = False, questions_and_responses: dict = None) -> str:
+        """Execute command on connected server.
+        
+        Args:
+            command: The command to execute
+            interactive: Whether to handle interactive prompts
+            questions_and_responses: Dictionary of expected questions and their responses
+        """
         if not self.is_connected:
             return "Error: No active SSH connection. Please connect first."
 
         try:
-            stdin, stdout, stderr = self._ssh_client.exec_command(command)
-            output = stdout.read().decode()
-            error = stderr.read().decode()
-
-            if error:
-                return f"Error: {error}\nOutput: {output}"
-            return output
+            if interactive:
+                return self.execute_interactive(command, questions_and_responses)
+            else:
+                return self.execute_noninteractive(command)
 
         except Exception as e:
             self._connected = False
             return f"SSH Command Error: {str(e)}"
+
+    def execute_noninteractive(self, command: str) -> str:
+        """Execute a non-interactive command on the connected server.
+        
+        Args:
+            command: The command to execute
+        """
+        stdin, stdout, stderr = self._ssh_client.exec_command(command)
+        output = stdout.read().decode()
+        error = stderr.read().decode()
+
+        if error:
+            return f"Error: {error}\nOutput: {output}"
+        return output
+
+    def execute_interactive(self, command: str, questions_and_responses: dict) -> str:
+        """Execute an interactive command with predefined responses to questions.
+        
+        Args:
+            command: The command to execute
+            questions_and_responses: Dictionary mapping expected questions to their responses
+        """
+        try:
+            stdin, stdout, stderr = self._ssh_client.exec_command(command, get_pty=True)
+            output = []
+
+            while True:
+                line = stdout.readline()
+                if not line:
+                    break
+                
+                output.append(line)
+                
+                # Check if line contains any of our expected questions
+                for question, response in questions_and_responses.items():
+                    if question in line:
+                        stdin.write(f'{response}\n')
+                        stdin.flush()
+                        output.append(f"[Automated Response] Found question: {question}, sent: {response}\n")
+
+            # For interactive mode, there's no stderr
+
+            return ''.join(output)
+
+        except Exception as e:
+            self._connected = False
+            return f"SSH Interactive Command Error: {str(e)}"
 
     def disconnect(self):
         """Close SSH connection."""

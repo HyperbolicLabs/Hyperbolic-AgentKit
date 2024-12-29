@@ -23,6 +23,7 @@ Prerequisites:
 
 Actions:
 - deploy: Install and start execution+consensus clients, generate validator keys, and start the validator client.
+- generating_validator_keys: Generate validator keys on the remote machine.
 - stake: Stake 32 ETH to the Holesky deposit contract (placeholder, requires CDP integration).
 - status: Check if the validator is running.
 - monitor: Query basic metrics from the validator.
@@ -60,10 +61,12 @@ class DeployValidatorNodeInput(BaseModel):
     )
 
 
-def run_remote_command(command: str) -> str:
+def run_remote_command(
+    command: str, interactive: bool = False, questions_and_responses: dict = None
+) -> str:
     if not ssh_manager.is_connected:
         return "Error: No active SSH connection. Please connect first."
-    return ssh_manager.execute(command)
+    return ssh_manager.execute(command, interactive, questions_and_responses)
 
 
 def deploy_execution_client(execution_client: str) -> str:
@@ -96,11 +99,21 @@ def deploy_consensus_client(consensus_client: str) -> str:
 def generate_validator_keys(validator_keys_path: str) -> str:
     commands = [
         f"mkdir -p {validator_keys_path}",
-        "echo 'Validator keys generated (placeholder)'",
+        (
+            f"./prysm.sh validator wallet create --wallet-dir={validator_keys_path} --keymanager-kind=derived --wallet-password-file=password.txt --skip-mnemonic-25th-word-check 1 --accept-terms-of-use",
+            {"Enter how many accounts": "1", "Confirm you have written down": "y"},
+        ),
     ]
     output = []
     for cmd in commands:
-        output.append(run_remote_command(cmd))
+        if isinstance(cmd, tuple):
+            output.append(
+                run_remote_command(
+                    cmd[0], interactive=True, questions_and_responses=cmd[1]
+                )
+            )
+        else:
+            output.append(run_remote_command(cmd))
     return "\n".join(output)
 
 
@@ -162,6 +175,9 @@ def deploy_validator_node(
         key_out = generate_validator_keys(validator_keys_path)
         val_out = start_validator_client(validator_keys_path)
         return f"Deployment complete.\n\nExecution client:\n{exec_out}\n\nConsensus client:\n{cons_out}\n\nKeys:\n{key_out}\n\nValidator:\n{val_out}"
+
+    if action == "generating_validator_keys":
+        return generate_validator_keys(validator_keys_path)
 
     elif action == "stake":
         return stake_eth(eth_deposit_contract_address, validator_keys_path)

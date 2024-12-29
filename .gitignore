@@ -40,8 +40,7 @@ ENV/
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
-Thumbs.db
+*.db
 
 # SSH Keys
 id_rsa
@@ -53,3 +52,6 @@ id_rsa.pub
 wallet_data.txt
 .replit
 .python-version
+
+# Ignore SQLite database file
+twitter_state.db
