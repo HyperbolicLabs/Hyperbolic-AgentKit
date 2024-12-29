@@ -22,8 +22,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
 from langchain_core.messages import HumanMessage
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-# from langchain_nomic.embeddings import NomicEmbeddings
+from langchain_openai import ChatOpenAI
+from langchain_nomic.embeddings import NomicEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
@@ -97,7 +97,7 @@ doc_splits = text_splitter.split_documents(docs_list)
 
 vectorstore = SKLearnVectorStore.from_documents(
     documents=doc_splits,
-    embedding=OpenAIEmbeddings(model="text-embedding-3-small"),
+    embedding=NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local"),
 )
 
 retriever = vectorstore.as_retriever(k=3)
