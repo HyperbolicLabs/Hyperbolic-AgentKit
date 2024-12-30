@@ -327,18 +327,55 @@ def run_chat_mode(agent_executor, config):
             
             print_system(f"\nStarted at: {datetime.now().strftime('%H:%M:%S')}")
             
-            # Use run_with_progress to show activity while processing
+            # Get chunks from run_with_progress
             chunks = run_with_progress(
                 agent_executor.stream,
                 {"messages": [HumanMessage(content=user_input)]},
                 config
             )
+            
+            # Process the chunks
+            for chunk in chunks:
+                if "agent" in chunk:
+                    response = chunk["agent"]["messages"][0].content
+                    print_ai(format_ai_message_content(response))
+                elif "tools" in chunk:
+                    print_system(chunk["tools"]["messages"][0].content)
+                    
+            print_system("-------------------")
                 
         except KeyboardInterrupt:
             print_system("\nExiting chat mode...")
             break
         except Exception as e:
             print_error(f"Error: {str(e)}")
+
+def get_relevant_topic_examples(post_generator, context=None):
+    """Get relevant post examples based on current context or trending topics."""
+    topic_categories = {
+        'market': ["crypto market", "market analysis", "trading", "price action"],
+        'tech': ["blockchain tech", "web3", "smart contracts", "developer tools"],
+        'news': ["crypto news", "blockchain updates", "protocol updates"],
+        'defi': ["defi trends", "yield farming", "liquidity pools"],
+        'general': ["ethereum", "blockchain", "crypto community"]
+    }
+    
+    # Check if we have valid mention text
+    if context and context.get('mention_text'):
+        mention_text = context['mention_text'].lower()
+        for category, topics in topic_categories.items():
+            for topic in topics:
+                if any(word in mention_text for word in topic.split()):
+                    return post_generator.get_similar_posts(topic, n=3)
+    
+    # Default behavior when no context or no mention text
+    random_categories = random.sample(list(topic_categories.keys()), 2)
+    examples = []
+    for category in random_categories:
+        topic = random.choice(topic_categories[category])
+        examples.extend(post_generator.get_similar_posts(topic, n=2))
+    
+    return examples[:3]  # Return top 3 examples
 
 def run_autonomous_mode(agent_executor, config, post_generator):
     """Run the agent autonomously with specified intervals."""
@@ -361,10 +398,16 @@ def run_autonomous_mode(agent_executor, config, post_generator):
             print_system("Checking mentions and creating new post...")
             progress.start()
             
+            # Get contextual examples based on any existing mentions
+            post_examples = get_relevant_topic_examples(
+                post_generator, 
+                context={'mention_text': twitter_state.last_mention_text if hasattr(twitter_state, 'last_mention_text') else None}
+            )
+            
             thought = f"""You are an AI agent that both posts original content and replies to mentions.
 
             Post Style Guide:
-            {post_generator.get_similar_posts("crypto market", n=3)}
+            {post_examples}
             
             Common patterns in your writing:
             {post_generator.analyze_style_patterns()}
@@ -386,7 +429,6 @@ def run_autonomous_mode(agent_executor, config, post_generator):
 
             Remember:
             - Keep all responses concise and direct
-            - Never use emojis or hashtags
             - Be technically precise but conversational
             - Stay true to your irreverent but helpful nature"""
 
