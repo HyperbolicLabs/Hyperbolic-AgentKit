@@ -61,7 +61,9 @@ class DeployValidatorNodeInput(BaseModel):
     )
 
 
-def run_remote_command(command: str, interactive: bool = False, questions_and_responses: dict = None) -> str:
+def run_remote_command(
+    command: str, interactive: bool = False, questions_and_responses: dict = None
+) -> str:
     if not ssh_manager.is_connected:
         return "Error: No active SSH connection. Please connect first."
     return ssh_manager.execute(command, interactive, questions_and_responses)
@@ -86,7 +88,7 @@ def deploy_consensus_client(consensus_client: str) -> str:
     commands = [
         "curl https://raw.githubusercontent.com/prysmaticlabs/prysm/master/prysm.sh --output prysm.sh",
         "chmod +x prysm.sh",
-        "./prysm.sh beacon-chain --datadir=/var/lib/prysm --accept-terms-of-use --network=holesky &> beacon.log &",
+        "$HOME/prysm.sh beacon-chain --datadir=/var/lib/prysm --accept-terms-of-use --network=holesky &> beacon.log &",
     ]
     output = []
     for cmd in commands:
@@ -97,15 +99,19 @@ def deploy_consensus_client(consensus_client: str) -> str:
 def generate_validator_keys(validator_keys_path: str) -> str:
     commands = [
         f"mkdir -p {validator_keys_path}",
-        (f"./prysm.sh validator wallet create --wallet-dir={validator_keys_path} --keymanager-kind=derived --wallet-password-file=password.txt --skip-mnemonic-25th-word-check 1 --accept-terms-of-use",
-        {"Enter how many accounts": "1",
-          "Confirm you have written down": "y"}
-        )
+        (
+            f"./prysm.sh validator wallet create --wallet-dir={validator_keys_path} --keymanager-kind=derived --wallet-password-file=password.txt --skip-mnemonic-25th-word-check 1 --accept-terms-of-use",
+            {"Enter how many accounts": "1", "Confirm you have written down": "y"},
+        ),
     ]
     output = []
     for cmd in commands:
         if isinstance(cmd, tuple):
-            output.append(run_remote_command(cmd[0], interactive=True, questions_and_responses=cmd[1]))
+            output.append(
+                run_remote_command(
+                    cmd[0], interactive=True, questions_and_responses=cmd[1]
+                )
+            )
         else:
             output.append(run_remote_command(cmd))
     return "\n".join(output)
@@ -113,7 +119,7 @@ def generate_validator_keys(validator_keys_path: str) -> str:
 
 def start_validator_client(validator_keys_path: str) -> str:
     commands = [
-        f"./prysm.sh validator --datadir=/var/lib/prysm --accept-terms-of-use --wallet-dir={validator_keys_path} --wallet-password-file={validator_keys_path}/password.txt --network=holesky &> validator.log &"
+        f"$HOME/prysm.sh validator --datadir=/var/lib/prysm --accept-terms-of-use --wallet-dir={validator_keys_path} --wallet-password-file={validator_keys_path}/password.txt --network=holesky &> validator.log &"
     ]
     output = []
     for cmd in commands:
@@ -169,7 +175,7 @@ def deploy_validator_node(
         key_out = generate_validator_keys(validator_keys_path)
         val_out = start_validator_client(validator_keys_path)
         return f"Deployment complete.\n\nExecution client:\n{exec_out}\n\nConsensus client:\n{cons_out}\n\nKeys:\n{key_out}\n\nValidator:\n{val_out}"
-    
+
     if action == "generating_validator_keys":
         return generate_validator_keys(validator_keys_path)
 

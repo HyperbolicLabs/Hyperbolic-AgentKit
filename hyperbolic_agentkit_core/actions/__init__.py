@@ -5,10 +5,29 @@ from hyperbolic_agentkit_core.actions.get_available_gpus import GetAvailableGpus
 from hyperbolic_agentkit_core.actions.get_gpu_status import GetGpuStatusAction
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.remote_shell import RemoteShellAction
+from hyperbolic_agentkit_core.actions.rent_compute import RentComputeAction
 from hyperbolic_agentkit_core.actions.get_spend_history import GetSpendHistoryAction
 from hyperbolic_agentkit_core.actions.terminate_compute import TerminateComputeAction
 from hyperbolic_agentkit_core.actions.get_current_balance import GetCurrentBalanceAction
 from hyperbolic_agentkit_core.actions.ssh_access import SSHAccessAction
+from hyperbolic_agentkit_core.actions.generate_jwt import GenerateJWTAction
+from hyperbolic_agentkit_core.actions.install_geth import InstallGETHAction
+from hyperbolic_agentkit_core.actions.run_full_ethereum_node import (
+    RunFullEthereumNodeAction,
+)
+from hyperbolic_agentkit_core.actions.setup_ethereum_node_environment import (
+    SetupEthereumNodeAction,
+)
+
+from hyperbolic_agentkit_core.actions.setup_depositor import SetupDepositorAction
+from hyperbolic_agentkit_core.actions.configure_validator import (
+    ConfigureValidatorAction,
+)
+from hyperbolic_agentkit_core.actions.deposit_eth_action import DepositETHAction
+from hyperbolic_agentkit_core.actions.start_validator import StartValidatorAction
+from hyperbolic_agentkit_core.actions.generate_depositor_account import (
+    GenerateEthKeyAction,
+)
 
 
 def get_all_hyperbolic_actions() -> list[type[HyperbolicAction]]:
@@ -27,9 +46,20 @@ __all__ = [
     "GetAvailableGpusAction",
     "GetGpuStatusAction",
     "SSHAccessAction",
-    "RemoteShellAction", 
-    "TerminateComputeAction", 
-    "GetSpendHistoryAction", 
+    "RemoteShellAction",
+    "RemoteShellAction",
+    "TerminateComputeAction",
+    "GetSpendHistoryAction",
     "GetCurrentBalanceAction",
     "DeployValidatorNodeAction",
+    # "DeployValidatorNodeAction",
+    "GenerateJWTAction",
+    "InstallGETHAction",
+    "RunFullEthereumNodeAction",
+    "SetupEthereumNodeAction",
+    "SetupDepositorAction",
+    "StartValidatorAction",
+    "DepositETHAction",
+    "ConfigureValidatorAction",
+    "GenerateEthKeyAction",
 ]
