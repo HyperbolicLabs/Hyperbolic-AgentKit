@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv(override=True)
 
 # Add the parent directory to PYTHONPATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
