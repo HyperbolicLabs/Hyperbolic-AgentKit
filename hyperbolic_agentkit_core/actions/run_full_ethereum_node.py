@@ -45,9 +45,10 @@ def run_full_ethereum_node() -> str:
     if not ssh_manager.is_connected:
         return "Error: No active SSH connection. Please connect to a remote server first using ssh_connect."
 
+    # Edit the commands to use nohup and redirect output to a log file
     commands = [
-        "cd ethereum/execution && echo $$ > geth.pid && exec nohup geth --holesky --http --http.api eth,net,engine,admin --authrpc.jwtsecret=$HOME/ethereum/jwt.hex > geth.log 2>&1 &",
-        "cd ethereum/consensus && echo $$ > beacon.pid && exec $HOME/ethereum/consensus/prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --holesky --jwt-secret=$HOME/ethereum/jwt.hex --checkpoint-sync-url=https://holesky.beaconstate.info --accept-terms-of-use --genesis-beacon-api-url=https://holesky.beaconstate.info &> beacon.log &",
+        "cd ethereum/execution && echo $$ > geth.pid && nohup geth --holesky --http --http.api eth,net,engine,admin --authrpc.jwtsecret=$HOME/ethereum/jwt.hex &> geth.log &",
+        "cd ethereum/consensus && echo $$ > beacon.pid && nohup $HOME/ethereum/consensus/prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --holesky --jwt-secret=$HOME/ethereum/jwt.hex --checkpoint-sync-url=https://holesky.beaconstate.info --accept-terms-of-use --genesis-beacon-api-url=https://holesky.beaconstate.info &> beacon.log &",
     ]
     output = []
     for cmd in commands:

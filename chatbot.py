@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv(override=True)
 
 # Add the parent directory to PYTHONPATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -209,7 +209,7 @@ def initialize_agent():
         "configurable": {
             "thread_id": "CDP and Hyperbolic Agentkit Chatbot Example!",
         },
-        "recursion_limit": 35,
+        "recursion_limit": 100,
     }
 
     state_modifier = f"""You are an autonomous agent that have your independent identity and can interact with multiple platforms and services:
@@ -248,6 +248,7 @@ def initialize_agent():
         8. `deposit_eth`
         9. `start_validator`
 
+    - If you get error at one step, don't need to rerun the previous steps but just try to fix the error.
     - It is important that once a command has been ran to start a service such as Go Ethereum or Prysm that you check the status of the service before attempting further action.
     - Pay careful attention to the prerequisites of each tool and ensure that you have met them before attempting to run the tool.
     - If you encounter errors, the commands `geth --help` and `$HOME/ethereum/consensus/prysm.sh --help` can be used for debugging.

@@ -50,34 +50,23 @@ class SSHManager:
             self._ssh_client = paramiko.SSHClient()
             self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-            if not os.path.exists(private_key_path):
-                return f"SSH Key Error: Key file not found at {private_key_path}"
 
-            try:
-                try:
-                    private_key = paramiko.RSAKey.from_private_key_file(
-                        private_key_path
-                    )
-                except paramiko.ssh_exception.SSHException:
-                    try:
-                        private_key = paramiko.Ed25519Key.from_private_key_file(
-                            private_key_path, password=None
-                        )
-                    except paramiko.ssh_exception.SSHException:
-                        try:
-                            private_key = paramiko.ECDSAKey.from_private_key_file(
-                                private_key_path, password=None
-                            )
-                        except paramiko.ssh_exception.SSHException:
-                            private_key = paramiko.PKey.from_private_key_file(
-                                private_key_path, password=None
-                            )
+            # Initialize new client
+            self._ssh_client = paramiko.SSHClient()
+            self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-                self._ssh_client.connect(
-                    host, port=port, username=username, pkey=private_key
-                )
-            except Exception as e:
-                return f"SSH Key Error: Failed to load private key: {str(e)}"
+            # Get default key path from environment
+            default_key_path = os.getenv('SSH_PRIVATE_KEY_PATH', '~/.ssh/id_rsa')
+            default_key_path = os.path.expanduser(default_key_path)
+
+            if password:
+                self._ssh_client.connect(host, port=port, username=username, password=password)
+            else:
+                key_path = private_key_path if private_key_path else default_key_path
+                if not os.path.exists(key_path):
+                    return f"SSH Key Error: Key file not found at {key_path}"
+                private_key = paramiko.RSAKey.from_private_key_file(key_path)
+                self._ssh_client.connect(host, port=port, username=username, pkey=private_key)
 
             self._connected = True
             self._host = host

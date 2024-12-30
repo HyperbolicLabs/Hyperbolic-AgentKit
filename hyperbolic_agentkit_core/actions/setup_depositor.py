@@ -147,12 +147,14 @@ def setup_depositor_interactive(keystore_password: str) -> str:
         output, error = ssh_manager.interactive_command(command="")
         if error:
             return f"Error starting deposit CLI: {error}"
+        print(output)
 
         # Look for password confirmation prompt
         if "Repeat your keystore password for confirmation:" in output:
             output, error = ssh_manager.interactive_command(send_str=keystore_password)
             if error:
                 return f"Error confirming password: {error}"
+            print(output)
 
         # Capture and process mnemonic
         if "This is your mnemonic (seed phrase)" in output:
@@ -165,14 +167,16 @@ def setup_depositor_interactive(keystore_password: str) -> str:
             output, error = ssh_manager.interactive_command(send_str="\n")
             if error:
                 return f"Error after mnemonic display: {error}"
+            print(output)
 
         # Handle mnemonic confirmation
         if "Please type your mnemonic (separated by spaces)" in output:
             output, error = ssh_manager.interactive_command(send_str=mnemonic)
-            output, error = ssh_manager.interactive_command(send_str="")
+            # output, error = ssh_manager.interactive_command(send_str="")
 
             if error:
                 return f"Error confirming mnemonic: {error}"
+            print(output)
 
         if "Your keys can be found at:" in output:
             key_path = extract_validator_keys_path(output)
