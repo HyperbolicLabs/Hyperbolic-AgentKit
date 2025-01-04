@@ -56,3 +56,6 @@ wallet_data.txt
 
 # Ignore SQLite database file
 twitter_state.db
+
+# ChromaDB
+chroma_db/

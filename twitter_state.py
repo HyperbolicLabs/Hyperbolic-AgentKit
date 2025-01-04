@@ -2,7 +2,7 @@ import sqlite3
 from datetime import datetime, timedelta
 
 # Constants
-MENTION_CHECK_INTERVAL = 15 * 60  # 15 minutes in seconds
+MENTION_CHECK_INTERVAL = 2 * 60  # 15 minutes in seconds
 MAX_MENTIONS_PER_INTERVAL = 50  # Adjust based on your API tier limits
 
 class TwitterState:
@@ -25,6 +25,14 @@ class TwitterState:
                 )
             ''')
             
+            # Create reposted tweets table
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS reposted_tweets (
+                    tweet_id TEXT PRIMARY KEY,
+                    reposted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            
             # Create state table for other Twitter state data
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS twitter_state (
@@ -34,6 +42,7 @@ class TwitterState:
             ''')
             
             conn.execute('CREATE INDEX IF NOT EXISTS idx_replied_at ON replied_tweets(replied_at)')
+            conn.execute('CREATE INDEX IF NOT EXISTS idx_reposted_at ON reposted_tweets(reposted_at)')
     
     def load(self):
         """Load state from SQLite database."""
@@ -64,6 +73,8 @@ class TwitterState:
                     INSERT OR REPLACE INTO twitter_state (key, value) 
                     VALUES (?, ?)
                 ''', (key, value))
+            conn.commit()
+  
 
     def add_replied_tweet(self, tweet_id):
         """Add a tweet ID to the database of replied tweets."""
@@ -84,9 +95,11 @@ class TwitterState:
     def can_check_mentions(self):
         """Check if enough time has passed since last mention check."""
         if not self.last_check_time:
+     
             return True
         
         time_since_last_check = (datetime.now() - self.last_check_time).total_seconds()
+      
         return time_since_last_check >= MENTION_CHECK_INTERVAL
 
     def update_rate_limit(self):
@@ -98,3 +111,24 @@ class TwitterState:
         
         self.mentions_count += 1
         return self.mentions_count <= MAX_MENTIONS_PER_INTERVAL 
+
+    def add_reposted_tweet(self, tweet_id: str) -> str:
+        """Add a tweet ID to the database of reposted tweets."""
+        try:
+            with sqlite3.connect('twitter_state.db') as conn:
+                conn.execute(
+                    'INSERT INTO reposted_tweets (tweet_id) VALUES (?)',
+                    (tweet_id,)
+                )
+            return f"Successfully recorded repost of tweet {tweet_id}"
+        except sqlite3.IntegrityError:
+            return f"Tweet {tweet_id} was already recorded as reposted"
+
+    def has_reposted(self, tweet_id: str) -> bool:
+        """Check if we have already reposted a tweet."""
+        with sqlite3.connect('twitter_state.db') as conn:
+            cursor = conn.execute(
+                'SELECT 1 FROM reposted_tweets WHERE tweet_id = ?',
+                (tweet_id,)
+            )
+            return cursor.fetchone() is not None 
