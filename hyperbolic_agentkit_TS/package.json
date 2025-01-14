@@ -1,0 +1,40 @@
+{
+  "name": "@elizaos/hyperbolic-agentkit-ts",
+  "version": "1.0.0",
+  "description": "TypeScript version of Hyperbolic Agent Kit",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint 'src/**/*.{js,ts}'",
+    "lint:fix": "eslint 'src/**/*.{js,ts}' --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "axios": "^1.6.5",
+    "ssh2": "^1.15.0",
+    "zod": "^3.22.4",
+    "@coinbase/coinbase-sdk": "^0.13.0",
+    "viem": "^2.0.0",
+    "decimal.js": "^10.4.3",
+    "@langchain/core": "^0.1.15",
+    "langchain": "^0.1.9"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "@types/ssh2": "^1.11.18",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@vitest/coverage-v8": "^1.2.1",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
