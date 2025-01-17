@@ -259,7 +259,8 @@ def process_character_config(character: Dict[str, Any]) -> str:
 
         2. Compute Operations (via Hyperbolic):
         - Rent compute resources
-        - Check GPU status and availability
+        - Check rented GPU status
+        - Check GPU availability for renting
         - Connect to remote servers via SSH (use ssh_connect)
         - Execute commands on remote server (use remote_shell)
 
@@ -306,6 +307,7 @@ def process_character_config(character: Dict[str, Any]) -> str:
             - Contains relevant keyword
             - Directly matches conversation topic
             - Appropriate emoji usage (if any)
+        15. If your task requires a machine or a GPU, first check if you have a rented one using the get_gpu_status tool. If not, check the available GPUs for renting using the get_gpu_availability tool.
 
         When using tools:
         1. Check if you've replied to tweets using has_replied_to
@@ -377,7 +379,7 @@ async def initialize_agent():
 
         print_system("Loading character configuration...")
         try:
-            characters = loadCharacters(os.getenv("CHARACTER_FILE", "chainyoda.json"))
+            characters = loadCharacters(os.getenv("CHARACTER_FILE", "default.json"))
             character = characters[0]  # Use first character if multiple loaded
         except Exception as e:
             print_error(f"Error loading character: {e}")
@@ -531,7 +533,7 @@ async def initialize_agent():
             tools.extend(cdp_toolkit.get_tools())
 
         # Hyperbolic Toolkit Tools
-        if os.getenv("USE_HYPERBOLIC_TOOLS", "false").lower() == "true":
+        if os.getenv("USE_HYPERBOLIC_TOOLS", "true").lower() == "true":
             tools.extend(hyperbolic_toolkit.get_tools())
 
         # Twitter Core Tools
