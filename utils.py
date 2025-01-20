@@ -77,29 +77,75 @@ def run_with_progress(func, *args, **kwargs):
     finally:
         progress.stop()
 
-def format_ai_message_content(content, additional_kwargs=None):
-    """Format AI message content based on its type."""
+def format_ai_message_content(content, additional_kwargs=None, format_mode="ansi"):
+    """Format AI message content based on its type and format mode.
+    
+    Args:
+        content: The content to format
+        additional_kwargs: Additional keyword arguments
+        format_mode: Either "ansi" for terminal, or "markdown" for gradio display
+    """
     formatted_parts = []
+    
+    # Define color formats for different modes
+    colors = {
+        "ansi": {
+            "green": Colors.GREEN,
+            "magenta": Colors.MAGENTA,
+            "end": Colors.ENDC
+        },
+        "markdown": {
+            "green": '<span style="color: #2ecc71">',  # Bright green
+            "magenta": '<span style="color: #e056fd">',  # Bright magenta
+            "end": '</span>'
+        }
+    }
+    
+    # Get the appropriate color set
+    color_set = colors[format_mode]
     
     # Handle text content
     if isinstance(content, list):
         # Handle Claude-style messages
-        text_parts = [f"{Colors.GREEN}{item['text']}{Colors.ENDC}" 
-                     for item in content if item.get('type') == 'text' and 'text' in item]
+        text_parts = [
+            f"{color_set['green']}{item['text']}{color_set['end']}"
+            for item in content if item.get('type') == 'text' and 'text' in item
+        ]
         if text_parts:
-            formatted_parts.extend(text_parts)
+            if format_mode == "markdown":
+                # Process each text part individually since text_parts is a list
+                processed_parts = []
+                for part in text_parts:
+                    processed = part.replace("<response_planning>", "**Planning:**\n")
+                    processed = processed.replace("</response_planning>", "\n") 
+                    processed = processed.replace("<response>", "**Response:**\n")
+                    processed = processed.replace("</response>", "")
+                    processed_parts.append(processed)
+                formatted_parts.extend(processed_parts)
+            else:
+                formatted_parts.extend(text_parts)
+        
         tool_uses = [item for item in content if item.get('type') == 'tool_use']
         for tool_use in tool_uses:
-            formatted_parts.append(f"{Colors.MAGENTA}Tool Call: {tool_use['name']}({tool_use['input']}){Colors.ENDC}")
+            formatted_parts.append(
+                f"{color_set['magenta']}Tool Call: {tool_use['name']}({tool_use['input']}){color_set['end']}"
+            )
         
     elif isinstance(content, str):
         # Handle GPT-style messages
         if content:
-            formatted_parts.append(f"{Colors.GREEN}{content}{Colors.ENDC}")
+            # Clean up XML-like tags if in markdown mode
+            if format_mode == "markdown":
+                content = content.replace("<response_planning>", "**Planning:**\n")
+                content = content.replace("</response_planning>", "\n")
+                content = content.replace("<response>", "**Response:**\n")
+                content = content.replace("</response>", "")
+            formatted_parts.append(f"{color_set['green']}{content}{color_set['end']}")
+            
         if additional_kwargs and 'tool_calls' in additional_kwargs:
             for tool_call in additional_kwargs['tool_calls']:
                 formatted_parts.append(
-                    f"{Colors.MAGENTA}Tool Call: {tool_call['function']['name']}({tool_call['function']['arguments']}){Colors.ENDC}"
+                    f"{color_set['magenta']}Tool Call: {tool_call['function']['name']}({tool_call['function']['arguments']}){color_set['end']}"
                 )    
     
     return '\n'.join(formatted_parts) if formatted_parts else str(content) 

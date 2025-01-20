@@ -7,7 +7,7 @@ A template for running an AI agent with both blockchain and compute capabilities
 - [Hyperbolic Compute Platform](https://app.hyperbolic.xyz/)
 - [Coinbase Developer Platform (CDP) Agentkit](https://github.com/coinbase/cdp-agentkit/)
 
-This template demonstrates a terminal-based chatbot that can:
+This template demonstrates a chatbot that can:
 
 Compute Operations (via Hyperbolic):
 - Rent GPU compute resources
@@ -60,11 +60,22 @@ Blockchain Operations (via CDP):
    ```
 
 3. **Run the Bot**
+   You can run the bot in two ways:
+
+   a. **Terminal Interface**
    ```bash
    poetry run python chatbot.py
    ```
    - Choose between chat mode or autonomous mode
    - Start interacting with blockchain and compute resources!
+
+   b. **Web Interface (Gradio)**
+   ```bash
+   poetry run python gradio_ui.py
+   ```
+   - Access the user-friendly web interface
+   - Chat with the agent through your browser
+   - View responses in a modern chat interface
 
 ## Features
 - Interactive chat mode for guided interactions
@@ -73,3 +84,4 @@ Blockchain Operations (via CDP):
 - Hyperbolic integration for compute operations
 - Persistent wallet management
 - X (Twitter) integration
+- Modern web interface powered by Gradio

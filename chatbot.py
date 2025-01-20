@@ -574,9 +574,6 @@ async def initialize_agent():
         if os.getenv("USE_REQUEST_TOOLS", "false").lower() == "true":
             tools.extend(toolkit.get_tools())
 
-        # Create the runnable config with increased recursion limit
-        runnable_config = RunnableConfig(recursion_limit=200)
-
         for tool in tools:
             print_system(tool.name)
 
@@ -585,7 +582,7 @@ async def initialize_agent():
             tools=tools,
             checkpointer=memory,
             state_modifier=personality,
-        ), config, runnable_config, twitter_api_wrapper, knowledge_base
+        ), config, twitter_api_wrapper, knowledge_base
 
     except Exception as e:
         print_error(f"Error initializing agent: {e}")
@@ -628,22 +625,12 @@ async def run_with_progress(func, *args, **kwargs):
     finally:
         progress.stop()
 
-async def run_chat_mode(agent_executor, config, runnable_config):
+async def run_chat_mode(agent_executor, config):
     """Run the agent interactively based on user input."""
     print_system("Starting chat mode... Type 'exit' to end.")
     print_system("Commands:")
     print_system("  exit     - Exit the chat")
     print_system("  status   - Check if agent is responsive")
-    
-    # Create the runnable config with required keys
-    runnable_config = RunnableConfig(
-        recursion_limit=200,
-        configurable={
-            "thread_id": config["configurable"]["thread_id"],
-            "checkpoint_ns": "chat_mode",
-            "checkpoint_id": str(datetime.now().timestamp())
-        }
-    )
     
     while True:
         try:
@@ -661,11 +648,11 @@ async def run_chat_mode(agent_executor, config, runnable_config):
             
             print_system(f"\nStarted at: {datetime.now().strftime('%H:%M:%S')}")
             
-            # Process chunks using the updated runnable_config with async handling
+            # Process chunks using the config with async handling
             async for chunk in run_with_progress(
                 agent_executor.astream,  # Use astream instead of stream
                 {"messages": [HumanMessage(content=user_input)]},
-                runnable_config
+                config
             ):
                 if "agent" in chunk:
                     response = chunk["agent"]["messages"][0].content
@@ -684,7 +671,7 @@ class AgentExecutionError(Exception):
     """Custom exception for agent execution errors."""
     pass
 
-async def run_autonomous_mode(agent_executor, config, runnable_config, twitter_api_wrapper, knowledge_base):
+async def run_autonomous_mode(agent_executor, config, twitter_api_wrapper, knowledge_base):
     """Run the agent autonomously with specified intervals."""
     print_system(f"Starting autonomous mode as {config['character']['name']}...")
     twitter_state.load()
@@ -692,16 +679,6 @@ async def run_autonomous_mode(agent_executor, config, runnable_config, twitter_a
     # Reset last_check_time on startup to ensure immediate first run
     twitter_state.last_check_time = None
     twitter_state.save()
-    
-    # Create the runnable config with required keys
-    runnable_config = RunnableConfig(
-        recursion_limit=200,
-        configurable={
-            "thread_id": config["configurable"]["thread_id"],
-            "checkpoint_ns": "autonomous_mode",
-            "checkpoint_id": str(datetime.now().timestamp())
-        }
-    )
     
     while True:
         try:
@@ -879,7 +856,7 @@ async def run_autonomous_mode(agent_executor, config, runnable_config, twitter_a
             # Process chunks as they arrive using async for
             async for chunk in agent_executor.astream(
                 {"messages": [HumanMessage(content=thought)]},
-                runnable_config
+                config
             ):
                 print_system(chunk)
                 if "agent" in chunk:
@@ -927,16 +904,15 @@ async def run_autonomous_mode(agent_executor, config, runnable_config, twitter_a
 async def main():
     """Start the chatbot agent."""
     try:
-        agent_executor, config, runnable_config, twitter_api_wrapper, knowledge_base = await initialize_agent()
+        agent_executor, config, twitter_api_wrapper, knowledge_base = await initialize_agent()
         mode = choose_mode()
         
         if mode == "chat":
-            await run_chat_mode(agent_executor=agent_executor, config=config, runnable_config=runnable_config)
+            await run_chat_mode(agent_executor=agent_executor, config=config)
         elif mode == "auto":
             await run_autonomous_mode(
                 agent_executor=agent_executor,
                 config=config,
-                runnable_config=runnable_config,
                 twitter_api_wrapper=twitter_api_wrapper,
                 knowledge_base=knowledge_base
             )
