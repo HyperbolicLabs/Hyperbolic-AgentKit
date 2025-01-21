@@ -49,30 +49,30 @@ async def chat_with_agent(message, history):
 def create_ui():
     # Create the Gradio interface
     with gr.Blocks(title="Hyperbolic AgentKit", fill_height=True) as demo:
-        gr.Markdown("# Hyperbolic AgentKit")
-        gr.Markdown("""
-        Welcome to the Hyperbolic AgentKit interface! This AI agent can help you with:
-        - Compute Operations (via Hyperbolic)
-        - Blockchain Operations (via CDP)
-        - Social Media Management
-        """)
+        # gr.Markdown("# Hyperbolic AgentKit")
+        # gr.Markdown("""
+        # Welcome to the Hyperbolic AgentKit interface! This AI agent can help you with:
+        # - Compute Operations (via Hyperbolic)
+        # - Blockchain Operations (via CDP)
+        # - Social Media Management
+        # """)
         
         # Create a custom chatbot with message styling
-        custom_chatbot = gr.Chatbot(
-            label="Agent",
-            type="messages",
-            height=600,
-            show_copy_button=True,
-            avatar_images=(
-                None,
-                "https://em-content.zobj.net/source/twitter/53/robot-face_1f916.png"
-            ),
-            render_markdown=True
-        )
+        # custom_chatbot = gr.Chatbot(
+        #     label="Agent",
+        #     type="messages",
+        #     height=600,
+        #     show_copy_button=True,
+        #     avatar_images=(
+        #         None,
+        #         "https://em-content.zobj.net/source/twitter/53/robot-face_1f916.png"
+        #     ),
+        #     render_markdown=True
+        # )
         
         gr.ChatInterface(
             chat_with_agent,
-            chatbot=custom_chatbot,
+            # chatbot=custom_chatbot,
             type="messages",
             title="Chat with Hyperbolic Agent",
             description="Ask questions about blockchain, compute resources, or social media management.",
