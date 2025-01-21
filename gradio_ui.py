@@ -3,7 +3,9 @@ import gradio as gr
 import asyncio
 from chatbot import initialize_agent
 from langchain_core.messages import HumanMessage
+from langchain_core.runnables import RunnableConfig
 from utils import format_ai_message_content
+from datetime import datetime
 
 async def chat_with_agent(message, history):
     # Initialize agent if not already done
@@ -12,19 +14,21 @@ async def chat_with_agent(message, history):
         chat_with_agent.agent = agent_executor
         chat_with_agent.config = config
 
+    runnable_config = RunnableConfig(
+        recursion_limit=config["configurable"]["recursion_limit"],
+        configurable={
+            "thread_id": config["configurable"]["thread_id"],
+            "checkpoint_ns": "chat_mode",
+            "checkpoint_id": str(datetime.now().timestamp())
+        }
+    )
+    
     messages = []
     yield messages
-
-    # messages.append(dict(
-    #     role="user",
-    #     content=message
-    # ))
-    # yield messages
-
     # Process message with agent
     async for chunk in chat_with_agent.agent.astream(
         {"messages": [HumanMessage(content=message)]},
-        chat_with_agent.config
+        runnable_config
     ):
         if "agent" in chunk:
             print("agent in chunk")
