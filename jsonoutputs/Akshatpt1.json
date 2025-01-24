@@ -1,0 +1,86 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "GM. Welcome to another episode of the rollup. Today we have the pleasure of speaking with Oxshot, Chief Investment Officer of Maelstrom Fund, which is Arthur Hayes, the notorious founder of BitMEX's family office. Arthur and Oxshot worked closely at Maelstrom and today we dive into the investment thesis of Maelstrom, the time horizons, and some industry trends as they're unfolding in the market today. Hope you enjoyed today's podcast. Before we get into it, a word from our sponsors."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Mantle is a layer-2 blockchain with one of the biggest on-chain treasuries in all of crypto, and they had a hundred-day campaign called Metamorphosis live now. What this is, it it is a campaign for their liquid stake eth token and eth as well as their upcoming liquid restaking token C M eth where you can utilize this token on the Mantle Network and a variety of different apps, some of your favorite restaking protocols and defy protocols and earn yields in the form of powder, which will eventually be turning into a governance token. Mantle's been around for a while, we like them because they use their own form of EigenDe, they have a good ecosystem, and they are growing. So check out this hundred-day Metamorphosis campaign and hope you guys enjoy the rest of this video."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Welcome aboard on our journey into the singularity. This is the endgame roadmap for Frax and Fraxtel. The new L2 out of the Frax ecosystem that is totally based on fractal scaling. Fractal is a modular L2 blockchain built by Frax with modular and fractal scaling in mind. Fractal scaling is based on the Mandelbrot set of fractal images and it explains how L2s become L3s and the entire app chain lifecycle goes through its evolution. The Frax ecosystem is made of some of the top builders in the space, it has stemmed from its OG days of the Frax stablecoin. It is now in the LST space, the LRT space and this Fraxtel L2 joins the existing suite of Frax products including Frax swap and Frax lend. You can see Frax ferry, the bridge to go from any chain Arbitrum, Optimism or Mainnet into the Fraxtel Mainnet. Bridge your tokens and bring your Frax assets into the Fraxtel ecosystem. Join today to get the best out of Fraxtel, you are still early. Join today, take part in our expedition into the singularity."
+  },
+  {
+    "speaker": "Rob",
+    "content": "GM GM guys, welcome back to the rollup. Uh today we are chatting with Oxshot from Maelstrom. Uh Maelstrom is uh the family office for BitMEX, uh former CEO, uh Arthur Hayes, founder of BitMEX, the uh the uh notorious uh perpetual exchange, with the 100X leverage. Um if you're an OG, you remember. And now uh and now Maelstrom. And uh Oxshot is running Maelstrom. So absolute pleasure to uh to chat, man. I'm glad that we can make this happen."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Morning. Good to be here."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yes, it it's good to have you. I think uh you know, there's plenty of things uh that have uh kind of you know, taken wind over the last uh you know, few weeks and months so I'm I'm excited to dig into it but actually, before you joined uh I was looking at it like, what is going on with Tron right now? Do you have any idea, like why it's catching so much wind?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Uh no, to be honest, no, not really. I think uh yeah, the I've been in Asia for five years, the Tron ecosystem has a dedicated user base that I don't encounter. I don't know who they are, um but I know they're around here in Asia so no no answers there, more questions for me as well."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Strange, man. It it I guess, just his excellency um that has been able to build an empire. And like a loyal user base, I think, just out of, like real user attraction, you know, they've been able to find like some stablecoin product market fit. Honestly, I don't know anything about their their defy ecosystem. I imagine, you know, from what I've heard they have kind of the normal defy components, but beyond that, it seems like they've just kind of found like a regional fit and a product market fit. Right. Um, and then every once in a while, like, because they're pretty steady as it goes, when everything else tends to recede, they end up just kind of like cutting through the noise."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah. Yeah, yeah I think so. I think, you know, crypto finance reflects old school finance where it's it's all about whales. Um, so as long as there's a tight network of uh whales who speak to each other, it's it's not that difficult for a project to kind of keep its loyal base together."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And I think, you know, I I come from the Western world, um you know, what what are what is kind of like the have you seen any any very common threads or is there a divergence, would you say, or a convergence between Asia and the Western world in in its perception of crypto these days?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah. Yeah, I mean, perception kind of depends who you ask, you know, regulators. Now we're seeing kind of things flip the other way. There was a point where Singapore, Hong Kong, etc were opening up in terms of uh regulations, um South Korea has always kind of been there. Now you're seeing kind of a little bit of a pivot in in the US at least. Um, but well, you know, a lot of uncertainty there as well. Um, and in in Asia, you're seeing a little bit of a reversal, uh, but even within Asia there's some disparity. So Singapore, after FTX, you know, kind of started closing up to crypto. Hong Kong saw an opportunity and now has been opening up. So it it sort of depends where within Asia. Asia's pretty massive and each country, you know, is the size of a US state or more sometimes and and uh the biggest one, obviously China, um, isn't really right now crypto, who knows, it's been banned a million times and unbanned-ish uh, so no one really knows what's going on there. But um yeah, massive difference for sure in terms of uh the trajectory. It's the biggest the trend though that you can really point to is in the West, there is um at least in the US, there is some consistent trajectory and trend. And in uh certain Asian markets, uh let's say, excluding South Korea, it it kind of flip-flops just depending on, you know, what the local autocratic government feels that time of day."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Okay. Kind of a fragmentation, yeah, okay. Maybe we'll we'll get into that a little bit more into the pod but it's your first time here, man, so again, yeah, thank you for thank you for making the time. Um, and like you said, you're in Hong Kong now, but it didn't start out that way and since this is your first time on the channel, I'd I'd love to kind of get your back story, you know, how did you meet Arthur? Um, and then ultimately, like, you know, what what has been your journey through crypto and how did you end up where you are now?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, for sure. So, I um, I graduated from undergrad in 2013 and um, you know, that time, my friend, who who's now crypto VC, uh neither of us were back then, um, he sent me an article from it was either Salon or Slate, I don't recall which one, about Bitcoin. It was summer 2013. I remember just reading about it and there was a whole section on the Silk Road and I I'm from Austin, Texas originally. Remember thinking, wow, this might be one of Austin's most successful startups. The Silk Road. Um, and uh"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Was was uh Ross from Austin?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "He was either from Austin or based in Austin, one of the two. Okay. And um, I just thought, wow, that's really cool. And uh, my buddy sent it to me, who's also from Austin. Um, and uh short spoke to me, and just thought, wow, this like fits a certain Libertarian, um, set of ideas I've come closer to um, that I was exposed to in college. And uh, and then I just thought, okay, look, my net worth is negative at the moment. Um, you know, got student loans, but, fuck it, I I'm making an income now, I'd like to diversify my my um, my portfolio beyond just traditional assets and I thought I'll I'll take a position in Bitcoin. I started buying in um, toward the end of 2013, begin to 2014, begin of 2014 and um, and I got caught in the, you know, there was a crash. I think, uh, Bitcoin was at something like $1,100 and then it crashed to 200, 300 for a couple of years. And I remember sort of writing it off, thinking, okay, fun experiment, uh, but whatever. I I I don't really understand what I bought. I just um, just thought it was a cool concept. And then um, in 2016, 2017, I started reading about Ethereum and that's and just reading about the ideas before just aping into the the coin. Um, and that's that's when I really got uh I guess, enlightened to the possibilities um, that you can kind of keep stacking on to blockchain technology and it starts with just the distributed ledger. All the other stuff on top of it gets way more exciting. The leaps are, um, are manifold each time. Um, and uh, started buying in Ethereum around then, '17, and um, again, same thing, you know, there was the white paper um, bubble in '17, '18. I put in money into projects where there was no governance, you know, team was garbage, it's like, nonsense but I I also, I kept my holdings and kept doubling down in Bitcoin, Ethereum. Glad I did that. Learned a lot. Um, at that time I was working at a private equity shop, um, you know, my day job, it was really good training, learned a lot, but you know, mind numbingly boring to, uh, just invest in these old school businesses. Growth is like 4, 5% a year, um, there's not that much to be done, uh, as an investor. Can't really help that much. Um, it's very formulaic as well. Uh, did that up until 2019 and then the the cognitive distance just got too big between what I was getting interested in on the side and um what I was doing for my my mainstream, uh, full-time job and so I started looking for jobs online and um, I wanted to combine my interests, crypto and VC and also spend a little bit of time in Asia. But that wasn't like a high priority at the moment, at that time. Um, and then found a job listing that was um, BitMEX Ventures. It was about early 2019. Remember it said on the listing, uh, that they weren't gonna take candidates who weren't already based in Hong Kong. Uh, I was in Chicago at that time. And I thought, okay, whatever. I'll just apply. And um, got a response after maybe three months. I guess they couldn't find someone that they wanted and then um, got the job in the interview process. That's the first time I met Arthur. And uh, we we happened to have gone to the same undergrad, but, but a few years apart. Um, and uh then I moved out to Hong Kong in 2019 to to start working at BitMEX and that's when I first started working with Arthur. Um, so then yeah, from there, from 19 to 2022, I climbed my way up. I was the head of, uh, became head of, um, Corp Dev at BitMEX eventually, work more closely with Arthur and the CFO, who's now the current CEO of BitMEX. And then in 2022, Arthur and I started formulating the idea, uh, behind Maelstrom and how we could um, kind of take the next evolution of BitMEX Ventures, which is sunsetted in 2022 and bring it to, you know, kind of like the the state of, of crypto today. So that's that's how it all got started."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Very, very cool. And maybe we won't spend too much time on this, we'll we'll you know, keep the rest of this conversation pretty focused on Maelstrom but what what is the state of BitMEX nowadays? um, through kind of, going, undergoing its changes, you know, through the cycles um, with Arthur kind of stepping away a bit. Like, what what what is kind of like, yeah, the state of BitMEX nowadays?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, so, you know, I left BitMEX in 2022, so it's been a minute, about two years. But um, you know, as as I was on my way out, um, BitMEX, you know, was the OG. They kind of didn't quite invent the perpetual swap product, but basically commercialized it for the first time in the crypto industry. And um, when I joined, it was still in this heyday. Uh, at that point it was, I remember the numbers now, but it was majority of the world's volume in terms of crypto, in terms of dollar notional at least, um, for for a while. Uh, so from 14 to 19, that was kind of the case. 2020, um, situation changed a little bit and it was this that that's when Arthur had stepped away um, around that time frame. But he was he was already transitioning before that. He kind of knew that the the founding team that takes it from, from day one to day two is not the same team that's gonna take it from day two to day 10. Um, so he'd already been transitioning well before that, but the transition started to happen in 2020 and um, then the BitMEX story kind of like changed from incredible growth to sort of, um, I guess, combatting off new um, market entrants who basically copy-pasted the product, which you know, that that's totally reasonable. It's not a not a not a knock on them. Um, Binance, FTX at the time, those guys were popping up with the same product and um, and then uh it it ended up being, you know, BitMEX is focused on being this, uh, derivatives exchange for pro-sumer type traders. Um, what started happening in 2020 around the time of Covid and Defi Summer was that retail started coming in. Retail doesn't really wanna deal with a perpetual swap product without first figuring out how do we even get this coin. So they needed, you know, spot offerings, which BitMEX didn't have and that ended up being uh really beneficial for the likes of FTX and, and Binance, the other guys who started, um, taking, uh, you know, biting the, uh, BitMEX's market share. And um, and then, you know, that that transition, you could see it happening every month from 2020 to for the next like, year and a half or so and uh, and that said, since then, you know, FTX is now gone, um, which, yeah, makes makes sense. They were based on Hong Kong as well, we kind of tangentially knew a lot of the folks, that that wasn't that surprising it went that direction. Um, but um, yeah, say since I've left, from what I understand, BitMEX is kind of like in in this, uh, more focused mode now, just focusing on um, it's prosumer traders and not trying to like, overly diversify into other products as well."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And you were, like you said, you were there in the heyday. Like, do you have any war stories about, like, I've heard crazy things about the BitMEX office, sharks and aquarium and No. Is any of that real? Like what do you have, yeah, like any war stories or"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Sure."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Just like yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I mean, it was it was a wild time in 2019 when I joined. We were hiring some some really high profile people, you know, the former CEO, C-suite level people, uh, from TradFi in Asia. And um, the the office was incredible. It was in this building uh, that was kind of like a, a marquee, tier-one building in in the space um, in in the actual uh the neighborhood called Central, in uh, in Hong Kong. And um, I think at one point, there was an article that went out around the time I joined that BitMEX was renting the most expensive uh, real estate in Hong Kong, which kind of implies the world, um, which you know, that that just blows my mind, um, that that that um, it was that a business could go from startup in 2014 to being so profitable that it could uh rent a space like that and and I think it helped morale quite a bit. It created an environment where you know, during Covid a lot of folks would work from home, people wanted to come to the office, were dying to. It was such a fun place to be, there's an electric uh, atmosphere. Um, there there were a lot of really cool, just like, aspects of the office that you mentioned, you know, there was just, there was uh an aquarium built-in with, with sharks in it. And, um, you know, it it sounds like this, like uh, this super villain kind of thing. But it was actually kind of like a charitable endeavor to take care of these sharks um, and then, you know, kind of put them back in the aquarium uh, when when they grew up a bit. And uh, it was it was almost sort of like a fostering program and, um, there was an amazing bar that overlooked, uh, most of, um, Victoria Peak, which is kind of this iconic peak in, in Hong Kong that's been uh, associated with, with good times in Hong Kong for about a century. So yeah, fun fun memories of that, for sure."
+  }
+]

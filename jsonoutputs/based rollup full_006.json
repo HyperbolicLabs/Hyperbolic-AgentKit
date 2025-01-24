@@ -1,0 +1,90 @@
+[
+  {
+    "speaker": "Andy",
+    "content": "Fractal Ecosystem, join today to get the best out of Frax total you are still early, join today, take part in our expedition into the singularity."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Everyclear is pioneering the clearing layer. The clearing layer can almost be thought of as splitwise when you go on a trip with friends, but for the blockchain. What I mean by that is when users are sending cross-chain messages there's oftentimes fillers and solvers who have balances left on different chains that they need to rebalance and reset their positions. This is where Everyclear comes in. Everyclear is pioneering a collaborative approach to the chain abstraction future and they are willing to work with interoperability partners, solvers, and other providers in the space to build a interoperable and chain abstraction future. Check out Everyclear at everyclear.org and, welcome back to The Rollup."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Okay, the, the definition game, Uh so okay, sequencing, I guess, only the, the determines the order of the transactions and, I guess, the builder would actually build the block out of it. I think that's kind of like how I would define them. But I'm sure people would disagree or like have all other definitions on them. Uh but yeah, Okay, okay. So, yeah. Yeah, so now like the trend is to modularize sequencing and block building or specifically data posting for roll-up. Right? Like for example, uh we just got to know from like paradigms frontier event how like, uh Optimism is doing their roll-up and their, um, you know, uh the ZK fraud proof thing. So like their, their stack is actually super modular, right? You have like uh shared sequencer that just response only responsible for like sequencing the, the order of transaction. That like the data even the data availability doesn't really matter. You just need to, you literally need to just like label the sequence. That's it. Um, and then like they post the, the DA later on when, when, you know, there's like enough, enough transaction to, to fill up a block. Cuz they compress their block very tightly to save costs, right? So, and then like in order to execute uh a Optimism state you actually need all of the data availability. So that's when the builder comes in to build a block. Building the block meaning execute all the transaction. But sequencing literally just mean you know you have a bunch of transaction you actually don't care what is the result um you just sequence them. Randomly. But like as a, as a builder, no as a node that actually want to profit from sequencing the transaction, you do want to actually build the block, meaning execute the block, to see how much money you will earn. Um, so that's building a sequence."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Got it. Got it. Okay. So in, in terms of this, this pink and the blue, would it be fair to say that uh, like, the, the sequencer is almost like, in the pink and the blue they're kind of the same thing. Like, they're the ones that are like embedding the roll ups, uh embedding the transactions in this, in this bubble, and then the sequencer kind of like sequences the, the one, the two, the three, and then the builder is the one the container on the left that says, okay, now we have these three transactions in sequence. We're going to go set, we're going to process these transactions on the L1 and build, build the L1 block, made up out of these transactions."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um, not exactly. Because, because, um the user send, these transaction as a whole, as a whole onion, or in this case, a snowman, right? Like, Snowman. But the whole thing will be like, so for the it, it wouldn't make sense, for a user to split up like three different transaction as and make a, you know, sandwich or whatever, send, and send it to the builder. Like cuz we want, we want it to have like a good UX, right? The user should just be able to like specify it intent or whatever. That basically does these three things. And then, and then like the, the UX will, will package them as you know, like a, encapsulated transaction instead of like and put it in the public mempool. Um, and the builder, will see like okay, so this transaction will require me to have the pink state and the blue state and, okay, and I only have the pink state, so I'm probably not supposed to touch this transaction, I should probably leave it to someone else. A different, a different builder that has access to both the state. Right, exactly."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Exactly, exactly."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And that also means I probably not, I'm probably not profiting from this transaction."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Right. Right. Well, can, can two builders coordinate with one another? Like if I have the pink state, you have the blue state you know, can we build this block together?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Uh, I mean by saying coor, coordination, if I want to have the state, access to the blue state, then I, I, I would probably need the database to be you know, to be already there, available for me. That basically just mean I do have the blue state. You what I mean? So like, you can't just like send people your entire database um, for some other roll up, cuz it doesn't work like that. Okay. But you could, you could send like the data that's being touched. But yeah, I guess the, the cost you pay then is latency, so it would like, well depending on the latency between those two builders uh, it could be feasible or not. But yeah, uh it would slow down the, block building process like substantially. So if you can't like want to optimize, uh, kind of like, uh, do like lots of like different variations of the block, this could be not ideal. But if you do something like quick confirmations, but like first in, first out and then like yeah the, uh, yeah you just, yeah the ordering is kind of like simple, so you just the, do the transactions as they come in. So then the extra latency could be acceptable uh, except that you also kind of like, uh, enlarge kind of like the time until the pre confirmation can also be returned. Uh, but yeah, it, it is possible, it just depends on like what kind of like your the latency kind of like, uh, tolerance and, and kind of like your blob, blob building process."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. Cuz like in a, in a developer's standpoint like having the state literally means having an active in-memory DB, in-memory BD for like a chain. Right? So if you don't have a, a BD, uh, process running on your laptop that basically means you don't have the state. You can't ask for people uh, ask for other people ab, uh, for like, the merkle proof of some random state. But that's like not how you would run your software."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah. And I guess from a user perspective, like, I, I'm not going to know if there's a builder out there that has access to both the states that I'm looking to transact on. And, and so. So like."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Go ahead."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Does that, does that prohibit like certain transaction types? Or they would just, it would just kind of like get higher latency as a result of the block builders having to, having to like, finalize on one chain and then going and asynchronously on another chain?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Well, not really. Cuz you, as a user, you'd just like, you just throw your transaction in the mempool, in the public mempool, and hope for the best, right? If you're touching a chain that is like super unpopular, no one picks you up. Right. And you just have to wait, right? And it, it's like the same, same scenario for uh, for the L1 this uh, today, right? If you, if you're throw throwing a transaction the mempool that has like no tip and consumes a lot of gas, you probably, probably can't hope for that, right?"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right. Right. Won't get, executed. Especially not quickly."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah. No. Yeah. And, uh, I guess, yeah, uh, cuz yeah, if you are like ponts, on like one of these unpopular chains, then it would be bad, right? Because that would mean like, your ponts could be like, stuck on this kind of like very unpopular, uh, roll. So that's why it's also like important that you're still like based. So if, nobody actually wants to move your ponts out, then in the worst case scenario you can just do it yourself. You can propose a block yourself, and, and, and still recover your funds."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Oh, got it. Okay. Very cool. I mean so, so yeah, you."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "It's kind of like a service, yeah, it's like the block building is kind of like a service that these builders kind of provide you, and the rest scenario you, you do it yourself."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Right. Right. And, and, and for, the large sub, like the subset of chains that have a large amount of liquidity, it makes sense that these block builders are going to have access to the state from, for the, for these prominent chains. But once you start getting exotic about the different types of chains that you're going and interacting with, you can't really make the assumption that block builders have access to all of that state. And so, they might not pick up these, these transactions, um, but, for all of the rollups that do have a large amount of liquidity, block builders have access to the state, then we can, we can make a pretty safe assumption that if I'm doing a cross roll-up transaction amongst these rollups, then, I'm going to be able to execute kind of like this onion type of transaction bundle across those roll-ups because builders, have, like one builder has access to all the state of all those roll-ups. Hm. Yeah. And, it's also, it's not that like very expensive to actually think it notes, right? So that's kind of like the thing, uh, this, these nodes should actually be like pretty by, uh, normal Ethereum kind of like scalability, uh, level. So you can just run them on a like pretty standard hard, hardware. So, um, yeah, yeah, it's not a big extra cost for builders to actually sink like a lot of the, the residues."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Got it. Got it. And like, everything will be like incentivized, right? Like user will be incentivized to move to a more pro-"
+  }
+]

@@ -1,0 +1,270 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "will not let that transaction go through."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So here you are imposing a sequence of transaction, of transactions, a specific sequence for your app."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And can this reduce lever? Well, certainly it can, right? As we just discussed, if you are running an auction on the site, and you are reimbursing the proceeds of that auction to LP's, then you can certainly minimize losses to arbitrageurs."
+  },
+  {
+    "speaker": "Rob",
+    "content": "But what's the downside of having a specific sequencing? Well, the downside is that you have to think about what would happen to the uninformed flow."
+  },
+  {
+    "speaker": "Rob",
+    "content": "What if there is a liquidation that wants to do a swap on your pool,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "how would that work? So, they also need to be, they also need to compete for priority in the block,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and, uh, your transaction, and if they want, if they want to touch your pool, they have to let somebody go ahead of them,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "but if they let somebody go ahead of them to touch your pool, then somebody else will jump ahead of them in the block and do the liquidation."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, the impact of solutions like app specific sequencing"
+  },
+  {
+    "speaker": "Rob",
+    "content": "on uninformed flow would have to be considered very carefully. If you look at the current balance of"
+  },
+  {
+    "speaker": "Rob",
+    "content": "if you look at the current income statement of LP's in the, if you USD CPT for example,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "you'll see that, I'm talking about UniSwap V3 five basis points, which is the highest volume one,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "you'll see that LP's are losing money on average,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "but they're making"
+  },
+  {
+    "speaker": "Rob",
+    "content": "a very big amount of money on uninformed flow, they're just losing more to arbitrageurs."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And then there is this difference"
+  },
+  {
+    "speaker": "Rob",
+    "content": "that is relatively small to the amount of money that they make, that is relatively small to the amount that arbitrageurs make, but it's a pretty big difference, still critically sizable difference. Now, if you reduce this number"
+  },
+  {
+    "speaker": "Rob",
+    "content": "by, uh, 50%, and the number, the other number stays the same, this is good, because now they're making a profit. If you reduce both numbers by 15%, they're still making losses. If you reduce one number by 50%, but the second number disappears all together, then you are in trouble. So, the question is not just how to reduce LVR, and I know that LVR was, um, doing great on, uh, Crypto Twitter. Everyone loves LVR, everyone loves lever. We keep talking about it."
+  },
+  {
+    "speaker": "Rob",
+    "content": "We keep talking about lever solutions, and so on, and so forth."
+  },
+  {
+    "speaker": "Rob",
+    "content": "But there is the other side of the story. In traditional finance, if you, uh,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "uh, ask, uh, somebody, um, who did this for a while. What are market makers paid for? Well, they are paid for providing immediacy to the market. When somebody wants to trade, their liquidity is there."
+  },
+  {
+    "speaker": "Rob",
+    "content": "They're providing immediacy."
+  },
+  {
+    "speaker": "Rob",
+    "content": "But what is their cost? Well, their cost is that if they quote"
+  },
+  {
+    "speaker": "Rob",
+    "content": "their liquidity at the wrong price, they can be picked off. This is exactly the same tradeoff in decentralized finance,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "in decentralized exchanges,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and, uh, you, uh, make money on uninformed flow when you provide liquidity for it, you lose money to arbitrageurs,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "but if you are too strict on the ordering side,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "then there is a significant chance that you will lose out on some of that uninformed flow. And I think that this is the risk that, uh, needs to be considered."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Actually, um, I, I just want to kind of like, um, um, clarify, uh, some, some of the comments here."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um, so, I, I see your points that, um, essentially, some loss of composability within, uh, as dApps"
+  },
+  {
+    "speaker": "Guest",
+    "content": "may lead to some loss of uninformed flow as well, right? Like, as you described in the examples. But, um,"
+  },
+  {
+    "speaker": "Guest",
+    "content": "my view on this is that sure, there might be some specific cases, specific types of informed flow that are lost, but, um, I wouldn't argue that it would be so much to the extent that, for example, the protocol would basically, like, completely like, lose a lion's share of the uninformed flow somehow. Like, that, that wouldn't make a lot of sense to me, uh, Alex."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, well, it's hard for me to tell, so we'll, we'll have to wait and see. I mean, there is, there are certainly other sources of uninformed flow that you may not be able to lose, so, you know, I, I love the composability, uh, part of DeFi. I think that if DeFi is to compete, if we are to compete with Binance,"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Mm."
+  },
+  {
+    "speaker": "Rob",
+    "content": "then compo- composability is the big, huge weapon, is the big huge resource that, uh, DeFi has."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Mm."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Because, again, otherwise, everything is possible in Binance."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Mm-hmm."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Uh, with, um, app specific sequencing, we will have to wait for your solution to come out."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Uh, the, I have seen, uh, um, one particular solution, uh, where some of, um, should I call them your competitors, your potential competitors?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Uh, they were running a centralized auction, right? And again, you can write, you can run things much faster if they are centralized."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, they were running some sort of centralized auction to be the first transaction in, um, in, uh, in the block that can touch the pool. The pool was gated,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and, uh, I looked at the performance of that particular pool,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and it was, uh, in that particular example, it was pretty bad. So, it was essentially straight down. Um, and, you know, one of the issues that, when we discussed this,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "uh, on Twitter, one of the issues that, uh, came up was that nobody really wants to touch that pool, except for arbitrageurs. Now, you can never reduce LVR to zero, right? Arbitrageurs will not trade against their, your pool, if they're making losses. We, we have to understand that. So, whatever happens, arbitrageurs are making money. Otherwise, they're not there."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And they do have some very real risks when they trade against anything, because it's cross-dex arbitrage. One leg is on the Dex, the other, uh, leg is on the CEX."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, if you manage to get this leg done right, but then you don't hedge in time, then you can end up losing money."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Mm."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, they do have some inventory risk,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and they charge for that. And then, they have to make some profit on top of that. So, losing money to arbitrageurs is inevitable. Otherwise, they will not be trading with your pool."
+  },
+  {
+    "speaker": "Rob",
+    "content": "The question is, how can you make it attractive"
+  },
+  {
+    "speaker": "Rob",
+    "content": "to the uninformed flow? And, uh, I think, again, composability, in my view, um, is a huge, uh, source, uh, of uninformed flow. And I would laugh, in general, for"
+  },
+  {
+    "speaker": "Rob",
+    "content": "the community to, kind of, reinforce that. There are a lot of solutions right now that go against composability."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Mm."
+  },
+  {
+    "speaker": "Rob",
+    "content": "I would love to"
+  },
+  {
+    "speaker": "Rob",
+    "content": "bring focus back on composability, because that's the way how I think we should compete with centralized finance."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Mm."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Everything else can be done faster on a centralized server."
+  },
+  {
+    "speaker": "Rob",
+    "content": "There is no way you can compete. You can, you can come up with the most beautiful, elegant algorithm,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "but if I can do it faster on a centralized server, I can come up with a better algorithm."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Mm."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Except for one thing,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "when you are composable with everyone else who's in chain."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Mm."
+  },
+  {
+    "speaker": "Guest",
+    "content": "So, so I, I guess I would like to, uh, make some comments on this, and I think, you know, uh, I believe the, I think we are thinking about the same, uh, uh, protocol when we, when we are talking about, you know, uh, the, the, the, the protocol that did, that don't, don't have that much uninformed flow, and, you know, uh, I think, I think I believe that we're probably on the same page on that one."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um, so obviously, that one is, like, very protocol specific, and I think it's a bit hard to, like, generalize that, uh, uh, that as well, because, uh, there are some differences in designs around like, okay, if you're running a dynamic auction, uh, or if you're running auction in ex-, expectation, uh, meaning it's whether it's, uh, ex-posed or, uh, ex-ante auction, uh, would also have, uh, a different, uh, UI UX for the searchers and arbers who are competing in this, uh, uh, auctions, because, uh, now, they would have to be, um, sort of like, value in how much they can bid, in expectation of the future,"
+  },
+  {
+    "speaker": "Guest",
+    "content": "uh, future arbitrage, um, and sex-sex, uh, revenue versus if they were to be able to dynamically bid those values, and then, essentially, um, uh, assess how much they need to bid, based on what's the market, uh, price actions as well. So, there is also, uh, quite a bit of, uh, UI UX differences in terms of the designs around how to, uh, construct this, uh, auction mechanisms. Um, also, I think, uh,"
+  }
+]

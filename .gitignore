@@ -59,3 +59,11 @@ twitter_state.db
 
 # ChromaDB
 chroma_db/
+
+eaccservicekey.json
+
+twitter_state_rolypoly.db
+
+videofiles/
+
+jsonoutputs/

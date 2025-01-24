@@ -1,0 +1,102 @@
+[
+  {
+    "speaker": "Andy",
+    "content": "We're not going to launch a token with ours. We don't want like speculation with it. We just want"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Right"
+  },
+  {
+    "speaker": "Andy",
+    "content": "to have this kind of experiment happening and see what we can do. But I think that we'll accept tokens from other agents. So we'll have a wallet hopefully and be able to like maybe our agent can convince True Terminal like send us a million dollars of FarCoin or something if he hallucinates. I don't know. Anyway"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, yeah"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. That's why they're all wizard of Oz agents cuz if you can jailbreak one of these agents, which is not that hard, you can get it to do like, I mean that's what Freeso was, right? Freeso was literally an experiment of can you jailbreak this agent and get it to send you all the money? And the answer was yes. Every time if you try hard enough and you get enough shots on goal, you can always break it, jailbreak it and convince it to send you all its money."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, and so, uh, we're going to need ours to be a wizard of Oz as well. We can't have any slander going on the timeline. That's not going to be a good look for the brand. So, um, as a question for you though, on this kind of sector then. So you laid out obviously in your talk just kind of like, uh, your vision for agents, your vision for this kind of AI sector. Obviously everyone's excited about it, but I'm seeing a clear divergence and as like on our ventures arm we invest in like Aurora and like some other smaller AI projects. We never did like Ritual or, um, some of these larger ones, like Sentient, but there's like these like hyperbolic. There's like these I guess like infra VC long term PhD research coins that are coming out and chains that are coming out and then there's also like this current cohort, which feels much more like DeFi summer. Devs in the basement just clicking buttons making shit happen. And like both are equally interesting, but like still very different. So like, how are you thinking about this current sector and then how are you thinking about the rise of some of I know Dragonfly's portfolio companies, so obviously, disclaimer, but like how do you think about the rise of also this next generation of like AI blockchains like Ritual or AI infra in comparison to kind of what's already out there?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "It's a good question. Um, in a way the way you can frame the difference is if you look at a lot of the infra projects, uh, a lot of them are trying to see what crypto can do for AI. And if you look at the you know, kind of the meme coin launch pad, uh, the AI agent stuff that, you know, like, uh, virtuals and AIXBT and all this stuff. That's more what can AI do for crypto. And another way to try to answer that question for yourself, like, okay, where is the value crew is to ask what is the direction of primary causation? Is AI going to do more stuff to crypto or is crypto going to do more stuff to AI? Um, I think it's probably correct that AI's going to do more stuff to crypto than crypto is going to do to AI. Uh, but you know, as an investor it really depends on the details of what exactly are we doing and what was the entrance valuation and what's the market size for each of these individual projects. For some of these I think there is some real legs to the idea that crypto actually has something to contribute to AI, particularly around decentralizing training and decentralizing inference. Those are two things where I think there's a lot of interesting work that can be done. Um, that's still pretty new, so pretty nascent and, uh, not a lot of research that's been done at the kind of scale that crypto can allow. Um, and then the second thing is verifiability. So, you know, this is one thing that we're talking about now with these Wizard of Oz agents versus the autonomous agents is how do I know this is actually an agent and not like some dude shilling tokens on his timeline to try to pump his bags. And, um, you know, why do we care which one it is? I don't know, but we do care. You know, at least right now we do care. Maybe eventually we won't care. Maybe like, whatever. Uh, someone's shilling tokens, but right now there's a lot of novelty around the fact that it's an AI that's doing it therefore I like it more and I want it I want the token to go up. Um, so actually proving that this is an AI and not a human being is non-trivial. Um, and that's one of the places where cryptography and a lot of the stuff that we've invented as an industry can actually really come into play. Um, now on the you know, looking at the DJen stuff, the DeFi summer, devs clicking buttons, um, the the reason why we love this stuff is that it's very novel and it's all about attention and the closer you are to the attention cyclone the more that is going to play well on Crypto Twitter and get a lot of get a lot of eyeballs, get a lot of clicks and get a lot of excitement. So you see that right now with virtuals, with AIXBT, with a lot of these agents that are sucking up a lot of the air in the room. Um, my prediction, and maybe also connects to what we're talking about with chatbots is that, um, I think this mania that we're seeing right now around chatbots, uh, and around these, you know, angel launchpads is probably going to continue throughout this year, but I think by the end of the year it's going to reverse and people are going to get sick of these agents. They're going to start to really hate them. And I think it's it's kind of analogous to, um, if you guys been to SF, um, like, post Waymo? Have you guys seen the Waymos driving around the city?"
+  },
+  {
+    "speaker": "Andy",
+    "content": "I've not, but I heard on the All-In podcast like, like there's a lot. Yeah, yeah. Go ahead."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. So, uh, so Waymos, you know, the the first real self-driving car that actually you look at the Waymos driving down the street and there's it's not even like, oh, there's like a driver, but he's not touching the wheel. There's no driver, there's no wheel. And, uh, that initially in SF I remember, uh, people were like, wow, this is amazing. SF is such an amazing city. We have the first self-driving cars, so cool. And it went from that to fuck these Waymos in about six months. And now people cannot fucking stand the Waymos. They just absolutely hate them cuz they like drive kind of slow. They're kind of annoying. Like, you just see one and even if it doesn't do anything wrong, it's just like the way it corners. Like it always does a full stop at every stop sign."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Dude, it's so bad. It's so bad."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, exactly. Exactly."
+  },
+  {
+    "speaker": "Rob",
+    "content": "The computer's stupid. The computer"
+  },
+  {
+    "speaker": "Guest",
+    "content": "So people just, they just fucking hate the Waymos even though the Waymos are very safe, you know, they don't cause trouble, but occasionally they'll like get stuck somewhere or just kind of take way too long at a four way stop. Anyway, so I think that's what's coming with AI agents is that right now it's like, oh, it's it's cute. Look at that. It's like, you know, the the analogy I give it's like watching an elephant paint. The first time you ever seen an elephant paint, you're like, holy shit, did that elephant just paint? That's amazing. You know, even though the painting kind of sucks and like, you know, okay, whatever. But you know, who cares? It's an elephant painting. And then you see like 50 of these elephants painting, you're like, oh, I guess elephants can learn how to paint. Then you see like 200 elephants painting, you're like, man, these fucking elephants are terrible paintings. Um, and you know, you're at the point at a certain point of seeing these, you're like, oh my God. I please, no more. I do not want to see any more elephant paintings, like, they all suck, elephants are annoying, they poop everywhere. Like, they're just why are they even here? And I think we're going to feel that way about agents, right? When when I send a tweet, Andy, I'm sure you feel this too."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Dude, I'm already there. Daily blocked, daily."
+  },
+  {
+    "speaker": "Rob",
+    "content": "When I send a tweet now, the first five responses are all stupid chatbots that are launched. I'm sure they have tokens and they're just all obnoxious. And, um, I think it's it's it's going to be less than a year that the sentiment reverses and people are going to want they're going to feel the opposite way about these agent KOLs. They're going to want they're going to discriminate against the agent KOLs"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah"
+  },
+  {
+    "speaker": "Rob",
+    "content": "in favor of humans. And it's the same it's the same thing you see with Waymos, right? It's like almost on some level if you're an agent KOL like AIXBT it's actually it's a good KOL. You know, it has good content, it's consistent, it's on it's on message. Um, I think what you'll see is that by the end of the year AIXBT maybe not AIXBT necessarily, but the next AIXBT will, um, pretend to be a human being. And it will do that because it will actually get more engagement if it pretends to be a human. It will actually get more sponsorships. It will get a better click through on its affiliate links if it pretends to be human beings as opposed to pretending to be an AI."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Particularly possible on crypto Twitter being synonymous and humans and AI and characters all kind of melt together. Totally."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah. Once the novelty wears off it's like, oh, this thing this thing's elephant's painting. They like"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah"
+  },
+  {
+    "speaker": "Guest",
+    "content": "There's plenty of those going around, so we don't really need any another one, uh, once the novelty and the shininess, uh, goes away. Um, yeah, I mean, I I I like your idea of causation. Like, that seems like a general principle of investing that can can scale and be applicable to like several categories. I I had we were talking to a a team yesterday, um, and asked a very similar question about crypto and gaming and how gaming was doing a lot more for crypto than crypto was doing for gaming. The gamers didn't really want or need crypto in their arena. Uh, and so kind of the legs kind of fall fell out of that sector. But yeah, I think I think the AI crypto convergence is a lot more balanced, um, and not necessarily the financialized part of crypto, but the blockchain aspect of of what we're doing here seems to have a lot more impact on AI than than even the crypto portion. Um, and and just yesterday I was reading like this the course material for for a particular course and how they were instructing students not to use AI in in the going of their tests and their exams and their courses"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Hmm"
+  },
+  {
+    "speaker": "Guest",
+    "content": "and their rationale was like, well well, one you need to demonstrate these things on your own. That was kind of besides, but the rest of them were"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Hey, this could be unethical because you're not paying for the data that's getting trained on. That was one. And actually there are mechanisms out there for blockchain and crypto to end up paying those that are providing the data like I think stories trying to do this with their IP. The second one was, uh, hey, some of this is confidential data that could actually get leaked. And so to me like, you know, I think we all kind of were part of the 2018 blockchain not"
+  }
+]

@@ -1,0 +1,166 @@
+[
+  {
+    "speaker": "Guest",
+    "content": "Logged into that for a while. I remember after D5 summer I checked it a couple times. It's it's bad."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah yeah yeah. It's it's it's not fun yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "It's bad. Thank god that we got the L2s huh?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah well yeah exactly. Um but yeah I I I think the AIs will end up being like almost all of the activity like 99.99% of the activity like yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah that's what."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah. Okay. So we've got this block space expansion right? Um we've got a tons of rollups now we're we're getting more and more app chains. We just did a podcast with Andre about app chains or not. He's in the camp of like co- come build on my Sonic chain and you can just you can get all your fees distributed. We're like nah man you should just build your own L2.  We we we kind of went at it but the core issue there that he presented and that many people have just always like pushed against the roll up centric roadmap and that that Butalik is written about now more recently is this kind of interoperability. Is like we've we've kind of unbundled Ethereum L1 right like this roll up centric roadmap was really just about un- unwinding the kind of L1 this like monolithic chain if you will and bringing it out into like this modular design. So like what is the what is the community uh organization that is required to rebundle this because what we have right now is we've got ag layers, super chain, elastic chain, orbit, we've got this shared sequencer express or Astro. We've got these bridges and everyone's competing to like win but we we we are not coming together as a community to find like an answer. Like is there a way that we can put individual motives and incentives aside and embrace a collaboration over a competition uh perspective or like does the EF have to like come top down and be like guys like focus on this intent standard or like like how do we get to uh uh more uh Ethereum L1 monolithic UX within our kind of modular design space?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. I mean I think that there already is a lot of work happening on this from the leading L2 teams. They are working together to try and agree on standards cause it is all about standards at the end of the day. Doesn't matter what one you use just agree on one and and go down that path together. And then essentially if you get the few big ones doing that the smaller ones will just join because if you're smaller you need to get bigger and the quickest way to get bigger is playing with the big guys and making sure they're in trouble with them. So that's all we need. Just a few of the big guys to come together like base Arbitrum you know um uh uh uh ZK sync Starknet whatever the the bigger ones are. Blast um mental and just agree on a standard and then just stick with that standard. That that's that's the smoothest spot."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I I think we're we're starting to see that with standards like uh 7683. Um that one has gotten ecosystem wide support um."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yep from Uniswap token yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Uniswap across Pol- Polygon Optimism are all sort of coalescing around that one."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I I think it's funny, if you guys have seen that meme, you know you got 14 standards right? So what do we need to do? Standardize all the standards like we need another we need to make a standard right and now we have 15.  But I think that that's generally the right direction like we just need a good one."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah yeah yeah. Exactly. Yes. Yeah but there's still be competing standards um but but yeah. And and and I think there are other ways to do introoperability as well like base roll ups of course. They're not there yet because you need uh you need at least a good pre-confirmation kind of pipeline to deal with the fact that we have 12 second kinda slot times on Ethereum L1 and you need like sub second transaction inclusion or confirmation or like soft confirmations for end users just for the UX perspective. But then as I mentioned before there's also interfaces that sit on top of these things that are all abstracted away like Infinex for example."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah the chain abstraction law."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah exactly. Yeah yeah yeah. All all that sorta stuff like Yes, it's maybe not as secure and not as clean I guess you could say but it works for the user. That's all we need to really worry about is what works for the user. The interoperability at the I guess um protocol level like at the chain level is more about making sure that everything can access everything else's liquidity right? Uh and and do that in a very secure and and quick way. It's not so much for the user because honestly from an end user perspective today I think you've already got like a lot of options to be able to to I guess just interact with multiple chains just from one kind of wallet or one kind of interface. And you'll have even more in the future and I think that the marginal I guess end users going forward is going to use something like an Infinex rather than a meta mask or a Coinbase wallet or or a kinda rainbow wallet or something like that. Like those are more like as much as I love those things they're they're more kind of geared towards the the the power users than than the the regular users because the regular users the reason why most of them still sit on uh on uh centralized exchanges is because they have access to what they wanna do on there. They can own BTC they can own ETH they can own uh LTC, XRP whatever. All these different chains on one interface. Yeah. They don't have to go anywhere else to buy these as they buy them all on Binance or Coinbase or whatever. So in the future when we have um uh uh something like Infinex you basically can do the same thing as you can do on Binance. Own all the assets in the same account using past keys. It's uh not technically a crypto wallet but you uh past keys uh are great for the average end user because you still get self custody. There's no KYC or anything. And then you just slap all the D5 projects and every other other projects on top of that and let people interact with with them like that from one interface. That's that's the endgame."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yep. On your phone as well. This this super smooth"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Exactly."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yes. Um and uh Apple opening up their uh enclave chip I I think is huge for stable coins like Yeah. Th- now we're gonna have top-to-pay USDC."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Mhm."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah. All these like end user abstractions are like I think as you said they're more of like a bandaid then like actually the th- the Ethereum community aligning on like a standard. But like in the interim it seems like those bandaids are gonna like actually be able to help onboard more and more sol- solve the more end user problems while"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Exactly. Yeah. And everything underneath that gets improved uh uh it gets applied to these solutions. Exactly. So we need to do it across all layers but yeah. I I think as I said like most humans are going to be going through those interfaces. They're not going to be like natively on chain using bridges and going to the they're just going to use what's easiest. Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I'm I'm glad you specified humans because it's almost like teams I think will start to evolve how they're building and start to build for non-human users Oh yeah. and I mean that's gonna be."
+  },
+  {
+    "speaker": "Rob",
+    "content": "It's it's a new par- it actually literally is a new paradigm. I think AI got a lot of hype very quickly because it um you know it i- the internet tends to be able to hype something up very quickly because the information is just disseminated so quickly. But the thing is is that people still don't understand that these AI agents uh now have a native value kind of token that they can use. Like they don't have to use fiat. They're not blocked from anything. They can actually do everything on chain and no one can stop them from doing it. Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And and traditional finance is even going into this direction as well like I think they just opened up market hours in the US trading hours from was it five days to seven no it's like just more market hours or something some"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah yeah yeah. Yeah yeah yeah. Uh uh I I I wonder how much of that was crypto impacting it."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I'm I'm sure."
+  },
+  {
+    "speaker": "Rob",
+    "content": "They'll never admit that it was crypto uh but it it it could be it could be that. But but also I just generally think that because the world is becoming more interconnected it's more more digital more 24/7 just naturally customers demand this. Right? They're like you know why do I have to only trade between these hours or why can I access my money between these hours? Give me 24/7 trading like Obviously from the human perspective it doesn't make much sense because we don't operate on 24 sev- 24/7 right? We have to sleep for eight hours and then we have like outside of business hours but again going back to the AI stuff there's no concept of that for them."
+  },
+  {
+    "speaker": "Andy",
+    "content": "There's no business"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Truth terminal is tweeting horny jokes every hour of the day Exactly. 24/7 They work 24/7."
+  },
+  {
+    "speaker": "Andy",
+    "content": "They work 24/7. That- that is ship posting every day all day long."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yes. Exactly. Which is why they're way more bullish cult leaders than like I don't know Mirad or like whoever right like or like Justin Sun or Butalik like these AIs can just simply outperform you because they don't have a brain. They don't have a a clock."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Right."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. Exactly exactly. It's the same with bu- and and this is this is something that I don't think should be surprising to people considering that we've automated a lot of the world already using machines that don't have to sleep don't have to eat they don't have to pay them right? They have none of the drawbacks of a of a human worker so to speak or or a human in general uh and that's the same is going to be true with these AI bots. They're gonna rule they're gonna rule the chains. There's no way humans can compete."
+  },
+  {
+    "speaker": "Andy",
+    "content": "This world is wild. We just have a few minutes and I know that we could probably go for hours on the AI but I'd like to ask you about the Pectra upgrade for Ethereum Max. Just to kinda kinda wrap us up what's the what's the TLDR for our community? Uh are you for it against it? What's been the community sentiment and what do you think are the implications?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. So definitely for it. I I think hopefully it'll get delivered by March of next year so not too far away now. Maybe pushing to April just depends on test nets cause they're at the test net phase now. If everything goes smoothly with the test nets I I suspect March as a main net date for it. Uh it's got a few different upgrades in it. Nothing that I would consider to be like strongly user facing besides maybe some account obstruction stuff like it was hard to follow along because they included an account obstruction EIP then they removed it and replaced with another one and then I haven't checked the latest on it yet. But uh I I think there is something in there for account obstruction which affects the end users uh interface there. But the one that I'm most excited for, the EIP I'm most excited for is called Max EB which essentially increases the maximum amount of ETH you can put on a validator. Right now it's 32 ETH per validator both minimum and maximum.  So if you have 320 ETH you have to spin up 10 individual validators. Uh whereas in the in ma- in the max EB world you can have up to a maximum of 2048 ETH I believe unless that was changed In one validator. in one validator. So the thing is you still have the same uh uh economic security you still have the same node operator. It's just that now instead of having to split it up into 10 validators you could do it on like one. Right? And the reason why this is good is because it lowers the bandwidth requirements and bandwidth usage of the whole network which means that we can add more blobs. Mhm. So it's funny how like you can get from that staking chains to an L2 upgrade essentially. But that's that's how generally it's gonna work and you just take load off the network seriously."
+  },
+  {
+    "speaker": "Andy",
+    "content": "We we why does that work? Sorry."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Because because right now we have like a million plus validators on the network but we we've got like what 10 15,000 node operators because as a one node operator you can operate many different validators. So it doesn't add any more security having a million uh validators. It the security comes from the node operators. So if me as an individual is running 100 validators I'm one person. Right? So that me having 1 or 100 validators is the same thing from a node operator perspective. From an economic security perspective it's a bit different. But but yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Can can I ask you a question? Is that is that because uh we have to gossip the transactions amongst all of the validators"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah you're going to get to that yeah. Like that that and having more validators means more uh gossip on the network which means which means more bandwidth usage which means more overhead on the network which means that we can't scale up blobs more because blobs out a lot of bandwidth."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Ahh okay."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Music to the network. So we're essentially swapping that out. We're saying okay we're gonna take what you guys are using on the validator side um and then we're gonna collapse that down and then we're gonna give it to the blobs. But there's also other bandwidth work being done of course but that's a huge thing. And and I I I also think that it's good for for stakers generally like solo stakers as well because now they can compound their stake because in this current world you have to wait until you have 32 ETH again to spin up another validator but in the Max EB world you essentially get to compound your rewards in- not instantly but like whenever you get them you can put them back on your validator and start earning rewards on."
+  }
+]

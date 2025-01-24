@@ -1,0 +1,66 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "GM what is up? And welcome back to The Rollup. Today’s episode is with Noah from NodeKit and Bo from Polymer. These guys are two absolute gigabrains that are working on interoperability, trying to solve the same problem with two different approaches. We have Bo representing the IBC hub-and-spoke canonical bridging solution. We have Noah representing more innovative, newer, we’ll see if it plays out, super builder approach. And these guys are at the top of their game. They’re talking about interoperability ultimately will be fine. You guys are going to have to watch and find out. Before we get into it, first a word from our sponsors. Enjoy."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Everclear is pioneering the clearing layer. The clearing layer can almost be thought of as Splitwise when you’re going on a trip with friends but for the blockchain. What I mean by that is when users are sending cross-chain messages, there’s oftentimes fillers and solvers who have balances left on different chains that they need to rebalance and reset their positions. This is where Everclear comes in. Everclear is pioneering a collaborative approach to the chain abstraction future, and they are willing to work with interoperability partners, solvers, and other providers in the space to build an interoperable chain abstraction future. Check out Everclear at everclear.org and welcome back to The Rollup."
+  },
+  {
+    "speaker": "Rob",
+    "content": "What’s going on guys? Welcome back to The Rollup. Today we have the super builder versus IBC, or super builder and IBC conversation. Uh yeah, we’re going to talk about cross-rollup interoperability, again. But we’re going to go deep into the technicals today and kind of really understand some of the how. Um I think if you guys watch the recent episode with Jill from Espresso, we really unpacked some of like the history of Web2 into Web3 and how these ecosystems kind of came about, and why this is so important. I think the key takeaways there were really trying to build open systems um and really trying to not kind of build walled gardens, so I think today we’re going to understand how this is done. So GM Rub, um how you doing?"
+  },
+  {
+    "speaker": "Andy",
+    "content": "GM."
+  },
+  {
+    "speaker": "Rob",
+    "content": "I I have a feeling this is going to be one of those podcasts where we ask one or two questions, but basically, we’re just listening to like Bo and Noah the entire time, and you guys are really just like pioneering."
+  },
+  {
+    "speaker": "Andy",
+    "content": "And so I’m just going to do just that. Like, we were talking before this started, and we’re like all right let’s just hit the button, and so now the button hit is hit. Feel free to just pick up where you guys left off. If you want to do a little intro, otherwise, uh yeah, we’ll just we’ll get right into it."
+  },
+  {
+    "speaker": "Noah",
+    "content": "All right, I’m Noah Pravecek. I’m one of the co-founders and CEO of NodeKit, and yeah, glad to talk about interoperability among rollups and chains in general today. So, all that, I’ll take it over."
+  },
+  {
+    "speaker": "Bo",
+    "content": "Yeah, hey guys, I’m Bo, co-founder at Polymer Labs, we work on IBC and generally bringing various interchain or cosmos technologies to the Ethereum ecosystem. Um you know, love to love talking about my favorite topic, which is the mixture of IBC, and now, like L2 to L2 interoperability."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Bo, and why why don’t you start? You gave a a chat, um, about this stuff, and then Noah maybe we’ll get into like more of the how and and kind of like these few different uh ways of going about it. But Bo, why don’t you start kind of at the high level and we’ll we’ll get a little bit deeper."
+  },
+  {
+    "speaker": "Bo",
+    "content": "At the high level, do you want to talk about the the cross-chain liquidity side, or just like the high level of the cross-chain messaging side?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Well, I guess you had given a chat, um, and I didn’t get a chance to see it, so I just want to make sure that I’m caught up, and as well as our our audience."
+  },
+  {
+    "speaker": "Bo",
+    "content": "Yeah, I I I gave a talk at at Modular, uh I was just the framing that I was using was the evolution of internet, and the evolution of blockchain networking. Interoperability to me is like a sort of a meta networking thing, where you’re trying to connect these distinct distinct chains to each other, in the same way that on the internet, you connect these distinct nodes. So I kind of walked through the evolution of the internet from the early days where you had ARPANET, you had the evolution of all these like local area networks, which kind of form clusters of of devices that are densely connected. And many different companies where they’re working on different kinds of projects will uh adopt these land, or local area network technologies in order to connect their devices for their own ecosystems, or their or their own ecosystems of devices. And you’re starting to see that in the Ethereum ecosystem where you have a lot of these rollup technologies, and these rollup ecosystems, which are also creating these densely connected uh rollup clusters, which form these uh type of virtual lands, or virtual local area networks, I’m totally making up these definitions. They’re not real definitions."
+  },
+  {
+    "speaker": "Bo",
+    "content": "And then I came up with like these terms of like, virtual distance versus physical distance, since uh if you have a densely connected local area network, you have merely one to two degrees of physical separation, and on a, like, densely connected virtual local area network, you have one to two degrees of, uh, virtual separation. So either you’re connected directly or you’re connected via one intermediary. And you start to see that, but not just the rollup ecosystems, you start to see that with all the interop protocols themselves: uh Hyperlane, LayerZero, all these other protocols required densely connected or one degree of virtual separation, maybe the Axelars of the world, the Wormholes of the world required two degrees of virtual separation. Um and then within the, or say the, the interop protocols within each rollup ecosystem also have these requirements, and to be, IBC is the first protocol to enable uh wide area network behavior which is how the internet works today, where two nodes can be separated by these massive physical distances um maybe like many many dir- degrees of separation, and still be able to communicate directly with one another. Uh so we did some work with multi-hub IBC channels, you can kind of have like, any N degrees of virtual distance between them, and I think, at the long term, we’re going to see, like continue to see these local clusters of devices, but uh if you, you know, are at home today, or you you know, working out of an office, you have some router uh in your office, you have some local IP addresses, and your router exposes a public IP for which uh you can access your network over these uh long long distances. So I think we’ll gradually get there and we can kind of talk about how this evolution is happening, and and and what things look like today."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Awesome. And Noah, you have a few ways that you’re describing. I you can build on top of IBC, make it a little bit better, um and kind of interchange some of these tools. Uh so maybe you can get into like how you’re viewing this, some of the options that are out there now, and how you see best fit combining these different tools for the best experience."
+  },
+  {
+    "speaker": "Noah",
+    "content": "Yeah, I think fundamentally, the issue right now, like, with rollup interop in my mind, is, in general, there’s there’s a lot of different solutions there trying to go in a lot of different directions, and I don’t necessarily think that getting everybody to define a canonical way of doing it, where everybody has to use the same messaging, everybody has to use the same way of verifying, everybody has to use the same bridge, um, makes a ton of sense. I do think that fundamentally, like, because of the way crypto has developed from the ground up, where there, it’s how Arbitrum started up being very much so it’s one thing versus Optimism coming out of kind of the research side of things as well. I think fundamentally crypto has these communities and these cultures that sometimes mesh well together and sometimes don’t. I think because of that we have kind of gotten to this landscape where there’s many different ways of doing interop. So, the way I have different ways of doing it, is, it depends on how you want your tokens to move. So you can do lock and mint, which is what Hyperlane and some other messaging standards as well do. You can do mint and burn, which, you need either XRC20’s or LayerZero’s OFT’s, or you need a shared bridge like the Polygon AGLAYER to do mint and burn. Or you can do intent based bridging, such a solutions like across. So there’s kind of three different ways where you can move assets, and I believe IBC is compatible with all all three in that case as well. Um whether you’re doing any of those different things on that spectrum, and I think what really needs to be figured out is how to move data quicker, rather than the ease of use on it, because I do think speed kills over time. And at how where we focus on on NodeKit, is we focus on the atomic execution using Javelin, which is the sequencer. We’re able to allow for single block communication and single block bridging across different chains that opted into using this super builder, and they don’t necessarily have to exist on the same shared sequencer, or they don’t necessarily need to opt into like, a decentralized sequencer in any capacity. I think fundamentally, like, rollup interop over time is only going to get more fragmented. And because of that I do think that, like, solutions that can plug into rollups without requiring large scale changes to the rollups themselves, will kind of win out over time. Cause I think the coordination issue of getting everybody to adopt the same standard, in Ethereum, it’s just so much harder than for example, on Cosmos, just because Cosmos all derived from the same Cosmos SDK originally. I think IBC was easy to get proliferation for it on that side, but personally, I think IBC is a great standard. I just, I I personally, I personally, think that messaging standards will be relatively different in between different rollups for a while, at least. I don’t think any rollup is going to work with each other to define a common messaging standard, but they will work with each other to figure out how we can move assets as quick as possible, and that’s kind of where we see ourselves fitting in the stack, is, by providing atomic execution regardless of messaging standard execution environment, or sequencer."
+  },
+  {
+    "speaker": "Bo",
+    "content": "Yeah, that that makes a lot of sense. I think if you look at all the rollup ecosystems, they pretty much are building their own interop solution. They're adopting no standard, um very similar to how a lot of these large companies, in like the 80s, um and and even into the 90s, um built their own uh networking standards. And if, like, the way I like to think about IBC and IBC-"
+  }
+]

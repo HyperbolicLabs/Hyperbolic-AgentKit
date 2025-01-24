@@ -1,0 +1,266 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "Because otherwise, you know, anyone can come in, and let's say, they're willing to sacrifice this because they can actually steal the entire 100 billion, right?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Now, that's the theoretical thing, which is true, which is true."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Now, the thing is, it depends on how easy it is to slash, how slashable the system is, right?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, in a bridge, and we have seen that in the past, right, bridges have been hacked many times and therefore, therefore slashing risk is quite high."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, if let's say if you consider MACH as a really, uh, a system that is very prone to slashing then, of course, you have to make sure that you have to have enough collateral, enough, let's say, uh, re-state assets to be able to slash them. So, for example, if your daily transaction volume is let's say $10 million a day, MACH network must have at least a collateral of $10 million at the very minimum, right?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, that's, I agree with you. Now, in practical terms, um, slashing, unfortunately, is not enabled today, on EigenLayer. It will come at some point, but it's not enabled today."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Second thing is, we believe that MACH network will probably not have huge slashing risk because all you're doing is basically saying, 'Hey, sequencer is doing things. Here's my attestation. That's it.'"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Your sequencer and the validator are the ones that are actually being the more risky nodes in this sense. All you're doing here is all you're doing is just checking things and signing it. That's it. You're not doing any more than that."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, also, the slashing is much lower. That's the first point. The second point is, today we have about five MACH live."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And literally, we had to limit the total amount of ETH that could have been staked there. The first launch that we did has five, has $5 billion worth of ETH stake, re-staked there."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right, right."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Which, in my opinion, will never get used."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Right? Five"
+  },
+  {
+    "speaker": "Andy",
+    "content": "So, that's one of the larger AVISs then."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yes. That's probably one of the largest. I mean, probably some of them have probably been large, but that's one of the largest AVISs. I think the least, the one, the AVIS that we have live today that has the least amount of ETH, that has about 100K ETH, I think at the very minimum."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Which is still quite large."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, I would say that's enough, but I see your point. I agree with your point, but as long as your MACH network has enough re-stake security compared to let's say, daily volume or monthly volume or something of that kind, you're fine."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Correct."
+  },
+  {
+    "speaker": "Rob",
+    "content": "You're fine."
+  },
+  {
+    "speaker": "Andy",
+    "content": "And the, the actors would have to be highly sophisticated to pull this off and also be well capitalized."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, um, today, for example in operators, most of the operators don't bring their own capital by the way. Unless you're Coinbase or things like that, you don't bring your own capital. Mostly, it's get delegated. So, you and me, we, like users, we have ETH, you know, leftover, let's say, 'Here's my STETH, to an operator.' Operators generally don't bring their own ETH."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Uh, honestly, they're not risking that much. Maybe that should change, but they're not risking that much, as far as I know."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Cool. Got it. Well, that was my only question there."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Okay, so, um, and by the way, if you have fast finality there, you can potentially build interop through that. So, the way it would work is let's say you have Rollup A and you have Rollup B. Rollup A takes the transactions and state, gives it to MACH. MACH checks it and verifies it."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And then informs, like signs it and says, 'Look, here's my signature on this Rollup A block.'"
+  },
+  {
+    "speaker": "Rob",
+    "content": "And it passes it to Rollup B, okay? And Rollup B says, 'Look, this MACH guy has verified it. It looks good to me. I can now do something with this.' So, for example, let's say you wanted to do a locked Mint style transaction across these Rollups. So, you would have a locked transaction in Rollup A. That block goes to MACH. MACH verifies that it is indeed a Rollup, uh, transaction with locked transaction and"
+  },
+  {
+    "speaker": "Rob",
+    "content": "And then it will inform Rollup B that, 'Look, everything looks good to me. Take my word for it,' and Rollup B would then, uh, would then act upon it. So, for example, it will Mint something on Rollup B."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Now, if something goes wrong, again, MACH will, will, MACH stake will get slashed. So, you could potentially build some sort of interop layer using leveraging MACH as your verification layer. So, it's kind of like some of the bridges that exist today where you have these nodes that are acting as a PUS network and they're verifying things for you."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, it's kind of similar to that. So"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, um, Right."
+  },
+  {
+    "speaker": "Andy",
+    "content": "So, how, how is Rollup B going to have, so this isn't going to be atomic interoperability. This is not going to be settled in the same states across different Rollups."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Not at all."
+  },
+  {
+    "speaker": "Andy",
+    "content": "But it's just that it's just that if I can get fast confirmations from Rollup A that my transactions are valid then I can share that, that state root with Rollup B and they can attestate the validity of that and then basically that interoperability tran-, like that transaction or, or basically the interoperability providers between those two Rollups, um, can facilitate faster, um, faster interop in like the, in like the traditional interop sense where you need like validators to kind of confirm any side."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Exactly."
+  },
+  {
+    "speaker": "Andy",
+    "content": "This doesn't really change anything for intent based interop, though. Like if, if there's an intent based interop with solvers, they can go from Rollup A to Rollup B regardless of the state finality, of the finality of the chain because it's the solvers, they're taking on the inventory risk and the cross-chain risk, not the, not the, um, not the validators of, of this interop protocol, but in those, in those, in those more like transport layer-esque protocols this can help them. Is, is that right?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yes, yes, yes. Exactly. So, for example, let's say all the traditional bridges, the way they existed, um, up until recently, they all had to run a full node."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Exactly. On each chain."
+  },
+  {
+    "speaker": "Rob",
+    "content": "For"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. On each chain. Exactly. And that's not very scalable, right?"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Especially if you have thousands of Rollups, right? You can't go and build and run a full node for every single Rollup."
+  },
+  {
+    "speaker": "Andy",
+    "content": "No, no."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, and so, what you want to do is you want to rely on someone, some sort of re-centralized network that gives you that confirmation, that, 'Hey, look. You don't have to run a full node. We are running a full node for you and here's an economic stake behind it.' So, if our operators were to lie or do something malicious, we will be slashed at some point."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Got it. Makes sense."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, so, it helps you solve this requirement that every single bridge operator today has to run a full node. Now, you don't have to because you have someone else running it for you with economic stake. Okay. That, that's important."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And if you wanted to, you could have, for example, some of the other parties tap into this. Ideally, for example, let's say, um, you could leverage, let's say, exchanges, for example, centralized exchanges could leverage, let's say, MACH, to say, 'Look, I have this MACH network and one of those operators is run by let's say, Binance, or Coinbase, or whatever. And we have seen that the Rollup blocks look good to us and so, we are happy to allow you to withdraw assets from my exchange instantly because we are running a full node.' Okay?"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Uh, previously they had to run their full node themselves. Now, they don't have to. They could potentially be an operator in this set or they could basically rely on someone else with that service, right? So, they could potentially tap into that. So, that's kind of the model here."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Got it."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Cool."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Okay, so, um, very quickly summarize those. So, the technical benefits of MACH, for example, you get faster finality, much quicker. Um, you potentially have the shared guarantee as I said, across bridges, exchanges, and RPCs. They could all leverage that without running a full node themselves. You could potentially have this interoperability and potentially, it could help you with some sort of MEV mitigation as well, but that's kind of a longer topic."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, there are ecosystem benefits of this as well. Now, because of this MACH, you actually create, because you can use your own token as I said earlier, you can actually have a token sync for your token, or an app developer, who wants a token can use that token as a re-staking token here. It allows you to build a network, right? Because now you're not limited to an RAAS vendor, which is a very closed system, right? Here's a closed system. RAAS is the one that does everything for you. Now, you can get, let's say, your investors involved. You can get your operators involved, so it becomes a much more network thing."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Uh, and you can actually build a network around your infrastructure, which previously was not possible."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, and then it allows ETH validators to get involved, you know, with you as well. So, if you're building a dapp and you want, I don't know, the likes of Chorus and all the validators that are on Ethereum today, you can get them involved today. And most importantly, it's, we try to, as I said earlier in the, in the beginning, we try to minimize, as much as possible, the changes that you have to make to the underlying Rollup, underlying Rollup stack. So, this way, you can keep running your Rollup the way it is running. You just add this bit on the side that helps you with these things, okay? So, you're not changing, so for example, if you're getting security from Ethereum, it's still the case. Your Rollup hasn't become a validator, still a Rollup. Nothing has changed there. You're just adding an extra bit of piece that helps you with these services. What I'm saying is basically, cut that off. So, tomorrow let's say you switch MACH off, your system doesn't become less secure or if you add MACH, it doesn't become more secure. It doesn't change the security of the model in that sense. It helps you in adding additional security."
+  },
+  {
+    "speaker": "Rob",
+    "content": "I mean, this is a very low level thing, but basically, the high level idea is that you have this Ethereum network that does everything for you. So, you have all these, sorry for the visibility, um, you have a bunch of contracts that come from EigenLayer. So, for example, the way operators would register, uh, the way the operator's stake will get considered, and so on and so forth. So, you have a bunch of contracts handling all of that on chain and then you have this MACH network where you have this orbit that has to run a client, a client for, for example, for sequencing, a client potentially for the challenger network like bold, or a client for faster finality."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And then they would basically update things to this proxy, and the proxy would sign transactions, and say, 'Look, I have seen this block. This block looks good to me. Here's my BLS signature.'"
+  },
+  {
+    "speaker": "Rob",
+    "content": "And then there's an aggregator thing which aggregates different signatures from all the operators and that goes to Ethereum."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And if enough signatures have been received, then you would consider that block to be valid."
+  },
+  {
+    "speaker": "Andy",
+    "content": "And, and real quick, what is a BLS signature?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, BLS is basically a signature mechanism that allows for better aggregation. So, if you have many people signing, you don't have to have n signatures, you can basically compress them into one signature. So, it combines."
+  },
+  {
+    "speaker": "Andy",
+    "content": "So, this is super, super useful for the AVISs because of their sign P-"
+  }
+]

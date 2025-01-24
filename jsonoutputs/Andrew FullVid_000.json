@@ -1,0 +1,374 @@
+[
+  {
+    "speaker": "Andrew Smith",
+    "content": "If you find any bugs, let us know you can post issues. Like why do you need Eigen Layer? I've used the other decentralized crypto where those fees coming from. We want to be the Bitcoin of cloud."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Welcome to Singapore, we got two Andrews in this one."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Let's go man. When did you arrive?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Uh, I got in last night uh, no not last night the night before at like 10:00 p.m.."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And then just stayed up till last night."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Yeah the jet lag is going to be something else."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "I got in this morning at 6:00 a.m.."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, you just got to pull."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "I think I'm just going to push through and just crash."
+  },
+  {
+    "speaker": "Guest",
+    "content": "You have to."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "You have to and then you'll be fine."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I think I might be fine."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Yeah. Okay."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "And then you get on schedule. If you make it through the first day it's like way easier and then after that."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Yeah 'cause then yeah 'cause then you're not up all night."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Yeah. Oh. You're from Florida, right?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "I am, yeah. Born and raised in Miami."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Nice. Is Are you a Dolphins fan?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "I'm not. I'm a Steelers fan. There's a story behind it."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "That's a bummer man. Yeah, yeah, yeah. I'm a Steelers fan but uh."
+  },
+  {
+    "speaker": "Guest",
+    "content": "We don't need to get too much into that but uh."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "No."
+  },
+  {
+    "speaker": "Guest",
+    "content": "No."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Nice. Do you Do you like to go fishing?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "I do. I don't have a lot of time for it anymore. We just too busy."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "You're too busy coding."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, just too busy. Uh, but fishing and golfing those were like growing up those kind of like those were my main hobbies. Yeah, yeah, yeah. Yeah."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "The same. The same."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Nice. How did you get into building Versatus?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "So you know my entire career I've been a software engineer. Most most of it focused on like machine learning um, and AI like back in the day."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Before it was cool."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, before. Yeah, yeah. So I did by pulled the reverse pivot, right? I went from AI into crypto. Um, my first startup was a uh, AI data extraction company. Um, but I was always kind of like adjacent to crypto. I I was like paying attention very closely what's happening in the space. I bought my first Bitcoin in 2013, bought my first ETH at the ICO. Was like very bullish on on Ethereum. Um, and basically like as I followed the space what I realized is like blockchains are like this really really great tool for this really small subset of very important problems. Uh, which is primarily like coordination. Um, and then what I like to call like attribution of ownership. So the blockchains are fantastic at that. But there's all these other things on the web that don't necessarily fit into that box. And you know I'm I'm very ideological. Um, I believe in like the purpose of the space. And so you know I saw that there was like a lot of opportunity to kind of tackle a bigger problem of kind of the rest of the web. Right? So like financial, money, all of that happens on chain. But there's still a lot of stuff that happens off-chain that powers a lot of the applications in the space. And so we wanted to provide the same the same sort of core qualities that blockchains give to money to web applications, mobile applications, and and you know other uh, web based uh, products."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Interesting. Do you uh, do you think Versatus is going to go to to uh, the big leagues?"
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Definitely. I'm I'm so bullish on Versatus because I feel like we definitely need these like uh, like people to compete for like the best compute prices. So right now if you see and also the user experience, I I I have used like other, I won't name them, but I've used the other decentralized crypto uh, EC2 equivalents, and they have like it's so bad like I Like they have their own front end, you can't really assert into it. It's like so terrible. Um, like I I like the the He's seen the demos."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "He's seen the demos."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "I've seen the demo. Yeah."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Yes, demo is so bullish but uh, like overall like um, like Versatus model like the pricing model is very optimal for like people to like like one of the greatest uh, use cases I'm seeing is like people can uh, get a Versatus instance, run a ETH validator. Yeah. And then like go to buffer and like get like bunch of uh, like they have DVDs, so you can you can put some steak in them, Yeah. for a very cheap they can run a validator. So I think that's."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, so it's like a fraction of the cost of using like a centralized cloud provider. So uh, like I think like the node operator and then on top of that you get like the resiliency of it being decentralized. So we use a technique called AJ clustering which has been around for a really long time but hasn't really been applied to this space. Um, which basically guarantees like in the event of a failure of your instance, it'll automatically reboot on a different machine. Um, and then like developers can select their replication factor so if you want three nodes in your cluster, you want 10 nodes in your cluster, and then our protocol actually optimizes the geographic distribution. So you know we'll have vali we'll have you know validators. We'll have node operators that are all around the globe, and we'll be able to allocate. Okay you'll have one instance in Europe, one in East Asia, one in No North America, one in South America. There's also other benefits that come along with that like you know when you have users in those different places, the number of hops that those users have to take to reach your application shrinks dramatically. Um, whereas right now like technically speaking you could do this on AWS but you have to manage all of it yourself. So nobody does. And so then when you know US East Ohio goes down, you know because whatever there's a storm or there's a cyber attack or something happens, all of these applications are offline. Yeah. And the crazy thing is a lot of these things that are hosted are like they're critical components of our our daily lives. So during the CloudStrike outage which I'm sure you remember like seven weeks ago."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Like obviously airlines and all that but one of the untold stories of of that was like there were major cities where their 911 operators, their emergency services, you couldn't contact them."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Really?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah. Wow."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "'Cause they're all running their their um, you know their phone routers through the cloud. And so Right."
+  },
+  {
+    "speaker": "Guest",
+    "content": "People were people died because you know this infrastructure we built it, you know I like to say we built it on a foundation of sand. Right. Um, it's all centralized. There's single points of attack, single points of failure. This is like really critical infrastructure. Um, you know even like Department of Homeland Security uses AWS, obviously like major most major applications uh, around the globe use use AWS or Google Cloud. Um, so building a more resilient foundation for the modern web I think is really really important and it's a it's a fantastic use case for both Eigen Layer and um."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Yeah, as I say, why do you need Eigen Layer?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, so I I think it's like a really really good question I which we get a lot like why not just build this as your own network or like build it as an L1. Right. So the capital expenditure, we want to think of it like business terms of building this on our own would be massive."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "For sure."
+  },
+  {
+    "speaker": "Guest",
+    "content": "We would have to uh, basically like inflate our token away. You need to bootstrap consensus in economic security."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "You need to bootstrap security."
+  },
+  {
+    "speaker": "Guest",
+    "content": "You need to bootstrap security."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Which like why would I trust you to be the the foundation that's not made of sand if you're running your own you know set of you know 50 nodes. Right."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Exactly. What about like the most battle tested you know decentralized smart contract platform?"
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Exactly. And so for us you know using Eigen Layer allows us to not only tap into their node operator network which allowed them have a lot of excess compute so that helps us bootstrap supply."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "But also to tap into economic security component of it. Like our whole model is we we prove liveness. So we prove the state of the instances and that they're available."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Okay. So slash slashing would come in there if if there's a like some downtime or or you know kind of."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Unannounced downtime."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, yeah. So in in some cases you're going to need to maintain your hardware or something like that, you're going to have to go offline so we we do it in windows. So you register to be available for that window."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Okay."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And then you can if the next window you can opt out of if you need to like maintain your hardware or whatever the case is or maybe like if it's just not profitable right now for you to run the node, you can you can back out. Um, so it's not just like once you register you're locked in forever and you may get slashed if you go offline."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Yeah, you can Yeah, yeah, yeah. Okay."
+  },
+  {
+    "speaker": "Guest",
+    "content": "There's There's flexibility there. Um, but but that that then also allows us, our slashing condition gets paid back to the people that are disadvantaged by that uh, scenario occurring."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Correct. So that's like the users."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Right. Yeah. Yeah. Yeah."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "It's like an SLA insurance model where we can actually make sure that the in the event that we don't meet our SLA."
+  },
+  {
+    "speaker": "Rob",
+    "content": "What's an SLA?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "A service level agreement is like very common like the cloud world. Right. Right. Right."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Right."
+  },
+  {
+    "speaker": "Guest",
+    "content": "So um, Well you can't save people who tried to call 911 but but you know."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Right. Exactly. Exactly. Exactly. It's a messy idea. But no, but the but the company that was affected by it. The like the phone routing company."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Correct."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Who they also didn't have an SLA with the city. Right, mm-hmm."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Right."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Right, they're going to lose business because of that. Right. So now all of a sudden how did they get reimbursed. They're losing business because of AWS. Like AWS will give them like some compute credits or something like that. Right? Like or or like they'll just beg them to stay. Like you're not going to go anywhere else 'cause there's nobody nowhere else to go. So we're offering an alternative, but we're also offering a better economic model for the users in the event that we're not able to to make good on our promises to you, you get reimbursed for the disadvantage."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Awesome. So that that and that the combination of those two things I think is where like slashing comes in. Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um, and the new slashing model that that Eigen Layer released recently is like very relevant to us because we don't want to be in a position where we're having to share our economic security with other AVSs."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "Right because Right, right."
+  },
+  {
+    "speaker": "Andrew",
+    "content": "Right."
+  },
+  {
+    "speaker": "Andrew Smith",
+    "content": "So You don't want like the the the contamination risk basically."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Correct. Yeah. Yeah. Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Can I ask you a spicy question?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Go for it."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Think infra is commoditized down heavily where there's not a lot of moat around this idea. I you know either I can fork your code or I can kind of do something very similar, and then either just charge less or kind of like not charge at all. This question is like how do you make money and how do you build a moat around this?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "So our we are building this as like a decentralized protocol and so our like as a the laps"
+  }
+]

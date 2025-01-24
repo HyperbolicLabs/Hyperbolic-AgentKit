@@ -1,0 +1,70 @@
+{
+  "edits": [
+    {
+      "start_time": "00:00:00",
+      "end_time": "00:01:34",
+      "keep": true,
+      "reason": "Adrian provides a clear introduction to the topic and the problem Nomad aims to solve. This context is essential for viewers."
+    },
+    {
+      "start_time": "00:01:35",
+      "end_time": "01:43:14",
+      "keep": true,
+      "reason": "Adrian delves into the specifics of Nomad's approach, touching on asset agnosticism, data protection, and community involvement. While this segment is slightly long, it holds valuable insights."
+    },
+    {
+      "start_time": "01:43:15",
+      "end_time": "01:49:26",
+      "keep": false,
+      "reason": "This section is a bit tangential, focusing on the growth of Nomad and Adrian's personal role. It can be trimmed to improve pacing."
+    },
+    {
+      "start_time": "01:49:27",
+      "end_time": "02:01:24",
+      "keep": true,
+      "reason": "The conversation returns to the issue of lockups and market incentives. Adrian's arguments about the potential downsides of lockups are crucial."
+    },
+    {
+      "start_time": "02:01:25",
+      "end_time": "03:41:20",
+      "keep": true,
+      "reason": "This segment explores the social and technical aspects of lockups. Adrian's views on the influence of airdrop farmers and the importance of decentralization are essential."
+    },
+    {
+      "start_time": "03:41:21",
+      "end_time": "06:48:28",
+      "keep": true,
+      "reason": "Adrian emphasizes the significance of data protection from both government and corporate perspectives. This part connects Nomad to broader societal concerns."
+    },
+    {
+      "start_time": "06:48:29",
+      "end_time": "07:24:18",
+      "keep": false,
+      "reason": "The conversation about KPI tokens and the personal experiences of one speaker can be removed as it deviates from the main topic."
+    },
+    {
+      "start_time": "07:24:19",
+      "end_time": "08:02:37",
+      "keep": true,
+      "reason": "The importance of privacy and on-chain assets is highlighted, bringing the focus back to Nomad's core values."
+    },
+    {
+      "start_time": "08:02:38",
+      "end_time": "08:09:54",
+      "keep": false,
+      "reason": "The concluding remarks about Adrian's market analysis are lighthearted and can be omitted for a more concise ending."
+    },
+    {
+      "start_time": "08:09:55",
+      "end_time": "13:26:23",
+      "keep": true,
+      "reason": "Adrian's final thoughts on data protection and his concerns about the industry's lack of progress are insightful and thought-provoking."
+    },
+    {
+      "start_time": "13:26:24",
+      "end_time": "14:20:04",
+      "keep": false,
+      "reason": "The conversation winds down with general agreement and pleasantries, which can be cut for a more impactful ending."
+    }
+  ]
+}

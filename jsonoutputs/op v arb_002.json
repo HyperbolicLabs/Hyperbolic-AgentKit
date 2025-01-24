@@ -1,0 +1,130 @@
+[
+  {
+    "speaker": "Andy",
+    "content": "Superchain is... there are customizations that... the stack that you cannot make because you will deviate from the ability to have interoperability in the way that we want it, right? Um... and so that, that like if you make a technical trade-off, that's really what you're trading on forgetting. And so contributing sequencer revenues across the board. It's the same for everybody, you know, 15%. And that's consistent. Ultimately long term, the... the... the dial and governance will vote for what those fees are. Chain operators have tokens, they will be part of those discussions, like a lot of people will have, you know, a... a say and... and thought process around what that looks like long term, but that's what it is today, it's consistent across the board. Um, why do you opt in, and why would you pay that today? Is because of this network effect, is because of incentives that exist today, right? You know what I mean, you've got... We have venture funding where we fund projects that are contributing to growing the Arbitrum ecosystem, right? We... we set out parameters of what those projects look like, you know, we've gotten better in what the reward mechanism is, like there's been a lot of good feedback and we want to be more of like a continuous drip of you know, rewarding developers that are contributing to this Arbitrum ecosystem. And so if you're like a builder on Base, you know, or Uni-chain or Sony or anything, any of these chains, you'll benefit from that. Um... So yeah, that's kind of what we're trying to to orient towards, and and and focus towards, and um... you know, continue to build a a a real value prop long term, where people are comfortable doing that. Ultimately, it's going to have to be internal, but I think we'll make it a very unique offering."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Because when you decide, like in a future state, you know, imagine like a year, two years from now, you know you wanna be an L2, and you wanna create a network... or... or a chain. Like, you wanna be a part of that network where it already has liquidity, it already has users, it already has builders, and you could just like instantly plug into it. And that is worth the fee that you pay to be a part of the Superchain, versus just deploying an OP stack, you know, fork to what we call, which is using an MIT open licenses."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Yeah, just if I can jump in 'cause I have a couple thoughts on this, because I spent a lot of time sort of trying to like make sure I fully understand the business as we think through Arbitrum. So... I think that like the mental model that I have is, and um... in some of, sort of, maybe the the challenges that I think about the businesses is that like the optimism collective, or DAO, or whatever you guys call it, um... it's like primarily turning into like interoperability as a service, and like governance as a service. Um... and like the OP stack creates a ton of value, but it doesn't inherently capture that value. Right, it's like what you're saying about Blast, right? Like, you've enabled Blast to be able to launch a chain, which is like I guess good for society, I guess, right?"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "But like, in terms of like how you capture it, um... it's not like... I think we both agree probably, there maybe there's a capture, I'm not really sure, I don't think there is."
+  },
+  {
+    "speaker": "Andy",
+    "content": "There's zero value capture from Blast, right? I think the MIT open licenses more of like an ethos that we all abide by, and and..."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Right. Exactly. Yeah."
+  },
+  {
+    "speaker": "Guest 2",
+    "content": "Right."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Yeah, which is, I I think totally noble, to be clear. So..."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, yeah."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "But then, when I, where I, where I kinda sort of breaks down, and I'm curious for your thoughts. Like, when I think about this, it's like... Right, so now we obviously have to capture, right? Because you can't in perpetuity just create value without capturing value. Um... The way you do that is, you have these other chains joining the Superchain, um... and the... the the... the thing that kind of always struggled with, right? Like, obviously like today the interoperability is not live yet, so like, it's you know, it's like, it's a new conversation, but it'll come, like... the the... two challenges that I have is, like how do you get to a place where, and you know, like like you mentioned already like you know, right now like technically the collective is losing money because like it's giving up grants that are larger than the revenue that it's receiving, but the theory..."
+  },
+  {
+    "speaker": "Guest 2",
+    "content": "Right."
+  },
+  {
+    "speaker": "Andy",
+    "content": "All all... all ecosystems are in that boat, right? Yeah, yeah."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Exactly. Yeah, yeah, yeah, yeah."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "The theory is that like we'll build the network effects, where um... eventually, right? So, if we give 10 dollars, they're gonna give back 20, but they'll be fine giving back 20, because of the interoperability. Um... the... the sort of the... the challenge that I see is like... the two, like the biggest chains, the ones that will have like the most ability to contribute profit are like the ones that are least in need of the interoperability as a service, right?"
+  },
+  {
+    "speaker": "Andy",
+    "content": "That's in... that's interesting. I... I... I don't know that that's like, you know, universally agreed, when talking to..."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "No, this is my, this is my theory."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, yeah."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Yeah, yeah, yeah."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "And then, and then the second one is like um... if we're having Ethereum interoperability... is that dilute like within the Super... Superchain interoperability? Right? So like, as we all come together and try and solve like, what does Ethereum interoperability look like? The question is, like, from, like not like a value capture perspective from a value... Not sorry, not from value creation perspective, but from a value capture perspective. Like does that get diluted?"
+  },
+  {
+    "speaker": "Guest 3",
+    "content": "You mean, cross cluster interop, AJ?"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "I just mean, all of Ethereum interop, right? So like, if we're gonna have um... Ethereum, Polygon, ZK-Sync, all of us are coming together..."
+  },
+  {
+    "speaker": "Guest 3",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Everybody's solving interop, yeah."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Right, 'cause we're all gonna try and do this together, right? Which I think is really the ultimate like North Star. How does that like dilute the value proposition of like Superchain interop or Arbitrum interop, and like it's one of the reasons..."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "We haven't... We are thinking about interop within Arbitrum, but it hasn't been like a a central of our priority, 'cause we think we need to solve it across all of Ethereum."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, I think the interop for the Superchain cluster... There will still be clusters in my mind. Like, I think it'll be sick to see like, Agg layer plugging and stuff. I think Ethereum will help them. And this is really about bridging assets across the ecosystem. We're talking about like, sub 1 second latency interop. So like application developers deploying across Superchain will have a unique offering than what any of these services have been offering. Like, I think it's not a... It's it's not binary. I think we'll work with both. And I don't think it'll dilute the value of Superchain interop. And obviously like, now we start to be hypothetical. If Ethereum solves, then like what does a year, two years, three years look like? You know, we've been talking about Agg layer for years. We've been talking about Superchain for years. These are like, very complex problems to solve. So, I don't know, it gets us a little, and if we were sitting here 18 months ago, talking about what the future looks like, we would have a completely different opinion. It's hard to think too long term of like, what does three years look like in some of these problems getting solved. We obviously are trying to place some bets, like what does EK proofs do for us? How does that actually gonna unlock, like a lot of our our like horizontal scaling challenges. So, I... I don't... I think interop is actually going to be really important, even if it is solved, uh, to some degree through Ethereum, if it's solved some degree through Agg layer, it's solved, you know, uh, some degree through Superchain. Um... and a lot of it too isn't just interop, it's, is a core value prop. No doubt. But I think people being a part of, like the shared upgrades, the shared security, the advancement of the stack. I mean, this stack, I believe, in 18, 24 months will be far advanced than any other chain, or, uh, tech stack, because you've got protocol engineers from Coinbase, from Kraken, from Uniswap, from OP Labs, all contributing to this stack, and advancing it. So... you know, hard to say what two years looks like. I think, nobody really has a crystal ball, but yeah, I think we believe that these are value props. And uh, yeah, we'll have to pivot, you know, sequencer revenue going down created a little bit of like, what other value props are we gonna pursue? There will be like a million between now and what you're talking about, being a reality. We're going to have to contemplate, which is just the nature of this space. So... Yeah, I think they're fair points. I don't, I don't think what you're saying are like things we talk about internally all the time, things we have to be like very cautious about as we build it. But um... yeah, I think we're pretty confident in the approach that we're starting to get, you know dialed in on. And that could change. You know, like it changed a year and a half ago, two years ago when we're like, oh, OP mainnet. That's gonna be our focus. You know, we're gonna be this unique L2 offering. And uh... Look how quick like, how long did that last? You know? Look at even for my time at Polygon was like, we're gonna grow this POS chain, we're gonna be really big. And ZKVM is gonna be the future. Look how that's turned out. And it's like, Agg layer pivots. So like, who knows where Arbitrum pivots in 18 months or Optimism pivots."
+  },
+  {
+    "speaker": "Guest 3",
+    "content": "It's kind of the fun of building in this space, right? Where we're all just making it up as we go along, yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "We're all here."
+  },
+  {
+    "speaker": "Guest 3",
+    "content": "Um... I do think that there is something that you're touching upon here that's important, which is that every different ecosystem, and even within that ecosystem, I think every different builder has a different vision for what interop ends up looking like, on a one year time horizon, on a five year time horizon. You've got this kind of position that, uh, we're always going to have clusters, clusters are always going to matter. And within whether it's the Superchain cluster, the Orbit cluster, the ZK-Sync Elastic chain, or whatever it is, um... you're going to have a different degree of composability and interop versus across clusters and across the larger Ethereum ecosystem. I think then you've also got a lot of people building. Myself, I I'm in this camp, uh, saying that's never gonna be good enough, so we've gotta work to solve cross Ethereum, cross cluster interop. I I feel like, from my conversations, I've noticed within the Arbitrum ecosystem, there seems to be more folks kind of in that camp, maybe dreaming about that future versus um... maybe I would give credit to some of the folks in the Superchain, maybe being very pragmatic, and uh, a little bit more near term oriented about what's realistic in, you know, the next one year kind of time horizon. But AJ, I'm curious to kind of turn the microscope on the Arbitrum ecosystem, because I think that there's been some evolution of business model there. Um... candidly you guys have caught some flack, I would say, for not meeting what other people see as the gold standard of MIT open-source licensing, so that anyone can come along and launch an L2. And I haven't actually talked to you about this, but I think that there's been uh, some evolution um... maybe based on some of that feedback, maybe based..."
+  }
+]

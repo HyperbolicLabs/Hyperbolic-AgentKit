@@ -1,0 +1,334 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "is superset instructions. Which again, very standard in traditional VMs."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Where, hey, if I see this particular set of instructions repeating a lot,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "I combine that into a single instruction, which makes execution faster, it makes CPU usage, etc., faster."
+  },
+  {
+    "speaker": "Rob",
+    "content": "I mean, for example, every single"
+  },
+  {
+    "speaker": "Rob",
+    "content": "ERC20 transfer, right? They go through a few opcodes. They go through an S read and then they go through a write and then they normally go through another read and then there's a check or something."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Condense that into one line item and all of a sudden, you know, that's that's three times the overhead on DB access, and right access, and all of those things that you remove."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, again, huge performance increase there. And, and the two biggest things going into, okay. So, so, all of these little subprojects, Tosca was the VM, Carmen was the DB, all of these sort of started falling under the banner of, of Sonic, which was just, you know, basically speed the, the speed, um"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Sure."
+  },
+  {
+    "speaker": "Rob",
+    "content": "um, Sonic blah, blah, blah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, and then because it ended up being such an internal name, when we launched the first testnet, you know, it was also called Sonic."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Mhm."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, we just got such positive"
+  },
+  {
+    "speaker": "Rob",
+    "content": "um, feedback from that, that we ended up saying, 'Hey, let's stick with the brand.'"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, people seem to like it. At the same time I think it's beneficial to show, hey, this isn't a"
+  },
+  {
+    "speaker": "Rob",
+    "content": "you know, this isn't a small upgrade. This isn't a, a"
+  },
+  {
+    "speaker": "Rob",
+    "content": "1.01 to 1.02 release, you know? This is a version 1 to version 2 release. It's very significant in terms of what this blockchain is capable of doing."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, and that's kind of where Sonic came from and where we're at now and why we're really excited for this launch, you know? And, and it's"
+  },
+  {
+    "speaker": "Rob",
+    "content": "the future of that seems even brighter, right? Because, I mean, all we've done so far is the database and the, and the, and the supersets, but there's still a ton of other bottlenecks we've identified, not to mention stuff we've we've found in the consensus engine itself where we're, where we have a lot of room for optimization."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And, and I mean, you know, we've, we've"
+  },
+  {
+    "speaker": "Rob",
+    "content": "I, I have long felt that there is still a lot of room of optimization at the base layer."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, you know, the, the when again, using the internet analogy, the guys when they started"
+  },
+  {
+    "speaker": "Rob",
+    "content": "you know, when, when we had 56K modems,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "their solution wasn't to put more 56K modems on top of 56K modems, you know. Their solution was, hey, we need to get a better bottom layer, a better baseline,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and that led to ISDN. And, you know, if you had an ISDN line, or a 56K modem line, and fiber came out, you had to fully upgrade to that thing. You know, it wasn't just built on top."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, and that shows you that the base layer changes,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "um, and will keep changing. And, you know, there is still a lot of room to change."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Now at the same time, I have to give a nod to Ethereum here. I don't blame them for the approach they're taking because I mean, Ethereum itself has so much economic value, it, it,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "I, uh"
+  },
+  {
+    "speaker": "Rob",
+    "content": "it must be terrifying for them to make any change there, and I know it's terrifying. I mean, you can see it by how long they, they, they take to release and stuff. When you have,"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "when you have that much economic value at risk, the best thing to do is to do nothing."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, I don't disagree with their stance. I don't disagree with their position. I understand why they're exploring what they're exploring."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, I, I do think it's a little bit premature though, and I think"
+  },
+  {
+    "speaker": "Rob",
+    "content": "you know, that's, that's"
+  },
+  {
+    "speaker": "Rob",
+    "content": "again, uh, uh, I, I cannot express how much I love Ethereum, the Ethereum community, their, their roadmap. I mean, I'm I would not be here today if it's not for them, and I will continue supporting them,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "but I do kind of feel, you know, that they're starting to turn into the, the Nokia or Blackberry and, and"
+  },
+  {
+    "speaker": "Rob",
+    "content": "I mean, eventually, you have to adapt or, or, or kind of fade away."
+  },
+  {
+    "speaker": "Rob",
+    "content": "I, I don't think they will, for the record, but to use a crude analogy, I, I, I think that might be where we're at there, unfortunately. Anyway, sorry. Again, long-winded, but that's kind of from Phantom to Sonic."
+  },
+  {
+    "speaker": "Andy",
+    "content": "No worries at all. Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And that's why the Sonic launch is coming up now,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "that's on the tech stack, right? That's on the tech stack."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And, and like I said in the original, very first question, I believe that the tech needs to be faster, gas fees need to be less for people to be able to build new apps."
+  },
+  {
+    "speaker": "Rob",
+    "content": "You know, you, you, I, I, I think this sort of social layer of apps is definitely where we're starting to see, and the same thing kind of happened again if we compare it to traditional internet, where the very first things built for traditional internet was finance and military because they're the only two things that made sense given how much it costs to interact with."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, and then as it got, got cheaper and cheaper, and faster and faster, you know, we started seeing"
+  },
+  {
+    "speaker": "Rob",
+    "content": "um, user-created content, MySpace, whatever, Facebook, and eventually, as it got even faster, we started seeing streaming, YouTube, Twitch, etc., TikTok, and we're kind of in our current iteration of, of, of HD internet, if I can call it that."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, and, and the same needs to happen on blockchain, right? Like, it needs to get to that point where your users aren't because no user's ever going to pay 100 bucks to upload an image, or listen to a 20-second video, you know? But"
+  },
+  {
+    "speaker": "Rob",
+    "content": "um, they might be willing to do it for a few cents. So, you know, it's, it's, it's the same evolution."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, so gas fees had to come down. And then,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and then value capture. Now, value capture, this has nothing to do with technology, but, but this I think is the premise of most of these things. And, and again, I'm going to use Uniswap as an example, and I use them as an example because I think they're a bloody pillar. So I'm not trying to pick on them, I'm not trying to point them out"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Again."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Absolutely wonderful."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And you see how we have to like BPC in our, in our talks nowadays because we have to add comments like that because otherwise, there's about to be a little"
+  },
+  {
+    "speaker": "Andy",
+    "content": "This is a hot take, oh! He, he hates Uniswap blah, blah, blah, blah, blah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, you have to be so careful."
+  },
+  {
+    "speaker": "Andy",
+    "content": "You are way more humble these days on, on"
+  },
+  {
+    "speaker": "Rob",
+    "content": "You're far more humble."
+  },
+  {
+    "speaker": "Rob",
+    "content": "You, you have to add qualifications, you know? Because, because, I, I speak out of respect, not out of"
+  },
+  {
+    "speaker": "Rob",
+    "content": "um, people often see criticism as"
+  },
+  {
+    "speaker": "Rob",
+    "content": "as a dislike, or a negative emotion, or something like that, and, and it's not. It's, it's, it's a comment on what is happening versus what we're seeing in a different perspective."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, but they are now launching Unichain, and they're probably one of the few ones that can do it if I'm being honest."
+  },
+  {
+    "speaker": "Rob",
+    "content": "I, I, I think a lot of teams are going to follow their example though, and fail. And, and why, why would Uniswap do that? I mean, Uniswap has generated almost 3 billion dollars in fees for validators."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Not for LPs, not for Uniswap foundation, not for the team, not for their VCs, not for the, the, the fake Uniswap DAO, which I feel sorry for those guys."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, but 3 billion dollars in fees just to validators. That's ridiculous, that's absolutely ridiculous. So, it makes 100% sense that they're like that's the value we want to capture."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And, I, I think secondary to that, you know, base, Coinbase really showed us how much money you can print by just like launching a centralized L2, and capturing all of those fees for yourselves because I mean what they pay to Optimism and Ethereum is negligible in the fees that they are able to capture. Um, obviously, my own comments there on centralization blah, blah, blah, it not being a real blockchain, but whatever, they're businesses they're running at as businesses. And, and I think again, that's why I love Uniswap as the example because, because you can see their own evolution in their crypto journey, you know? When they started, it was Hayden and, um, uh, Moody, and a few guys, you know, just in a dorm room, like having fun building tech, and now it's evolved into a multi-billion dollar business. So, it makes sense that they are running it as a business now because it is no longer Uni V1, Uni V2, which was just these awesome experimental primitives."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, they should be doing value capture because they are an incredibly successful business."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, uh, yeah, I, I, I don't even remember what the original question was. It was"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Go Uniswap."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Go Uniswap. It was value. Well, okay, so you were getting into like the, the crux of the, the value extraction."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, so, it makes sense that apps are like, 'Hey, I want some of that.' That's where the real money is at."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right. Right. Right. Right."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Right. Right. Right. Right."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yes. Yes. Yes."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yes. Yes. Yes."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, it makes sense that apps are like, 'Hey, I want some of that.' That's where the real money is at."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, now, for me to use a very dumb example, we, we at Sonic, approached it from the perspective of, okay, what are the successful companies that we think we are closest to, and those would be YouTube, Twitch, and, um, the, the Google Play Store, and the Apple App Store."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And all of these guys have a similar model. You know, they are, hey, you, you, people out there, you're the content provider, we are the platform."
+  },
+  {
+    "speaker": "Rob",
+    "content": "You come to us, you provide your content, we're going to link you to the eyes that are going to be looking and interacting with you,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and you are going to get part of that revenue, rev share, whatever you want to call it. You know, content creator program,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "payments in the App Store, whatever it is."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, so in this example you know, if, if, if let's say the next Uniswap, um, comes out team, not the original project. I need to change the name. Twoswap comes out, and, and they're like, 'We're going to launch an app,' and their option is, 'Hey, we can launch on Ethereum and have no value capture. We can launch our own app chain and have value capture, or we can launch on a blockchain that shares that value capture with us.' Um, I, I think each one is a different example for a different requirement. If you want max"
+  }
+]

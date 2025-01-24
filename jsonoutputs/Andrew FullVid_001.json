@@ -1,0 +1,142 @@
+[
+  {
+    "speaker": "Guest",
+    "content": "Organization, we don't we don't make money."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um the token holders do, the stakers do, the operators do. 100% of the protocol fees that come into our network go directly to those entities. So, that's one aspect of it. And so the question is how much money do they actually need to make."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, and like, where where those fees coming from, and how do you of how like you can't avoid them trending to zero if this if it's going to happen, but how do you maximize without being like overly rent-seeking, I think, so, I don't know."
+  },
+  {
+    "speaker": "Guest",
+    "content": "So, yeah, and and hopefully they do approach zero, because that means like all of our users are getting cheaper and cheaper infrastructure."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I don't think they ever reach zero, but they they come close to it. Um margins will will approach zero as well."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Right now, margins in the cloud compute world are about 45%. Net margins. It's crazy."
+  },
+  {
+    "speaker": "Andy",
+    "content": "It's a lot."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah. Like these companies print money. There's only like four really big ones. Um but they just print money. And so there's there's a long time between now and when those margins approach zero. Okay."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right."
+  },
+  {
+    "speaker": "Guest",
+    "content": "When they start to approach zero, I think like we're all probably better off for that. But that that doesn't mean that that fees go to zero."
+  },
+  {
+    "speaker": "Andy",
+    "content": "No."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Uh there's still hardware costs, there's still electricity costs, there's still bandwidth costs that the providers have to to pay for. And so anybody who's providing the service will will need to make some money so they can pay for those services. Um now, in terms of it being commoditized, yes, and like, we're completely open source. Even right now, like, all even though we haven't like actually launched yet, all of our code is already open source. You can go check out our Github, you can read through it, if you find any bugs, let us know, you can post issues. Like all So, we're very pro open source. And and you know, I think the moat, frankly, comes from distribution. Okay."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um, the winner in this particular space, decentralized cloud, or whatever you want to like refer to it as, yes, maybe they have slightly better, like, product features. Uh but underneath the hood, a lot of the technology we're using has been around for a while. Um, there are some innovations that we've made, but a lot of the technology has been around for a while. Where our moat comes from is our ability to go out and acquire business, and acquire use users who are developers in our our world, um to actually come and use our platform. So, and I think a lot of the decentralized compute uh platforms today have not done a great job of distribution. Um I think that that's where we really we we we approach this from a different position. We know who our customer is, we know how what they're looking for, what the USP that we're going to deliver to them is. And we treat it more like a business, even though we're not in the business of capturing those fees directly, we're capturing them for our network. Um we do approach it from, you know, a a growth mindset."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Also, if you see, like, uh the nearest competitor, like, they they don't really have SLAs. They have, like, like I tried to spin up a node, and I get, like, multiple, like, bids, I'd say, and, like, they have up, like, uptime, and it's, like, sometimes 90%, and you get cheap, but, like, I don't I want 100% uptime. Yeah. Like, 99% is also fine."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, I I actually uh star- like, I tell people, like, what we're building is an infinite uptime layer. Right."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "So, like, that's the goal is, we want to be the Bitcoin of cloud. We don't ever want to go down. Yeah. And and that means, like, yeah, it's not going to be for certain use cases. It's not the right solution."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "If you're a high-frequency trading firm, you need co-location with the exchange. So, you need your servers to be in the same building as the exchange servers. We're not the right use case for that. That's fine. We're not going to capture everything. But for e-commerce, we're a great solution for, because you can actually serve from the edge, Yeah. very close to your user. And you can scale out your instances to this global network of compute. And then on and and then, for things like gaming and, like, high graphic intensive use cases, the closer you are, the lower the latency is, the less lag there is. So, there's certain use cases that we're really, really good for. Um and just focusing on those and and being able to go and capture big players in those markets, or capture growing players in the markets might might even be more important. Um, but starting out small, we have a lot of partnerships with other crypto projects that have committed to building on us when we launch. And then moving into this small-medium business, the startup world, you know, sort of going after that that market that, like, Vercel and Fly, and some of those providers have have captured pretty well. Yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And then eventually we'll get to the bigger enterprises Yeah. where there's big bucks. But I think we need to prove resiliency, reliability, uh we need to prove performance. And and that's going to take a few years to do."
+  },
+  {
+    "speaker": "Andy",
+    "content": "So, last thing, as we kind of wrap up is, what's next on the on the agenda for the next couple months. Um, you know, we're in we're in October now. It's uh, you know, it's almost the end of the year. What uh, what's coming?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "So, we we do have uh DevNet basically teed up to launch. Um we're de- we haven't decided on a date yet, but"
+  },
+  {
+    "speaker": "Andy",
+    "content": "It's probably going to be launched by the time this comes out."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Possibly, yeah. So, we're we're we're It's coming very, very soon. Um that's going to be like those initial 50 uh partners that we've we've already discussed uh building on us and and you know, we'll probably scale that up a little bit before we go public, um at least, so we can figure out, like, what what does that experience look like. And then, uh a big part of what we need to do is is continue to acquire supply. And acquire supply in strategic locations. And and so, doing a lot of business development with with node operators, with data centers, to go out and cap- and and make sure that we have the compute supply, so that we can scale. Um, we're targeting a mainnet launch early next year. So, we'll probably be in in DevNet, and then do a public testnet for a few months, and then go to mainnet. Uh and then yeah, obviously, token launch at some point as well."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Fantastic."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Cool."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Well, thanks, guys."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, thanks for having me."
+  },
+  {
+    "speaker": "Andy",
+    "content": "It's been a pleasure. Fantastic."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Thank you."
+  }
+]

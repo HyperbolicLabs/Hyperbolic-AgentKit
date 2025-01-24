@@ -1,0 +1,170 @@
+[
+  {
+    "speaker": "Andy",
+    "content": "Right. Right. Okay. Yeah, because we've been very, very vocally bullish on the rise of alt L1s with the advent of rollup as a service providers. Really make rollups, launching rollups very easy. And then also like very excited about alt VMs. So, I, I, oftentimes find myself like we started DeFi slate back in the, in like like 2020 days, I'm not sure if if you remember. Um, and you know we found ourselves very much in the Ethereum L1, yield farming very Ethereum aligned and I found myself kind of like like, like getting more and more like, \"Hmm, maybe we should experiment with different VMs, maybe we should experiment with different DAs.\" But like hearing you kind of say that, okay, it's not it's not it's not necessarily bullish for Ethereum DA but it's also not bearish. But that these L2s are, are simply, uh, something that can help scale Ethereum. Um, you know, that that you know, I mean it's refreshing to hear because frankly, I thought that you were just going to shit on them, you know?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Well, not, I mean no, because like they, they, they serve their purpose. Right? Like as I said, there are there are L2s that want to launch like Mega ETH and Eclipse that can't use Ethereum DA 'cause it doesn't have the capacity for them. It just doesn't. Like they just it, it, it doesn't let them do what they want to do. So if, if, if they didn't exist, like would, would Mega ETH and Eclipse even be launching, right? Like, would they, because they can't launch with, with Ethereum DA as it exists today. In the future, hopefully they can, when we scale it up more. Um, but then I also"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Probably have to be their own L1."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Well, yeah, but like"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Just kind of their own alt DA anyway."
+  },
+  {
+    "speaker": "Rob",
+    "content": "But, but, but like, then Eclipse loses its kind of value prop because it's supposed to be an L2 SVM. Right? And it's like if you're an L1 then you're just Solana, right?"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, exactly."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, and then, and Mega ETH literally can't launch I don't think because, from what I've heard, from what they've said, that they, their architecture doesn't, does not work as an L1 for what they're trying to do."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah. Yeah. For for security, yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. So from that perspective, it's, it's a good thing that these things exist. But I, I've also like, I think people maybe sometimes get the wrong idea about me, because I really only talk about Ethereum. Yeah. I, I actually think that the pie is so, so small right now, that anything that we're doing within the ecosystem is good for all of crypto. Yeah. Because we're just growing it so, so much. And I think that eventually, obviously we'll, like maybe decades in the future, there'll be some ecosystems that have just really entrenched and they, you know, you, you have confidence they're going to be around for a very long time. Um, and they, that's where most of the activity is going to happen. That's why I believe so much in Ethereum in the L2 roadmap. I think that that's the way to scale this all to the world. I just have never believed that you could do everything on L1. And even like the, the Monolithic camp or the, the Solana camp have, have capitulated on this recently with network extensions. Yeah. They literally said, um, that the network extensions, then, they, they, they're L2s, right? They, they, they're literally the same thing but they renamed them. But they said that they, that, they're for people, for, for apps that can't be done on L1 Solana. But originally, the thesis was that you could do everything on L1 Solana. So I think that over time, like people, as I said, the reality sets in, and you can't deny the reality anymore. The narrative is, you can, you can spew whatever narrative you want, but once the reality sets in, then you have to accept it and you have to pivot. And that's actually a good thing, mind you, like that, that, the pivots happened, like you don't want to be just stuck and, and, and doubling down on something that's not working. But Ethereum is so far ahead when it comes to that stuff and realized this all the way back in 2020 at least, they probably even earlier, of these, these rollup centric roadmap being the way to scale this stuff to the world. And I think people are just way too concerned about the short term and like, uh, focusing on how, what, what the pie is today and not realizing that, if you actually look at maybe the monthly active on-chain users across the entire ecosystem, we, we probably don't even have a million. Real humans. I'm not talking about the, the bots, 'cause obviously there's lots of bots. But real humans. It's very, very tiny. And there is like eight billion people in the world, right? So from here, we have so many more people to bring on chain and to onboard. And getting them on chain is going to take various different kind of efforts. I'm really bullish on Infinix, which is a project that's been built to create a really nice interface that abstracts away all the complexities for the average person. They're trying to be like on chain Binance. Yeah. And they can succeed at that, that's huge. But yeah, I think all of this kind of like fud, these bare takes, this, this narrative weaving, it's all just too focused on the short term.  Mhm. Right. People need to dream bigger and realize that we have so many people left to onboard. And now that the AI stuff is happening, like I really bullish on the AI agents stuff. Like that's even bigger. Yeah. Yeah. This"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Think of like trillions of AI agents being the main users of these chains. And that's just starting."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Right. In your last Refuel, you were talking about this new L2 from Nethermind that, uh"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Ultra based."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Is old, yeah. I think that's what they call it."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Oh, no. They call it Surge."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Surge. Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Surge. It is."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Surge. Okay. I thought they were, I thought, that, that they described it as being ultra-based."
+  },
+  {
+    "speaker": "Rob",
+    "content": "They did. They did. Yeah. It is a based roll-up, right? Stage two-based roll-up."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Stage two at launch. Yeah, and everything about it just sounds like the most, the most performant that it could possibly be, and this is all in theory. It hasn't launched, right? It's all, it's all on the roadmap. Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Actually, I don't even know if they are going to launch it."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I think it might just be for research only. Maybe."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Well, well, that, the thing is, I think that what they're doing with it is that they're going to launch it, but it's not meant to be like a regular user L2. It's meant to be like a, uh, a, a science experiment essentially of this is what a stage two-based roll-up looks like. This is how awesome it is. Yeah. Here, but hon- but the thing is with that is because it's stage two, there's, uh, if there's a bug in any, in any part of the stack, and you lose your money, then it's just, that's GG."
+  },
+  {
+    "speaker": "Guest",
+    "content": "GG. Yeah. That's GG. That sounds like some Andre Cronje type stuff, you know, like"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. Yeah. Yeah. Yeah. This is, this is Justin Proud, right? Yeah. Yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Justin Proud. Like, they need like a medium article saying this is a valueless L2 token, do not deposit anything. Like"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yes, yes. Yeah, that's the thing. And, and, and I think it's going to be too expensive for most people anyway, because they're, they're based and they're using the L1 and stuff that, and because, uh, it's a ZK, um, they're using ZK tech as well. It's just going to be expensive. So I don't think regular users are going to go there anyway. But they're launching it as a, as an experiment of like, here's what it looks like, here's what the endgame can be."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And, and I agree with the regular users won't, probably won't go there. And probably 'cause they don't, they don't intend on having a BD team and a marketing team to build up the ecosystem. Exactly. Yeah. But these AI agents, Yeah. need a place to, to do commerce. Mhm. You think they're going to do it on the ultra-based roll-up, Surge?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "I think AI agents could be the most, they're, look, they're way more dynamic than any human could be, right? 'Cause you can program in certain rules and they can take actions at, as quick as they can possibly be done on chain. Yeah. They don't need to be typing. They don't need to have some sort of like, uh, interaction, like back and forth communication with between a human and a computer. It's all computer. So they can be doing things much quicker."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Ironically, they're doing things at the speed of light, right? Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Like, uh, as, as Solana. Like, they, they squeeze the chains. At at least, right?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Well, yeah. Yeah. Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "At most. Yeah, yeah. Yeah. Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Right? So I, I, I mean, these, these AI agents need a shelling point.  Mhm. And, and I think they'll coalesce around the most performant chains, whether that's Eclipse, Mega ETH, Surge. They'll, they'll, like there's always going to be some latency, and there's always going to be arbitrage, uh, opportunities that result from such latency. Yes. And so AI agents at quick as they can move are in position to capture on that very, very small, thin margin, but very quick, quickly dissipating opportunity that's available.  Mhm. And so I, I mean I think we're going to see chains that evolve as AI agents like, the chain for AI agents. And economic activity on some of these chains is going to be like 80, 90%, and maybe we'll have roll-ups that are predominantly human activity, and then we'll have other roll-ups that are predominantly AI-driven economic activity."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Well, that's the thing about like the, like the last six to 12 months, we've been arguing that like we have too much block space. There's too many roll-ups, we have you know, app chains. We, we can't put all these things together like this L2 roll-up, or this L2 kind of interrupt dynamic has been the big topic of conversation. But we've all been thinking of the lens of like what's here and now. Yeah. Which is kind of what you were just getting at right? Like, we realized as a community four, five years ago, okay, the only way to scale is horizontally scaling, or else you have to like beef up the node requirements in the L1 centralized scale to kind of like this Monolithic vision. It's not going to work. Yeah. As, as Solana is kind of moving. But now we're like in this next stage we're like we're getting to AI agents, and I think that we're, we're, we're going to see that we need like more data availability. We need more blob space. We need more chains. Yeah. Because, what we're doing right now is like block space is like, like the demand is relatively, relatively low still, but like just in any speculative cycle, the demand goes absolutely exponential. And we saw that in 2020 when Ethereum basically couldn't handle it. Yeah. But now, it's like, th- like the infra is there. Um, so I, I'm just curious, like how do you, how do you kind of, pause it around the, the block space, demand versus supply situation when it comes to L2s and roll-ups, you know, maybe tying in some of the AI agents stuff and like where are we headed in terms of the amount of block space expansion for Ethereum?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, yeah. I mean, it's, it's exponential, I think. The demand is going to be exponential, the, scaling up needs to be exponential to match it. But you can, it, it's always going to be like, as scalable as it's, uh, I guess like weakest link, so to speak. So for example, you mentioned DA, like, um, you know Celestia and Eigen DA, are don't have unlimited DA. Right? Ethereum DA is already at capacity. So we're, we're already full, Ethereum L1 normal transaction, uh, the, the normal fee market is already at capacity, and has been for ages. So eventually, like if it is exponential, or like, I, I think it is, I'm, I'm sure, um, you guys agree, then, you know, Eigen DA and Celestia will reach capacity. They'll have to keep scaling up, like everything will just be at capacity and you'll have to keep scaling it up, um, because, yeah, the, the roll-ups themselves, like, they, they might have a capacity that, uh, like their, their um, gas target might be lower than the DA. But eventually, it'll be higher than the DA available to them, and they'll be like, \"Well, we want to scale more, we need more DA,\" and then these things will have to scale up. And everything's just going to keep scaling up and up. But yeah, I mean, traditionally there has been, a glut of block, block space. Um, but I think yeah, now with the, the AI agents and, and those getting like a lot more sophisticated, and, and the thing is, they're becoming cheaper to run as well. They're just going to proliferate, like absolutely crazy. And, um, the thing is is that they, the, the, the nice thing is that they're all going to be transacting in like native assets too. Like, native, uh, crypto native assets. Yeah. So, 'cause they can't touch fiat, because they, yeah, they can't go through, they can't go through."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Kyc."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Too many, too many intermediaries, too many inefficiencies. Yeah. It, Exactly."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And all they need to be doing, all they need to be doing is be seated with some capital. And anyone can seed them with this money, right? Like, doesn't have to be their creators. It can be anyone, say, give, give them some money, and then the AI if it's smart enough will be able to turn that into, to more money and do things with it. And even if it loses money, it just means some other AI took the money from it, and then they all just, you know, so it's basically just replacing humans with, with the AI agents. Uh, and I think in that world, because as you said, like humans are a lot slower than AI, um, and AI can think exponentially faster than us, that means the block space has to scale exponentially to, to match that. We're not dealing with humans, you know, anymore and human demand. We're dealing with, with, yeah. Exactly. And, and, and honestly like most of the activity is already been traditionally bots, like a lot of MEV bots and stuff like that. And, and that's why things get, get capacity very quickly, is because of that."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah. I'm very curious to see some sort of Dune dashboard or something that would show the gas breakdown.  Mhm. Even going back to Ethereum in it's, in its history, like, how much gas has been paid by regular human actors? How many have been paid, how much has been paid by smart contracts? Now, new category, how much is being paid by AI agents?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Mhm."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah. I mean, that fees.wtf website. Yeah, yeah. Yeah. P, P"
+  }
+]

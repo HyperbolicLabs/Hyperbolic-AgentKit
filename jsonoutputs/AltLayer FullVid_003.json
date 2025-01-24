@@ -1,0 +1,218 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "and you if this challenger feels like that rollup is invalid or the block is invalid then you can go and challenge and if you if you engage in a fraud proof game with the with the sequencer uh with the executor and then you'll if you win then you'll get your get some money"
+  },
+  {
+    "speaker": "Rob",
+    "content": "um so the idea is if you wanted to extend that to app specific rollups you need this network right you need a network that comes out of the box when you launch the rollup and that's what Vital does"
+  },
+  {
+    "speaker": "Rob",
+    "content": "so um again very simple flow so you you use a state transactions they send it to the sequencer which again by the way it could be a centralized sequencer by the way all of this is modular so you don't have to use Vital with Squad you could use purely Vital and not Squad so you could be a centralized sequencer"
+  },
+  {
+    "speaker": "Rob",
+    "content": "then you have someone that executes those transactions and commits a state and then the Vital comes in this this net we would say okay look you have posted this block but this block is invalid"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and here is a proof and you have to engage with me on challenges and you could do this so the entire bold protocol so Vital operator will run basically the bold client that is being built by Arbitrum Okay"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and again incentive comes from the same way where if you if you win the challenge you'll earn rewards"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Okay so um ag- again when it we come to the idea of uh using this vital mechanism as an ABS which is restaked ETH um this this is this is sounding like the security that we're getting is from a all like a committee if you will that's not uh it's not like the L1 uh and then we're also getting some L1 security so this is like this is like from a technical perspective it's it's less it'll be less secure than a typical rollup that's not getting any security from a committee that's not just the L1"
+  },
+  {
+    "speaker": "Rob",
+    "content": "No no no no this this is not true"
+  },
+  {
+    "speaker": "Andy",
+    "content": "What am I missing"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah so le- let me explain So in Arbitrum today you have these nodes uh which are whitelisted today Okay and these nodes they have nothing to do with L1 or L2 they are just nodes They are just nodes you know there are people or entities running some clients that's okay That's nothing to do do with L1 nothing to do with L2"
+  },
+  {
+    "speaker": "Rob",
+    "content": "So they are just nodes what they do is they take blocks that has been produced by the validators in case of you know Arbitrum they are called validators So the validators take transactions from sequencer and they produce a block"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and then these uh these challenges uh will take this block and will check whether the block is valid Again so far they are all doing this off-chain there's nothing on-chain here They're just doing off-chain"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yes"
+  },
+  {
+    "speaker": "Rob",
+    "content": "off-chain"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yes"
+  },
+  {
+    "speaker": "Rob",
+    "content": "When they feel like okay this is something wrong there's something wrong here then they will do challenge on the L1 Okay"
+  },
+  {
+    "speaker": "Rob",
+    "content": "So the whole challenge actually happens again challenge is also bisection protocol also off-chain but parts of that goes on chain Okay So those those things will happen on chain"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Vital doesn't change any of that Vital only says"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah"
+  },
+  {
+    "speaker": "Rob",
+    "content": "that network that number of nodes that were doing these challenges now we have to be the we have to make it decentralized So they will now form a network and they will still do the same thing which is they challenge and then they will you know do the challenge and post things on the L1 nothing changes there Only thing that you're doing is you're saying that that network that previously was permissioned now you can make it public by using the Bold protocol"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Got it Okay Yeah so it's more about decentralizing the the challenging of um the rollup blocks Right then it is about inheriting security from the L1"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Correct"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Correct but changing where you're getting the security from"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Exactly Exactly so you're not changing any of that You're just saying hey I want to have some sort of network some network of nodes to do this How do I find those nodes Right And how do we make sure that those nodes have some collateral Otherwise you do you know if if you'll bring random people with no collateral they will just lie things right they don't have to wait it out"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah"
+  },
+  {
+    "speaker": "Rob",
+    "content": "There has to be some mechanism to bootstrap that network and restaking is that mechanism Okay But you're not changing your security protocol you're still relying on L1 for all these uh you know fraud proofs to be settled That still happens on the L1 this is not this is not a change okay They're just a bunch of nodes"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Got it Makes sense"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Okay Um okay so this is Vital So again to caveat this so Squad and Vital still being built simply because I said Bold protocol is not built yet Right so we are still waiting for I mean okay it's built yet but it's it's on testnet it's not kind of for Arbitrum mainnet quite yet So we can't use that quite yet but the idea is once that becomes completely public then we would be able to build Bold protocol as a part of Vital"
+  },
+  {
+    "speaker": "Rob",
+    "content": "What is what is ready today and what's being what's live today in production is the third thing that we call Mach which is basically a fast finality layer"
+  },
+  {
+    "speaker": "Rob",
+    "content": "um now it's slightly weaker than than I would say Vital in the sense that in Vital the nodes actually go and challenge they could actually go and engage with let's say your your you know faulty block Right Mach doesn't want to do that Mach is slightly weaker than that They will they basically check a take a block and they run things and if they look okay to you they say look here's everything is good here's my attestation to it That's all"
+  },
+  {
+    "speaker": "Rob",
+    "content": "The Mach operators don't go and engage in in Of course you can extend it if you wanted to but we try to keep the design slightly simpler and modular You say okay If you only want fast finality don't worry about challenging then you can just use Mach but if you actually want to do challenges then you could use Vital Okay"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um again the motivation is very simple um you know you rely on Ethereum today for finality but finality on Ethereum takes 12 minutes and that's not ideal And so what ends up happening is people end up relying on the sequencers and sequencers give you these pre-confirmations basically a pinky promise that says hey I have seen your transaction here's how I'm going to order it"
+  },
+  {
+    "speaker": "Rob",
+    "content": "but that's it There's no guarantee that I will actually abide by it"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and that's that's a weak promise um and so how do you how do you make it stronger And the idea is you can combine uh EigenLayer with this mech- mechanism to make it slightly stronger And the way it works is you have the sequencer again it could be centralized decentralized doesn't matter right"
+  },
+  {
+    "speaker": "Rob",
+    "content": "You you take your sequencer sequencer takes you the block gives you the block You take the block and you can also take the state and you give it to this Mach network Mach network will check whether the blocks look okay They will not do challenge This is the main difference They are not challenging anything They are just checking Okay good to them Okay"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Okay"
+  },
+  {
+    "speaker": "Rob",
+    "content": "The Mach network is happy they will sign your thing They would say look here's my attestation on this block This block looks good to me"
+  },
+  {
+    "speaker": "Rob",
+    "content": "And then they they can potentially pass the data to Ethereum Okay So it kind of like it becomes like a middleware network that sits between the sequencer and Ethereum"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Okay The good thing about Mach is because like sequencer doesn't have any stake in the system but Mach network has So if they misbehave if they say look this block is actually invalid or this block never gets committed on Ethereum then they will get slashed"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Okay but doesn't the sequencer in your model theoretically go is going to have stake in the vital model"
+  },
+  {
+    "speaker": "Rob",
+    "content": "So so okay"
+  },
+  {
+    "speaker": "Andy",
+    "content": "They will have stake"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Because this is designed in a way that So you can say it could both be you know it could be a centralized model it could be a Squad"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Understood"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Okay So it's it's designed in a modular way Okay So you could decide not to use Squad at all not to use Vital at all you just you want to use Mach"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Understood"
+  },
+  {
+    "speaker": "Rob",
+    "content": "So for example today you could use Mach network with OP sta- OP OP mainnet you could use Mach network with with Arbitrum Arbitrum mainnet Okay"
+  },
+  {
+    "speaker": "Rob",
+    "content": "And you're not changing the sequencer mechanism you're not changing how the fraud proof mechanism works All you're saying is I'm going to take a block from the from the Arbitrum mainnet uh you know block and I'm going to verify if it looks good to me so that you don't have to wait for Ethereum to veri- validate it Okay And because they're putting stake into it I know that if I say something bad if my block gets this block gets invalid or is considered invalid then my stake will get slashed And so I have some incentive in the game which sequencers don't have Okay"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah um So um I guess I'm go- uh I mean a a the time of this spinning out it'll be live it'll be trading in the billions somewhere But like the the concern with this is that if if if Mach network can't ha- can't accrue enough operators willing to commit uh and delegate restaked ETH to it then there's only there's a certain threshold that of rollup size if you of TVL or of of of the amount of transaction volume or or or how much value is being uh sequenced that there's a threshold that is like up a ceiling to where the stake um of the Mach network becomes uh less than the value being transacted on in the sequencer and the the the the like the alignment of incentives skews towards the Mach network could theoretically like um there could be operation operator collusion in accepting of slashing if there's an outcome on on the sequencer side where they have other stake that is positively affected if this transaction goes through to Ethereum So how how like is that I mean like I'm I'm going out on a limb here so like I'm filling some gaps but like how are you thinking about that"
+  },
+  {
+    "speaker": "Rob",
+    "content": "it's it's a very valid question Okay so um so there are kind of theoretical things and they are kind of practical things that happens in in in real world right So for example"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Exactly"
+  },
+  {
+    "speaker": "Rob",
+    "content": "No let's let's be honest about it right So I mean in theo- in theory um your Mach network normally uh I think Celestia coined this term which is like um some sort of a weighted average over week or something So for example let's say you're building a bridge let's say"
+  },
+  {
+    "speaker": "Rob",
+    "content": "using ABS mechanism using restaking You the amount of amount of um the amount that you can secure depends on on the kind of the stake that is being there right So for example let's say if you want to secure let's say 100 let's say your bridge does 100 million of trading uh 100 million of volume uh by directionally on a weekly basis then at least you have you should have 100 million of stake ETH there to at least slash at least at the very least"
+  }
+]

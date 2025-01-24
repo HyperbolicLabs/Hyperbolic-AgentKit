@@ -1,0 +1,138 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "away because of AI and we'll talk about that."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So so and that's why like the costs are like pretty tremendous even for Layer Two, right? It's like a million a year at least, you know, in the infrastructure, an auxiliary infrastructure. I'm not talking about DA costs or anything right? Which you know, you can use Nuffle Labs and get very cheap DA, uh, not to plug uh,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Nuffle."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, but, yeah, I think the the cost of some of these things will go down, but if you want to innovate, if you want to change something, if you want to have that sovereignty that you like want to pay for, then it's going to you know, you will need to have that cost added up."
+  },
+  {
+    "speaker": "Rob",
+    "content": "The kind of design with Nightshade we bringing in also allows you to have your own shard, right? So you can have like as much compute as as shard uh uh as any other chain would have.  Uh, so you don't and you don't have the same kind of problems of uh, you know, some some other app got popular and now everybody is struggling with that.  Uh, and at the same time, you can also flip it and have sharded smart contracts right, which are available on every shard, on the user's account and have state together with other sharded smart contracts and user information."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Right? So you kind of, like what we try to do is actually flip the script where it's user's information, it's starting user's account. And so when you're building applications, you're actually storing them on users, uh, in user's state."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And I think that is also fundamentally kind of moving us in a direction like of that vision where you use your own everything, and then you just have kind of state synchronization smart contracts, which are defining the rules between kind of how we peer-to-peer transact. Now, not everything can be implemented like that. There will be still shared smart contracts, and they can live in dedicated shards if needed."
+  },
+  {
+    "speaker": "Rob",
+    "content": "The and so going to interoperability, I I mean I again, we working on chain structure like, we will, we will make it work between all the Layer Twos and chains."
+  },
+  {
+    "speaker": "Rob",
+    "content": "No,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "and Bitcoin and Doge and Litecoin."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Like this is this is all coming. We have like a ton of interesting applications on that. But again, they, it always comes with latency, it always comes with additional, um, with additional risks as well, right? And so for example, uh, you know, we're designing one of the kind of debt incent uh kind of intend space debt decks. And, you know, you need to consider the fact that some chains will go down and disappear. Right? The Layer Twos will shut down, you know, maybe some Layer Ones will just stop, right, for a few hours or or longer. Um, and so how do you like deal with those situations? What do you do? What if a person deposited money on that chain and once to withdraw on a different chain, right? So all of those situations need to be handled. This is not something you need to deal with when you're building kind of in a single environment. Um, so I think it's indeed like longer term, we're going to change things, and you can imagine like, okay, cool, I want to start my own like server with my own app. Like that feels like a a right model but because the your users are not there, right? The users want to contain state within, within there. That's the whole point we're offering with you know, user ownership. Um, and they just like the fact of like integration being so much more complicated. I I just don't think that's the right model. And uh, again we see like the innova, like people who actually starting new chains, it's very infrequent that they end up building like truly innovative products, right? There's only like a few probably that are because they spent so much work on building the chain, right? You end up just like spending so much, uh, effort there. And building the ecosystem, et cetera. Now, economically right now, you know, obviously there is a premium for doing that. And so people are rewarded. But if you're truly building an app, right? You should be focusing on product on end user on figuring out and maximizing how much kind of um, how much impact you can get to the end user. And, you know, using shared infrastructure is just so much like easier, cheaper and, you know, for the most part, the trade offs are there to, you know, to get you going, uh, in a successful way. "
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, I think um, I think our ideas are like converge in the sense that you see like the way that like Near's model, is isn't just like, okay let's just max out a, a single L1 and just kind of scale as much as we can with with kind of like one state. Like sharded state, sharded user accounts allows you to kind of, like basically what you're saying is like Near is solving like Near has solved what Ethereum is trying to do right now and solving its interoperability problem just by sharding at the L1 layer instead of having to launch all these new chains."
+  },
+  {
+    "speaker": "Andy",
+    "content": "It's like the same idea of horizontal scaling is like applied."
+  },
+  {
+    "speaker": "Andy",
+    "content": "It's just that in the in the kind of modular world in in the Ethereum kind of roll up world. Putting them together has been way more difficult because well, they're not touching the same state consistently like they are in Near's model. But you guys have basically achieved what that kind of is inoperability."
+  },
+  {
+    "speaker": "Rob",
+    "content": "The original, yeah. The original thought process was, yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "That's right."
+  },
+  {
+    "speaker": "Rob",
+    "content": "2018"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah. EEF Two, Circus 2018, is Near. "
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yes."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, and so somehow along the way we got, we we got lost there in the Ethereum land, which is which is is what it is. So, yeah, I mean I, I think you, there's quite a few incentive misalignments that you alluded to. I think one being like the valuation game, the investing game of launching your own chain. Uh, as well as just kind of like yeah, that idea of we can, you know, make money off the sequencers and things. But again, if the fees in crypto trend toward zero on infra, then you, you got to think like fees on, on rollups, fees on L1s, L2s are also going to trend towards zero because that's just the state of kind of using anything. Again, like, I would you pay to send out a, a tweet every time you tweet? I don't think so. Right? And so like, or maybe you would. I don't know, if you got enough economic value from that system. And so I think like, in that sense, like these these applications have to create real ways to make money and not kind of rely on, on, on their kind of like sequencer revenue. Um, but yeah, I'm I'm kind of once again seeing that okay, the, the vision is the same with regards to how we scale. We can't scale single-state machines, and we must kind of scale out in in this like sharded, in this roll up, in this horizontal way. Um,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "And building this interoperability first."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, with interoperability first. Well, that's the big problem is that people in Ethereum land are like, okay guys, it's been like what, Ethereum was around 2016, so it's been almost 9 years and we still haven't really figured this out. And so that's kind of like the question here."
+  },
+  {
+    "speaker": "Rob",
+    "content": "There's by the way, one fundamental difference that Near, that we've done on Near is that we have a single state space. So, on Ethereum, every single kind of rollup is a copy of a state space."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And so you have Aave on everyone. You have Uniswap on everyone. You have my account on every one of them. Instead we say, hey, it's single state space, right? We, we, we shard, we split it into kind of cohorts and like they communicate with each other. Uh, we can split it differently every like whatever, every 24 hours. But because of this, it means like you have one account right? And just communicating with everybody else. And so you can still mimic a lot of the same stuff like, you can have multiple Uniswaps or whatever if you want, but like you now don't have this problem that like everybody is trying to copy the same thing everywhere."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, I mean I do think that's the problem of not having interoperability baked in from the beginning. Like each ecosystem can have like its native decks, it's native lending market, but like, you know, if chain signatures work, if, if, if Zion's formula works, if Agoric gets orchestration, right, and all these different interoperability things come online, having a, a decks on one chain is going to be no different than having a decks on another chain. It's going to just be a decks."
+  },
+  {
+    "speaker": "Andy",
+    "content": "So it's like, there's no edge there. So like, that, that's going to be a whole cycle of kind of res, of getting rid of the recycled products that we've seen as well. So like, you know, as an investor, there's no really value proposition to investing in the first decks on a chain, theoretically because I mean, the chains are just going to be abstracted anyway. So it's just going to be a decks, you know, you're just going to end up using the biggest one."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Well, you, I mean you're going to use like overlay pretty much to kind of route to any, whatever underlying pools, which are like both off-chain and on-chain so that like, that's kind of what intend, intend-based architecture for decks allows you to route liquidities for anything. Right?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Oh, you have better liquidities on Binance right now, cool, we'll just like match you there. It's better on whatever, Seven Layer Two like, in fifths pool, crew pool, right? Well, so so so so"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah. Yeah. Exactly. "
+  },
+  {
+    "speaker": "Rob",
+    "content": "It's kind of unifies this space, yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Exactly. "
+  },
+  {
+    "speaker": "Rob",
+    "content": "But it, but it removes all the like sequencer roll-ups and like all the MEV, etcetera, because now like that is happening kind of off-chain, you're you're running an auction pretty much saying like, hey, I'm wanting to do this, who who can fill me with the best price."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, but that's all we want. Like we want"
+  },
+  {
+    "speaker": "Andy",
+    "content": "We don't want roll-ups in the Ethereum space. We don't want like these different chains, app-chains, general purpose to like, be like head butting each other, in-fighting, doing all these games with each other. Like we just want if, if, you know, if $10 enters into crypto, we want that $10 to be, to be able to to go and be used where it is in the broader space, not like fighting over, you know, that, that user or that one, like, if we get 100 users into crypto, we should be, it should be, like that should be,"
+  }
+]

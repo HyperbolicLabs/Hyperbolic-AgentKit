@@ -1,0 +1,98 @@
+[
+  {
+    "speaker": "Rich",
+    "content": "Yeah, that's a really interesting point. Yeah. And and then I think on top of that, I I think the ST point is really, really critical here. And core has its own LST BTC coming out. Then there's a bunch of LSTs getting built on top of core's yield. And I think this is what we've seen is yield is actually the killer app. But it needs to be safe, and it needs to be secure, it needs to be decentralized, it needs to be non-custodial. And this is part of the missing ingredient from Bitcoin DeFi today. Is we have a lack of actual sustainable, trustless yield sources. And I think that's what will really help unlock a bunch of these Bitcoin DeFi use cases. And I don't think CB BTC at least to start will have a yield bearing aspect. And I think over time, maybe they'll add it. Like you'll get into these other, you know, scenarios over time. But it opens up the opportunity for many of these LSTs to actually grow and get a bunch of market share, to eventually get to some of these, you know, yield stacking components that we all would love to get to, as long as it's safe. Like you mentioned, the CDP protocol. I can't think of a better CDP protocol than one that would take LSTs. So you get to have, you know, trustless yield, and that is an initial booster, on top of the leverage you're getting from the stable coins, while maintaining your upside exposure to Bitcoin. That's kind of like the the killer trio."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, it's like it's rich for you, it's like the perfect type of product, right? You you have a bunch of Bitcoin. Like that's what you like, denominate your net worth in, right? So it's like being able to borrow against that, it's like, that's the Yeah, sorry to interrupt, but that just seems like, if you have a yield bearing asset you can borrow against, that just seems like Bitcoin's biggest unlock for the coming, you know, 18 months."
+  },
+  {
+    "speaker": "Rich",
+    "content": "Totally. And I've been We've So there's several CDP products that are close to launching on core, hopefully in the next like month or so. So we're really excited about this. I've been trying to get CDP protocols, like like begging on podcasts for like, I don't know, nine months, 12 months. Uh it's been a really long time. And and people laugh at me when I say it. It And I think the reason that it hasn't been popular is many of these folks haven't been in Bitcoin for a long time, and don't realize that like, this is the killer use case of Bitcoin. Like it's really simple. It doesn't need to be over-engineered and complex. The other piece that I think turns off some folks, and again, Core is, you know, trying to find people when, you know, it be It comes to the ecosystem as much as we can be, who are really aligned with the long-term vision of four. But it's finding people who want to build real businesses. And what I mean by that is, CDP protocol might not need its own native token for like a long time. Right? It can actually just generate tons of fees. And those are interesting kind of things for people to think through because, so much of the meta in crypto has been like wen token, right? And it's like, that leads to these bad incentives where, the TVL or like AUM game, really, in Bitcoin is a much longer time frame. It's probably five plus years, but one of these CDPs is going to get deca-billion dollars in AUM. And it's going to be this fee-generating machine, because it's giving so much utility to Bitcoin holders. And I know that's something that probably Rena struggles with, as well, when you're you know, trying to work with teams, it's finding folks that, you know, really see the opportunity in Bitcoin, beyond just the the tam of like what Bitcoin's worth today, because you need to see on a longer time scale, how it can grow and how much utility you can actually bring."
+  },
+  {
+    "speaker": "Rob",
+    "content": "I I tend to agree with you guys, that the yield is the killer app, and Bitcoin is the best collateral asset in the world. But do you think the the ETF issuers that custody all of this Bitcoin now, are going to collateralize it on chain, and take the smart contract risk to generate that yield? Rena is shaking her head. It just seems more likely that they engage in some off-chain agreement, to like if they're going to generate any kind of yield, they do it off off-chain with their other counterparties in a legal document."
+  },
+  {
+    "speaker": "Rena",
+    "content": "Yeah, it's going to be the same as like the Earn fiascoes, or things like that. Like I just don't, I don't fundamentally think they're gonna get it right. Whereas, builders like in Stacks, and Core, and whomever are actually trying to build just a better way to do this transparent on chain. Like things that I would love to see, kind of, like, coming in is, I don't think a lot of Bitcoin related products or protocols need a token, too. I'm actually with Rich on this one, like, I actually think creating a sustainable business with Bitcoin, is more important to the vitality of Bitcoin than wen token, wen this, wen that. So like, actually, it's like, I see a lot of this dissent in the, the BRC-20 or runes community, that they rush to create these assets because they have, um, let's say Bitcoin denominations or Bitcoin backed, yet, they can't sustain their business whatsoever because they're fully wholly dependent on price goes up. And like that is the wrong mentality, for anyone who's operating in this space of It shouldn't be can I build something that generates uh that is dependent on markets? It should be can I build a business that actually can sustain itself. And so like, Rich is spot on on this, like a um CDP protocols. There are like one really amazing way to do this. Like we've seen this play out in like Athena, on the e-side and such. And like, why isn't this kind of a core premise of Bitcoin is beyond me."
+  },
+  {
+    "speaker": "Rich",
+    "content": "I'll say just just one quick thing on on on Robbie's point around yield, is I do not think that these ETF issuers will come on chain. And I think that's a very good thing. Like like like do not get me wrong. I think what we pursue is non-custodial staking protocols like Core, right? Where you don't have to come on chain. And I think that's a fine stopping point, and that's why there's actually, you know, these yield bearing ETPs that are currently powered by Core yield in Europe, and will come to the Middle East and Asia, you know, later this year, because you don't need to make that choice. But I think yield bearing Bitcoin inside of these custodie uh custodied solutions, particularly ETFs, will be a very big use case."
+  },
+  {
+    "speaker": "Rena",
+    "content": "Okay."
+  },
+  {
+    "speaker": "Rena",
+    "content": "One like loose thought that I've had, like in the back of my mind is, with so much Bitcoin going into custody Do you guys actually think Bitcoin that's liquid, whether it's on chain, whether on like BTC just like, called in your own wallets, or, BTC bridged into, let's say, an L2, will trade at a premium because it's free, liquid and available? Like something I've wondered of, is there a market to have a slight premium of on-chain Bitcoin versus custodied Bitcoin?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "I think it'll probably offset. Like cuz there is Depending on the L2 that it's locked in. You can relate that to like, cont smart contract risk. And so you Again like, related back to like the state ETH thing. A lot of times it was trading at, a discount, or a premium, depending on the smart contract risk, or if it was on peg or off peg. And so I I think like, Yes, it may be a premium because it is liquid. But, you are taking smart contract risk, which is going to dilute that premium kind of back down to, yeah."
+  },
+  {
+    "speaker": "Rich",
+    "content": "It's typically at a discount."
+  },
+  {
+    "speaker": "Rob",
+    "content": "It could be at a discount."
+  },
+  {
+    "speaker": "Rob",
+    "content": "It could be at a premium, depends how you how you price the risk, and how you price, how the market prices the liquidity of the Bitcoin."
+  },
+  {
+    "speaker": "Rena",
+    "content": "Yeah, that's something I'm always thinking about cuz I know uh BlackRock is about to be the biggest bag holder of all."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, they're on pace to, I think, exceed Satoshi's coins. Like by the end of the year. Or next year, maybe?"
+  },
+  {
+    "speaker": "Rich",
+    "content": "Yeah, we'll see. Yeah. We'll see."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Really next year. Yeah, really next year."
+  },
+  {
+    "speaker": "Rich",
+    "content": "But they'll add redemptions at some point, and and that's like much needed. Like don't get me wrong. Like I I think for like the centralization risk of Bitcoin, if we can't eventually get them to add redemptions, it is just a one-way black hole, to Rena's point, right? Like it will only grow. And that is, you know, that that is a existential threat."
+  },
+  {
+    "speaker": "Rena",
+    "content": "Okay."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Look, maybe this is a necessary evil, that we have to take as a stepping stone for like more, municipalities and like governments, and country national, like treasuries, in order to, like, first to go through the ETFs, then the US government, like, then every country in the world has, uh, uh, uh, you know, what- whatever you call it? War chest Bitcoin Reserve? Right? Bitcoin Reserve? Is that any different, you know, if it's fully backed by"
+  },
+  {
+    "speaker": "Rich",
+    "content": "National Reserves. Yeah."
+  },
+  {
+    "speaker": "Rena",
+    "content": "Yeah, but"
+  },
+  {
+    "speaker": "Andy",
+    "content": "That was always the dream, too. But like the way that we're kind of understanding it now from your perspective is like, that's also paradoxical. Like that's also not the ideal. Basically, we need them to be all on chain. Basically."
+  },
+  {
+    "speaker": "Rena",
+    "content": "We need them to be degenerate. They need to, like, GM and being enjoying this, like, ourselves."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Covalent is solving the long-term data availability problem, where a lot of the data availability providers today, in the modular space, when you post data to them, they actually only hold that data for about 12 to 16 days. And then, it's basically they could go into archive node or oftentimes, it's just kind of put away into the abyss. And what Covalent's tried to do is build this long-term data availability solution, which can plug into some of these modular data availability providers, and provides a longer-term, perpetual data solution. So what we tried to think of this as is when you post transaction data onto Celestia, or Veil, or any of these modular DA solutions, or even Ethereum, Covalent is able to provide a long-term data storage and data availability platform for that data after the time period. Blockchains are billboards, not databases, and you know, we need these providers in the space, to be able to kind of hold on to the long-term data that is provided from these providers, and these blockchain states. This is where Covalent comes in. They just had a nice rebrand, check them out on Twitter as well as the website. Thank you for being here. Hope you enjoy the rest of the show. Everclear is pioneering the clearing layer. The clearing layer can almost be thought up as Splitwise when you're going on a trip with friends, but for the blockchain. What I mean by that is when users are sending cross-chain messages, there's often times fillers and solvers who have balances left on different chains that they need to rebalance and reset their positions. This is where Everclear comes in. Everclear is pioneering a collaborative approach to the chain abstraction."
+  }
+]

@@ -1,0 +1,194 @@
+[
+  {
+    "speaker": "Guest",
+    "content": "and now it's whoever is running the sequencer."
+  },
+  {
+    "speaker": "Guest",
+    "content": "So, in the Uniswap example, you know, they're gonna be running the sequencer."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Right? In the Coinbase example, they're running the sequencer. In the I I saw recently optimism paid like 50 something million dollars in tokens to Kraken to launch their L2. Who do you think is going to be running that sequencer?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Any guesses?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "I'm guessing Kraken."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Uh Kraken and then by downstream effect, Optimism gets the uh like the revenue sharing."
+  },
+  {
+    "speaker": "Guest",
+    "content": "That's tiny, man, like like you you look at the numbers that base is paying to optimism, it's it's not even pennies on the dollar, it's whatever smaller than pennies on the dollar."
+  },
+  {
+    "speaker": "Andy",
+    "content": "No, no, no, no, no, it's um to join the superchain you you there's a there's a fee requirement that you pay back to Optimism collective."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "It it it doesn't matter how much you can extract, that's tiny, man. It should be a lot more."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Okay, yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "It should be a lot more. It's it's it's like it's it's a database license, that's what it is. It's I I want to have my app using Oracle so I pay Oracle a license."
+  },
+  {
+    "speaker": "Guest",
+    "content": "It's like a steep ask."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I'm still extracting a lot more value from the consumer than Oracle is getting for the license. So, this is where Sonic's idea comes from then, because maybe with a Not a bad business model."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Another way to look at it is, centralized sequencers shouldn't be getting all of the revenue."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I mean, that's true. Let's Let's Let's first drop that Let's first drop that decentralized word because decentralized sequencers is true."
+  },
+  {
+    "speaker": "Andy",
+    "content": "They should go to the apps."
+  },
+  {
+    "speaker": "Rob",
+    "content": "I said centralized."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Okay."
+  },
+  {
+    "speaker": "Rob",
+    "content": "The centralized sequencers should not be getting all of the revenue. They should be going back to the apps."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, which which again, at least a step in the right direction with Uniswap where they're like, that value capture is going to token holders."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Again, it's a bit of a solution trying to fix a problem, because their problem was really we we kind of in a response launched Uni when we maybe shouldn't have yet, and like, now we kind of have to help those guys."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Still they're trying to fix it. Kudos. Um, definitely, centralized sequencers I think it's pointless. I think run a database. Why does it need to be a blockchain? It doesn't."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um, I I don't think Sonic solves sort of the umbrella problem of why rollups, why appchains, etc. I don't think so. I'm not egotistical enough to say it does. I I I think it addresses a very niche problem, which is we see an incredible amount of value extraction from MEV guys or validators, that should be going to devs."
+  },
+  {
+    "speaker": "Guest",
+    "content": "You know, it's it's the same early YouTube, Twitch, using that example again, there wasn't revenue share, but it was those early content creators that made the platform what it was."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And the reason why it continued growing is because they were smart enough to be like, \"Hey, it's actually the content creators that's drawing the eyes, so let's pay them money.\""
+  },
+  {
+    "speaker": "Guest",
+    "content": "And in our world, it's the dapps. You know, no one uses a blockchain because it's fast. You use it because there's an app you want to use. You use it because there's some economic activity you want to accomplish. So, those are the guys that bring the users, and those are the guys that need to be appropriately incentivized. Um, and that's the thing we're trying to address. We're like,"
+  },
+  {
+    "speaker": "Guest",
+    "content": "So, so so we ran the numbers, we were like, \"Okay, at what point we acknowledge that the validators are being grossly overpaid?\" You know, the amount of money they make versus their overheads and running costs. And we work closely with the teams running these things to see hey, what's your profit margins? How much can we realistically drop this before you would no longer be running a validator? Um, and that that that was a big, bloody margin, you know? I mean, our our our fee program is 90% of the transaction fee now goes to the dapp, instead of the validator. And the validators are still profitable on that. So, I mean, that's a lot of extraction that's just happening as pure profit. Um, but, you know, that's the specific niche we're trying to address where the guy's like, \"I don't want to launch an ETH because my app is going to be generating a ton of fees.\""
+  },
+  {
+    "speaker": "Guest",
+    "content": "So, what options are there for that guy? Or girl? My bad."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um, where do they go? You know, do do, and and I don't really think there's a lot of options for them right now other than launch my own appchain."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, they don't There's also chain."
+  },
+  {
+    "speaker": "Rob",
+    "content": "There's also chains."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Or start yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Or or or L2s find ways, you know, to to split those the sequencer fees to two two steps, which which they can do, which they can do. But again, then you're relying on a very centralized entity. Now, to be fair, you you do the same thing by by implicitly relying on the Sonic chain, that it is going to distribute, you know? So you can still see that as a centralized entity, but that's ultimately controlled by the code and the validators, you know? That's not Okay, so it's validators That's not a Coinbase."
+  },
+  {
+    "speaker": "Rob",
+    "content": "To be distributed."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "It's not like government based or anything. It's like a strict like programmatic distribution of fees based on who generates the most basically, who spends or which app spends the most gas or the most demand for block space or How exactly does the"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Well, the the same thing? So you deploy a smart contract, that smart contract when you interact with it, it co it gene it costs you let's say a dollar in fees. Now, it might have interacted with sub-contracts, so, you know, there's a little bit of calculus that has to happen there to see but but ultimately, it's who used what amount of gas, right? Because that's what we're looking at. 1 dollar equals let's say a million gas, this contract used 200k of that, this contract used 300k of that, this contract used 500k of that. Okay, you get 90% of 500, you get 90% of 300, you get 90% of 200. Done. And that goes to the person who deployed the contract or the the subsidiary that they set from there. So it's simple, you know, it's it's it's the same as registering for any revenue based program, where I'm like, \"Okay, I'm going to upload my videos, here's my banking details.\" And the system needs to do the rest."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. And it goes it goes to the the apps that brought that user activity. And not only does it does it bring you 90% of the activity that you brought to the platform, but you also lower your overhead from all the cost that we were talking about about earlier."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah. Because now all of a sudden, you know, you you you still get all of the benefits of a layer one, you know? You get the Chainlink, you get the native USDC, you get the the the the native bridging. You you you you get I I mean, another thing, right? Is centralized integrations, like like a lot of, if we consider, let's say someone wants to build the next big payment app, L2. At some point they need fiat and exchange on ramps, off ramps, you know? Binance, OKX, Coinbase, whatever. They're never going to be like, \"Oh, if you deploy with this L2 stack, you have native integration into us.\" That's just never going to happen. They have to add that integration layer, they're they're we're we're in a different crypto world now, where it's not just a technological solution. There are real companies, real integrations, real people that need to put in time to connect your thing to theirs."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Now, the argument there is obviously eventually we get to the point of composability, where your layer 2 then sends to the bridge contract that is integrated into the Coinbase thing, and then it's automatically on there. Sure, I acknowledge that that could exist in a future world from a pure technology perspective. When I review that from a business opportunity perspective, it starts falling a little bit flat. Because again, it doesn't make sense for Coinbase to automatically integrate that because a big part of exchanges, using them as an example, a big part of their business model is things like listing fees, marketing fees, etc. So them controlling that gate to stop you from doing that integration, that's that's inherent to their business. Unlikely they're gonna remove it."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Now, at what point does it make sense for an app chain to gradua or excuse me, for an app that is deployed I I think it makes a ton of sense, right? To for projects to deploy, they think they're gonna generate fees, they want to get the most fees as possible. But, is the only in your in your thesis for appchains, is the only reasonable uh deployment of an app chain going to be to to graduate beyond and get go from 90% to a 100% of fee capture?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "So, so I I would like to refrain from commenting that now until I see what happens with Uni chain. Um, and the reason I say that is because you you you you in theory, you gain a lot, right? But the question is how much of those fees are because of a shared user base, or because of composability."
+  },
+  {
+    "speaker": "Guest",
+    "content": "You know? I'd like to do the numbers and see how much of Uniswap's fees are because of unchained liquidations happening. Now, if you're in your own ecosystem, and there's no Aave, Compound, Silo, whatever. Morpho, all of the new stuff, see, I keep up-to-date, I'm not in 2020. Um, how much of the activity is generated by them? You know, or how much of the activity is because of arbitrage happening via aggregators? How much of that activity is because of there being multiple AMMs, and that spread being covered between them. I'm very curious to see what their fees are going to look like when they're living in isolation."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Well, we might see how they deploy on Uni chain."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Now you can have Now, now now that's the exception I wanted to say is, Aave ah Uni has that level of power that they'll probably get native USDC, they'll probably get Chainlink, they'll probably get Aave, Compound, etcetera, to all come join their ecosystem. But, will it ever be as big as everything happening on layer one Ethereum?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "We'll see. And that's why I'm saying I want to refrain from answering that until I see that, because they might now be capturing 100%, but they might actually only be getting 50% of what they could have been getting if they were on layer one."
+  }
+]

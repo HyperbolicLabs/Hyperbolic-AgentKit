@@ -1,0 +1,222 @@
+[
+  {
+    "speaker": "Guest",
+    "content": "li- like the chain for AI agents, and economic activity on some of these chains is going to be like 80-90%, and maybe we'll have rollups that are predominantly human activity, and then we'll have other rollups that are predominantly AI-driven economic activity."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Well that's the thing about like, like the last six to twelve months, we've been arguing that like, we have too much block space. There's too many rollups, we have, you know, app chains, right? We can't put all these things together, like this L2 rollup, or this L2 kind of interrupt dynamic has been the big topic of conversation. But we've all been thinking of the lens of what's here and now, which is kind of what you were just getting at, right? Like we realized as a community four or five years ago, okay, the only way to scale is horizontally scaling, or else you have to like beef up the node requirements on the L1 centralized scale to kind of like this monolithic vision. It's not going to work."
+  },
+  {
+    "speaker": "Andy",
+    "content": "As as Solana is kind of moving, but now we're like in this next stage, we're like we're getting to AI agents, and I think that we're we're we're going to see that we need like more data availability. We need more blob space. We need more chains, because what we're doing right now is like, block space is like like the demand is relatively relatively low still. But like, just in any speculative cycle, the demand goes absolutely exponential. And we saw that in 2020 when Ethereum basically couldn't handle it. But now it's like, it's like the infra is there."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Um, so I I'm just curious like how do you how do you kind of like pause it around the the block space demand versus supply situation when it comes to L2s and rollups, you know, maybe tying in some of the AI agent stuff, and like where are we headed in terms of the amount of block space expansion for Ethereum?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, yeah. I mean it's it's exponential, I think. The demand's going to be exponential. The the scaling up needs to be exponential to match it. But you can i- it's always going to be like as scalable as it's uh I guess like weakest link so to speak. So for example, you mentioned DA like um, you know, Celestia and Eigen DA uh don't have unlimited DA, right? Ethereum DA is already at capacity. So we're already for Ethereum L1 normal transaction n- the normal free market is already at capacity, and has been for ages."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, eventually like if it is exponential, like I like I think it is, and I'm I'm sure um you guys agree, then, you know, Eigen DA and Celestia will reach capacity, they'll have to keep scaling up. Everything will just be at capacity, and you'll have to keep scaling it up. Um, because yeah, the the rollups themselves like they they might have a capacity that uh like their their um gas target might be lower than the DA, but eventually it will be higher than the DA available to them. And they'll be like, 'Well, we want to scale more, we need more DA'. And then these things will have to scale up. And everything's just going to keep scaling up and up. But yeah, I mean traditionally there has been a glut of blo- block space, um but I think yeah, now with th- the AI agents, and and those getting like a lot more sophisticated, and and the thing is they're becoming cheaper to run as well, they're just going to proliferate like absolutely crazy."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And um the thing is is that they th- th- the nice thing is that they're all going to be transacting in like native assets too, like na- crypto native assets because they can't touch fiat because the- yeah, they can't go through they can't go through world pay."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Credit cards."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Too many intermediaries, too many inefficiencies, it-"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Exactly."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And all they need to be do- and all they need to do is be seated with some capital, and anyone can seed them with this money, right? Like, it doesn't have to be their creator. It could be anyone say, 'Give give them some money', and then the AI, if it's smart enough, will be able to turn that into to more money, and do things with it. And even if it loses money, it just means some other AI took the money from it, and then they all just you know, so it's basically just replacing humans with with the AI agents. Um, and I think in that world, because as you said like humans are a lot slower than AI, uh and AI can think exponentially faster than us, that means the block space has to scale exponentially to to match that. We're not dealing with humans, you know, anymore, and human demand. We're dealing with with yeah. An- an- and honestly like most activity has already been traditionally bots, like a lot of MEV bots and stuff like that. An- an- and that's why things get c- capacity very quickly, is because of that."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yes."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, I'm very curious to see some sort of Dune dashboard or something that would show the gas breakdown, even going back to Ethereum in it's in its history like how much gas has been paid by regular human actors, how many have been paid how much has been paid by smart contracts, now new category, how much is being paid by AI agents."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Mhm."
+  },
+  {
+    "speaker": "Andy",
+    "content": "I-"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, I mean that fees.wtf website, I don't know if you guys have logged into that for a while. I remember after D5 Summer, I checked it a couple times, it's it's bad."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, yeah. It's bad. It's It's not fun, yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "It's bad. Thank God that we got the L2s, huh?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, yeah, well yeah, exactly. Um, but yeah, I I I think the AIs will end up being like almost all the activity, like 99.99% the activity, like yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Nuts."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah. Okay, so we've got this block space expansion, right? Um, we've got tons of rollups now. We're we're getting more and more app chains. We just did a podcast with Andre about app chains or not. He's in the camp of like co- come build on my Sonic chain, and you can just you can get all your fees distributed, we're like nah man, you should just build your own L2."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "We we we kind of went at it, but the core issue there that he presented, and that many people have just always pu- like pushed against the roll up centric roadmap, and that Vitalik has written about now more recently is this kind of interoperability. Is like, we've we've kind of unbundled Ethereum L1, right? Like this roll-up centric roadmap was really just about un- unwinding the kind of L1 this like monolithic chain if you will, and bringing it out into like this modular design."
+  },
+  {
+    "speaker": "Andy",
+    "content": "So like, what is the what is the community uh organization that is required to rebundle this, because what we have right now is we've got ag layers, super chain, elastic chain, orbit. We've got this shared sequencer express, Solastria. We've got these bridges, and everyone's competing to like win."
+  },
+  {
+    "speaker": "Andy",
+    "content": "But we we we are not coming together as a community to find like an answer. Like, is there a way that we can put individual motives and incentives aside, and embrace a collaboration over a competition uh perspective, or like does the EF have to like come top down, and be like, 'Guys like focus on this intense standard', or like like how do we get to a a more a a a Ethereum L1 monolithic UX within our kind of modular design space?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, I mean I think that there already is a lot of work happening on this from the leading L2 teams. They are working together to try and agree on standards because it is all about standards, at the end of the day. Doesn't matter what one you use, just agree on one, and and go down that path together, and then essentially if you get the few big ones doing that, the smaller ones will just join, because if you're smaller, you need to get bigger, and the quickest way to get bigger is playing with the big guys and making sure that you're interoperable with them. So, that's all we need. Just a few of the big guys to come to that. Like, Base, Arbitrum, you know, um up up- ZK Sync, Starknet, whatever the the bigger ones are, Blast, um Mantle, and just agree on a standard, and then just stick with that standard. Th- that's this- that's this- that's the smoothest path."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I I think we're we're starting to see that with standards like uh 76-83. Um, that one has gotten ecosystem wide support. Um,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, from Uniswap to-"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Uniswap across, Poly- Polygon, Optimism are all sort of coalescing around that one."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I I think it's funny, if you guys have seen that meme, you know, you got 14 standards, right? So what do we need to do? We standardize all the standards, like we need another one. We need to make a standard for the standards, and now we have 15."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, yeah, yeah. We need an-"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Exactly. But I think that that's generally the right direction, like we just need a good one, right?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yes, yeah. There'll still be competing standards. Um, but but yeah, an- an- and I think there are other ways to do interoperability is via like based roll-ups of course. They're not there yet because you need uh yo- you need at least a good pre-confirmation kind of pipeline to deal with the fact that we have 12-second kind of slot times on Ethereum L1, and you need like sub-second transaction inclusion, or confirmation or like soft confirmation for end users, just for the UX perspective. But then as I mentioned before, there's also interfaces that sit on top of these things that all abstracted away like Infenex for example."
+  },
+  {
+    "speaker": "Guest",
+    "content": "The chain abstraction products like that."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, exactly. Yeah, yeah, yeah. All all that sort of stuff like, yes, it's maybe not as secure, and not as clean I guess you could say, but it works for the user."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Like that's all we need to really worry about is what works for the user. The interoperability at the I guess um protocol level like at the chain level is more about making sure that everything can access everything else's liquidity, right? Uh an- and do that in a very secure, and and quick way. It's not so much for the user, because honestly from an end-user perspective today, I think you've already got like a lot of options to be able to to I guess just interact with multiple chains just from one kind of wallet or one kind of interface, and you'll have even more in the future. And I think the- the marginal I guess end-user going forward is going to use something like an Infenex rather than a Metamask or a Coinbase wallet, or or a kind of Rainbow wallet or something like that. Like, those are more like, as much as I love those things, they- they're more kind of geared towards the the power users, than than the the regular users, because the regular users, the reason why most of them still sit on uh on uh centralized exchanges, is because they have access to what they want to do on there. They can own BTC, they can own ETH, they can own uh LTC, XRP, whatever, all these different chains on one interface. They don't have to go anywhere else to buy these assets, they buy them all on Finance or on Coinbase or whatever."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "So, in the future when we have um uh uh something like Infenex, you basically can do the same thing as you can do on Binance. Own all the assets in the same account using passkeys. It's uh not technically a crypto wallet, but you uh passkeys uh are great for the average end user because you still get self-custody. There's no KYC or anything, and then you just slap all the D5 projects and every other other projects on top of that, and let people interact with with them like that, from one interface. That's that's the end game."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yep."
+  },
+  {
+    "speaker": "Andy",
+    "content": "All on your phone as well. It's it's super smooth."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Exactly."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um, and uh Apple opening up their uh enclave chip, I I think is huge for stable coins. Like, that now we're going to have top to pay USDC."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Mhm."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, all these like end-user abstractions are like I think as you said they're more of like a bandaid, than like actually the the the Ethereum community aligning on like a standard."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yes, yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "But like in the interim, it seems like those bandaids are going to like actually be able to help onboard more and more, so- solve the more end-user problems while-"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Exactly, yeah. And everything underneath that gets improved uh uh it gets applied to these solutions exactly. So, we need to do it across all layers, but yeah, I I think as I said like, most humans are going to be going through those interfaces. They're not going to be like natively on-chain using bridges and going to the they're just going to use what's easiest."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I'm I'm glad you specified humans, because it's almost like teams-"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Oh, yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I think will start to evolve how they're building, and start to build for non-human users."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah."
+  }
+]

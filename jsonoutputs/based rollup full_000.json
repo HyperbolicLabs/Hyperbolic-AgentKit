@@ -1,0 +1,46 @@
+[
+  {
+    "speaker": "Andy",
+    "content": "What's going on? Welcome back to The Rollup. I'm standing desk in NYC. First podcast ever on a standing desk. I don't, the, I think the size of the desk is a little too big. But then I have this box for my camera so, just trying to figure it out here but I'm feeling pretty based right now, um, and I know Brecht is as well. We have a new guest, Cecilia. Um, so looking forward to that. Brecht welcome back, Rob GM. Um, and yeah, man, we're gonna put some based roll up educational content together today."
+  },
+  {
+    "speaker": "Brecht",
+    "content": "Yeah, thanks for having, uh, having us back and, uh, well, I guess, uh, it's kinda, it's kinda like a nice evolution, I think, from my previous presentation, although like some parts, even from the presentation are exactly the same. But, uh, we'll give some updates and kinda, like, the evolution that the design has gone through and also like the, like different priorities then, I guess, like last time, um, because there's some, some extra cool shit that we can actually do now. And, so, yeah, we'll be, we'll be great to come, like, explain and also like, uh, let people come like learn like what we're actually doing and, uh, hopefully they agree this is actually pretty cool and uh like a useful solution."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Hell yeah. And Cecilia, on, um, we'd love a quick intro uh, because this is your first time on the show and then we can jump in."
+  },
+  {
+    "speaker": "Guest: Cecilia",
+    "content": "So hi everyone. My name is Cecilia. I'm a ZK developer at Tycho, now at Gwyneth. Um, and these days I've been working on like base pre-confirmation protocol design and also some of the client code. Just helping out Brecht in general, so, nice to see you guys."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Welcome."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, very excited to learn more about pre, base pre-confirmations and, and Gwyneth in general. Um, yeah, why don't you, uh, you guys have a whole presentation prepared so feel free to jump right in."
+  },
+  {
+    "speaker": "Brecht",
+    "content": "Right. Um, okay. So let's start with what actually Gwyneth is, I guess, uh, Gwyneth, uh, I have to make sure I, I actually also pronounce this correctly but it is a Gwyneth is the pronunciation. Uh, so yeah, let's let's let's talk about like, okay, what makes Gwyneth kinda special or kinda what are the, the core features. Uh, so if you go, go to the next slide, Cecilia."
+  },
+  {
+    "speaker": "Guest: Cecilia",
+    "content": "Okay."
+  },
+  {
+    "speaker": "Brecht",
+    "content": "Okay. So what is Gwyneth? And still like Tycho, still boosted, uh, like a based rollup, of course, and, uh, like, I guess the, the, the new thing there, uh, will also like be like based pre-confirmations because, obviously, one of the downsides of being based is kinda like the longer uh, confirmation time for users and also kinda like the less, kinda like lower efficiency, also, because of that reason. Uh, so, kind of like one thing that we want to make sure we get right, this time as well is having like high efficiency of like how blocks are being proposed, but also from like the user perspective where yeah, they kind of like have like very fast confirmation times if they actually do, uh, a transaction on, on Gwyneth. Uh, so, yeah, that's kinda like a big thing. Although this presentation will mostly not go about, uh, will be about like pre-confirmations, but if there's more questions about it then I'm glad to ask. Uh, but yeah, most of the presentation will be kind of like about, like how we kind of like do the horizontal scaling part using booster roll ups still, uh, but also combined now with um, like, synchronous composability between all the different layers. Uh, so, previously the focus was mostly on like synchronous composability between the L2s themselves within Gwyneth. Um, but now we also put like a lot of focus on actually making it possible to do synchronous composability with L1 as well. Uh, and so the reason this wasn't like a focus before is because doing synchronous composability with L1 is kinda like, uh, not easy. And, uh, you kinda like have to have the necessary infrastructure to even be able to do it. Uh, but I guess that's something we will explain like in, in one of the leader slides as well. Um, and then yeah, obviously still booster roll ups so we have like the extra functionality to be able to cheaply access, like state on the L1, or other L2s as well, but, like, I guess the L1 part is kinda like the most, the most interesting one. Uh, and then, yeah, the other thing to also make it possible to do synchronous composability with L1 is kinda like realtime proving or at least like close to realtime proving, something like sub 12 seconds, uh, the L1 block times. And, yeah, one other thing that's also kinda like important for that is you, we only need like realtime proving, but the finalization time of the proof itself also kinda like needs to be directly. Uh, so when we post a proof on chain it has to be accepted directly to be able to do the synchronous composability with the L1 and to make sure that is actually a secure, and to have like enough confidence in this, we also have to use like a multi-prover to, to be able to do that. Uh, so we don't just have, uh, like the security relies on like a single proof, or like even one single type of proof. We kinda like want to have like some diversity there, doing like multi, multiple nodes implementation, that kinda like stuff. Uh, so, yeah, that's in a nutshell what Gwyneth is trying to do. And what we'll try to explain more in detail in, in the next couple of slides."
+  },
+  {
+    "speaker": "Guest: Cecilia",
+    "content": "So currently in the ecosystem, we have like a lot of L2s. Um, and obviously that will introduce fragmented liquidity, right? And also I feel like people are running out of thesis for launching more L2s. So that we come to these, this app chain thesis, which is good, but it doesn't stop liquidity being fragmented furthermore. And we kinda need a solution to, like, to stop diluting the liquidity, also stop deteriorating the user experience because like bridging from different L2s, even given the app chains that you're, you're using is kind of painful. Um, that's the, the ecosystem perspective, and for a tactical perspective, um, we think that ideally we can have a single chain, at least from a user experience, everything should be seem like a single chain. But, um, the fact is a single chain can't scale that much, because of high congestion. Like if you have one chain following the 1559 paradigm, um, you'll have like very high congestion fee, uh, and results in the very high based fee, um, that the user will see. Um, and also like for the current L1, the block time is capped at 12 seconds because um to, in order to maintain like the security assumption that we want to have for L1 given the, the large amount of validator, you do have a lot, a lot of BLS signatures to aggregate, and also the consensus itself and just just to sync the state, and that's like 12 second is a, is a very realistic cap for a large blockchain like Ethereum. So a single chain is like literally not possible for the user experience that we want to aim for. So we sort of want to break it up um, to more chains, but hopefully, uh, for the user, it's still look like, one chain. So that's the goal of Gwyneth."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, we've been talking a lot about that here, like, um just like you just can't scale a single state machine. Um, the bet, the bet of this modular thesis if you will, or like this kind of roll up centric roadmap is that we can scale app chains and roll ups and put them together via what you guys are going to argue as based roll up composability. What others are saying intence, what others are going to say sure sequencing and coordinated block building, or just basic transport layers and do such, do such in a way that uh, is also abstracted away via some orchestration or some wallet abstraction partners on the user level. And that's like the bet. I put on a tweet, it was like, I think this, the bet is that if we can't do it then we struggle to kind of fulfill the vision of like what we think is achievable for maximum scale. But if we can achieve that and then go further from there into different ZK and based designs, uh, etcetera, that I, I think I wrote, and I think that's how I feel that like the end game or the result is almost unimaginable."
+  }
+]

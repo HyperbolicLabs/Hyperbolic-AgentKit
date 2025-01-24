@@ -1,0 +1,46 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "He’s basically asking you to show Cerella."
+  },
+  {
+    "speaker": "Guest",
+    "content": "This is kind of the best of both worlds, if it’s possible."
+  },
+  {
+    "speaker": "Yuki",
+    "content": "We’ll take over finance one day."
+  },
+  {
+    "speaker": "Alex",
+    "content": "I think it’s impossible to answer and basically we’ll just have to wait and see."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Welcome back to the Rollup for another technical debate, this time with Alex Nezbolin and Yuki Yuminaga about the solution to on-chain MEV and LVR. We learned quite a bit in this one. Frankly we are MEV noobs, at least I am. And we talked about the concept of application-specific sequencing, also known as ASS. This is a really fun, highly technical, and insightful conversation about the state of MEV. The core idea is we need to figure out a way for applications that generate demand for block space to be rewarded with MEV. We’ll figure it out one day at a time, one technical video at a time. Hope you guys enjoy this one and let’s jump right in after a quick word from some of our awesome partners."
+  },
+  {
+    "speaker": "Rob",
+    "content": "What’s going on guys? Welcome back to the Rollup. Today we have a conversation that goes deep into the trenches of how blockchains should be built from the builder’s perspective, um, in terms of revenue, customizations and sovereignty. Um, I think it's like the main three, three components, but I, I know that we're going to touch on more. We're going to be talking about kind of app-specific sequencing, LVR, MEV and more of a deeply technical conversation today. I hope to learn quite a few things, I know I will. So without any further ado, I’ll pass it over to our lovely guests for some quick intros and then we’ll jump right in. So welcome in everybody. Um, and yeah Yuki, why don’t we start with you?"
+  },
+  {
+    "speaker": "Yuki",
+    "content": "Yes. Um, thank you for, uh, having me on, uh, this platform. And I’m Yuki, and I’m, uh, founding research and, uh, growth at, uh, Cerella Labs. Um, and I guess just a quick intro myself of, um, what, what I like to do and what I’m interested in the crypto space in general. Um, so yeah, I’m personally, you know, uh, quite fascinated about a lot of this, uh, mev problem that, uh, we are seeing today, which is also the reason why, um, I, you know, I’m working, uh, with, uh, Cerella Labs to build out, uh, those solutions, uh, that, that we see in this space, such as, uh, LVR, which, which we’ll discuss more, uh, later on. And, um, yeah, um, quite, quite bullish that, uh, we can hopefully come up with some great solutions, uh, to, to deal with this, uh, problem that is plaguing the, uh, the, the, the liquidity space in general, uh, right now. Um, I guess, uh, one thing that I’m personally, uh, just generally interested and hopefully seeing from the, the crypto, uh, the broader crypto space is that, um, uh, hopefully on-chain liquidity will, uh, will take over finance one day. Uh, that’s a, that’s one, one hope that I have. It's kind of like the, the north star, uh, of what I’m hoping to see from DeFi in general. Yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "That’s the, uh, infinex thesis when I talked to Kane in Brussels, we were like, we got to get all the centralized exchange people over to the DEXs. Alex welcome in, man. It’s your first time as well, so we’d love an intro."
+  },
+  {
+    "speaker": "Alex",
+    "content": "Yes. Thank you for having me. I’m, uh, Alex Nezbolin. I used to be an accounting professor at, uh, different business schools in the U.S. and, uh, the London School of Economics. And then I got, uh, interested in, uh, different blockchain issues and specifically, um, one of the big ones is, uh, LVR and mev in general. And, uh, at that point I quit academia and switched to crypto full time. So I’m now working on a protocol um, that is aiming to minimize some of these issues so they are in particular. Um, what I think attracted me to the space is that um, there are a lot of interesting questions that, uh, the communities facing right now. Uh, some are definitely new but also there are some questions that people grappled with in traditional finance for a long period of time. And so I think it's, the field is interesting in the sense that you can apply some existing knowledge to new questions and, uh, you can develop some new questions, uh, some new knowledge for, um, uh, those questions and it, it can even give you a new angle on how things are done in traditional finance. So you might as well discover something new about the stuff that you think you already know."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Phenomenal. Let’s dive in. Uh, I, I think, uh, first let's illuminate, um, this, this general MEV space as it, as it exists today and, and the subset of that, uh, in, in LVR and, and sort of, you know, unpack what LVR is to start with, uh, before we get into ASS and application specific sequencing and potential other, uh, solutions and alternatives to dress, uh, LVR and MEV. So Yuki, why don’t you kind of start, you know, talk us through your, your sort of perception of MEV these days as it relates to LVR, um, and then we’ll do the same with Alex."
+  },
+  {
+    "speaker": "Yuki",
+    "content": "Yeah, for sure. Um, so actually, uh, to kind of like, before, uh, starting off on, uh, so I give you the overview on this, uh, I would also like to point to our, uh, website, uh, uh, with the mev dashboard that is enabled about, uh, by our open-source mev tracing platform called Bronte. Uh, because on that you will basically, uh, see a lot of granular details on how mevs are being treated, um, where it’s generated and where it’s going. And, and, and based on all, all of this data, where I’m going to be talking about, um, you know, those, uh, overview from, the way I see it currently is that, um, in the market, there is, uh, large, large amount of, uh, atomic arbs that has been happening that is basically purely on chain, um, which, uh, may include some arbs between different pools across different, uh, AMMs. Um, that basically holds a significant amount of values that are being extracted from, um, the liquidity providers so far. But at the same time, there’s also a large amount of values that amounts to like, uh, around like $200-ish million dollars of, uh, six-six arbs that we have, uh, observed by Bronte. That are also, um, existing on-chain since the merge. And um, this all together totals up to, um, a little over 700, $700 million dollars since the merge as well. So if you kind of put that in context, that’s basically about like, you know, about like $300 million a year. Since the merge was like, you know, September 2022. It’s been two years. That’s how much money has been extracted, um, by the, um, by the, by the, sort of like, MEV participants, uh, which also includes, uh, validators, uh, in, in this pipeline because they are the one that are receiving, uh, a lion's share of those values, as, as a form of a, a bid within, uh, PBS option as well. And then, um, I think, uh, Rob you mentioned about the LVR, uh, side of things as well. Um, okay. So, so to kind of like, also elaborate a little bit on the LVR side, so, LVR, uh, or, or I guess, uh, as, as I would like to call it in, in a more generalized form, uh, six-six up charge that, uh, we are talking about here. So, um, I would like to consider LVR, uh, and, and those six-six arbitrage that is kind of resulting in this form of LVR as, as a sort of like a, that, a cost that is incurred, incurred by LPs by, by being passive and participating in, uh, AMMs and, and essentially eating up a lot of those like toxic flows that are trying to pick on their stale prices, uh, due to the block time of Ethereum being a little bit too, uh, uh, too long, as in like it’s, uh, it’s a 12, 12 second block and the price updates, uh, much faster on Binance than, than Ethereum. So that creates a lot of opportunity for, uh, arbitrageurs, especially market maker, market maker"
+  }
+]

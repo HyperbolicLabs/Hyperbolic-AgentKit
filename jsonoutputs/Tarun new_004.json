@@ -1,0 +1,58 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "Function of your fees right like EIP-1559 is a great example of that. And because of that programmatic thing where I can control that and I can do it continuously as opposed to these kind of like in the normal stock market I have to like I can't like just like oh today I'm on I'm going to emit 1.375 shares of my company and sell you know it's like that's not how It's like I have to do a tender offer and and and all this other stuff right like but the idea that I can program these this thing until I reach a point of sustainability until I reach a point of fees and I can do experiments with how this kind of like equity like thing eventually converts to a bond like thing this is why you should never view tokens as pure securities because like they kind of have this amorphous chameleon nature where they they they go between these things and I think restaking will be the same thing. Uh I just think you know having been in crypto for a while sometimes you just don't see where that comes from right like you don't see where the new asset creation or fee creation if I split them into two comes from right like DeFi summer was sort of a weird one where like asset creation was correlated with fee creation because like every new asset created more trading or lending volume which created more fees and you have this feedback loop which is I think what really grew it then. There's like L1s you don't quite have that, L2s you definitely don't have that. Um but I think restaking is actually something that looks a lot like DeFi and a lot of the reason I think restaking you know, you know, I I don't have too much to add to this our L2s parasitic to L1s debate. But I will say one thing. I think restaking improves the monetary premium and the money-ness of the staking asset. Because if you if I look at the rest of the world. The countries that have the most liquidity for finding new yield opportunities have generally the largest bond markets right so it's like the US I can do tons of borrowing against my bonds and reinvesting in other things. Where's as I look at countries that like can't do that like Turkey where it's like oh the bond pays me 50% in the local currency but people still don't want it. You know, it's like it's like clearly there's like something going gone wrong there right like And and sort of sort of there is this natural thing in which how much liquidity you're able to attract kind of determines your your success and so if you're a proof of stake network and you want to cement yourself as money the ability for people to borrow in different ways against their stake and use it for new asset creation that inevitably becomes a way of getting more and more liquidity and you become more and more like money. So I think for proof of stake assets, restaking actually i-i- almost ironically cuz given how much Bitcoiners would hate this. But it makes it more like money in some ways it's like gives it more of the money-ness property. And I think that is one of these financial things that like I've been trying to figure how to write the math for and like get a a more real like result for but I I I it's just intuitively that sticks out to me is like roll ups don't necessarily accrue value, you know, like I'm sure there's MEV and other stuff that that that does and there is of course the like their use if they use the same base asset, tha- there is some some premium, but I think it's much smaller than the restaking premium and I think in the long-term the AVSs that figure out how to correctly turn this we start with incentives as equity and then convert to like hey we earn a loan fees, that's gonna win the long run and whatever we see right now will likely not be the one that is like the best with that. An- and that that's the beauty that's the joy of crypto right it's like you're always like finding something crazy crazily surprised by that's able to generate that revenue."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yep, yeah I think that's that's a a really good way to put it right so right now I think we'll start to see uh like we'll start to see a lot of these AVSs eventually and and the services launch their own tokens. Um they'll probably be a wide cast net from LRTs based on the different risk parameters that we spoke about today and then kind of con consolidating back into that normal distribution curve that you kind of spoke on in the future as the ones that actually generate fees um you know kind of e- ear- earn staying power. And then this is all bullish for ETH, ETH's money, ETH the asset uh is a big a big beneficiary of this. I just have one last question and I don't know if Rob does, I know that they were running along time. um There's a notion of we should be able to restake anything. Uh we should restake Bitcoin, we should restake Tether, we should restake NEAR. We um we're going to restake Eigen and slashing we haven't even talked about slashing today, we could do a whole episode of slashing. Um What are your what are your thoughts about this idea of being able to restake different types of collateral how should we be thinking about like like the risks there and the idea?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "I think i- it's sort of dual to this LRT question of AVS selection in the sense of like the types of collateral accepted kind of changes the credit quality of the AVS in a lot of ways um under slashing events and and other cases. So like, for instance, USDC staking your USDT staking seems fine right like all you're doing is lowering the volatility of rewards, you're also making the like you're making the equity like investment much more like a pure bond like investment if you imagine those were yield bearing stable coins, it's almost like having a portfolio of stocks and bonds. Right? So in that case it actually makes a ton of sense, so like maybe the person restaking doesn't want to take as much risk and like this is a way of hedging for them. And it's a way of hedging that's very intuitive and easy to calculate um kind of the risk you're taking right cuz like adding but"
+  },
+  {
+    "speaker": "Andy",
+    "content": "I would just push back on that though"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Because because if you have like off chain asset like like ETH as an asset, for example,"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Are you meaning like a WA risk"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right, like that's like that that is like you can be minced to zero instantly where's ETH is likely not going to drop 80% in a given hour."
+  },
+  {
+    "speaker": "Rob",
+    "content": "That is true, that's true. I that that's a very that's a very fair point but I I I'm ignoring the the uh the blacklist and rug risk aspect. But that's a new set of cool challenges and and and obviously there's gonna be some that have horrible credit quality, great, but I think like in the long run, vault operators and LRTs and stuff like that like this is this what are you paying them a premium for? It's like this, right like"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah. And then I'm then I'm curious then how you see Eigen the token fitting into this model of risk versus reward effectively or volatility versus uh staking yield or yield in general."
+  },
+  {
+    "speaker": "Rob",
+    "content": "I think there's there's, you know, Eigen is probably one step beyond restaking in all the financial analogies I make which is why I think it's like it's it's thinking a little more Galaxy Brain than than even the way I I'm thinking of things cuz I I I try to always think of again everything I try to try and interpret it like boring but like simple finance stuff. I think this the long-term goal of Eigen layer because trustless, it's going to be it's going to look different. But that's a new set of cool challenges an- an- and obviously there's gonna be some that have horrible credit quality but I think like in the long run vault operators and LRTs and stuff like that like this is this what are you paying them a premium for? It's like this right like"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And then I'm I'm then I'm curious then how you see Eigen the token fitting into this model of risk versus reward effectively or volatility versus uh staking yield or yield in general."
+  },
+  {
+    "speaker": "Rob",
+    "content": "I think there's there's you know Eigen is probably one step beyond restaking in all the financial analogies I make which is why I think it's like it's it's thinking a little more Galaxy Brain than than even the way I I'm thinking of things cuz I I I try to always think of again everything I try to try and interpret it like boring but like simple finance stuff. I think this the long-term goal of Eigen layer is gonna be pretty interesting to watch how it plays out."
+  }
+]

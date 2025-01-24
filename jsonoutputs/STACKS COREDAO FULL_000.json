@@ -1,0 +1,62 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "GM, welcome to another episode of The Rollup. Today, we are speaking with two projects that are innovating in the Bitcoin ecosystem. You're speaking with Rena from Stacks and Rich Rines of CoreDAO. These two projects are both pioneers in the Bitcoin scaling space. They have very similar and very different technical designs as well as philosophies for how they build their projects. Please enjoy this episode. First, a word from our sponsor."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Welcome back to The Rollup. Following our Bitcoin and Beyond series that we did a couple months back, we had the pleasure to meet up with Rena at Modular Summit and obviously Rich, a long-time, uh, joiner of The Rollup Podcast. Today, we're going to be talking about a ton of the of the happenings in the Bitcoin ecosystem, some of the changes in the base layer, BitVM2 paper, the WBTC push, what Stacks and CoreDAO are doing. So lots to cover. Rob GM, let's get right into it."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, GM. Uh, good to have, uh, friendly faces here. No, I'll keep it pretty brief. Like Bitcoin and Beyond was super fun. Learned a ton. And, uh, it's really cool that there's more activity happening on Bitcoin, both the chain and the protocol itself getting built, so. Uh, two leaders in that space here. Rena, good, uh, good to meet you and welcome to the channel."
+  },
+  {
+    "speaker": "Guest (Rena Shah)",
+    "content": "GM, GM."
+  },
+  {
+    "speaker": "Andy",
+    "content": "And, uh, Rich, welcome back."
+  },
+  {
+    "speaker": "Guest (Rich Rines)",
+    "content": "Yeah, I'm great to be back."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Awesome. Well, I feel like this one's going to get pretty spicy, so um Rena, why don't you start? Give us like give us the state of Bitcoin as as you see it."
+  },
+  {
+    "speaker": "Guest (Rena Shah)",
+    "content": "The Bitcoin state is evolving and it's a little bit like ephemeral for like what side of Bitcoin you're on. There are Bitcoiners in the state of \"This is the best time to be in Bitcoin, we're we're growing, we're creative, there's new blood, new energy back in Bitcoin\" of \"Hey, we're actually using the chain, we're making transactions.\" Unlike a decade ago. And then you have the other side that is really sad that there are activity on Bitcoin and they just want to use it as money."
+  },
+  {
+    "speaker": "Andy",
+    "content": "And that's what I'm trying to like kind of understand, like how you guys are thinking about this paradox of like \"Okay, so we've got some camps that are like \"Keep Bitcoin ossified, keep this hard money properties, keep this digital store of value.\" And then you've got the other camp that's like \"Well guys, like if we can't keep up with like technological innovation, espec- specifically at the base layer as well as scaling, then like how are we going to even keep this network something that people want to use and keep value here?\" And so, like yeah, definitely curious to understand your perspectives on like keeping Bitcoin immutable and like a strong base layer, um but also like tweaking it a little bit to to kind of keep it more competitive. Like what's the mental model that you both are approaching this current state with?"
+  },
+  {
+    "speaker": "Guest (Rena Shah)",
+    "content": "For me, it's pretty simple, but I think Bitcoin needs a few minor changes to kind of stay in the running game. If you think about it from like this perspective, we only hit what's it? Um, a million uh uh, a billion transactions on Bitcoin this year in 2024, but you hit a billion transactions on Solana and each well before um, before it existed. But Bitcoin is along- a longer running chain. If I think about going further, Bitcoin's going to continue to go through halving cycles, so mining subsidies are going to go down. So what is the incentive for miners to continue to run and operate the network? You need transaction activity, and without having some of these new meta protocols, no one was using Bitcoin for like daily transaction activity. And like that's what miners need to keep the incentive to continue to validate for the network, so I'm Team \"Look. The base layer is great, but it could be a little bit better. So let's do a few subtle changes so that builders actually want to build DeFi so that transaction activity occurs. Otherwise, in 20, like maybe 50, the mining subsidy is obsolete, so it is economically not incentive for people to mine."
+  },
+  {
+    "speaker": "Guest (Rich Rines)",
+    "content": "So, I think just to add onto Rena's point, which I I I largely, uh, agree with, I think we have a problem with the Bitcoin security budget, probably in eight years. Like two halvenings from now, I'm actually really worried about it, and I'm pretty bearish that even if we get more meta protocols and that sort of thing, you know, actually contributing to Bitcoin transaction volume short-term, that that's enough. And I think this is where, you know, exogenous block reward systems like merge mining or, you know, Core Satoshi Plus are actually super relevant, right? Because they're trying to help keep mining more profitable for the long-term, which is so critical to keeping Bitcoin secure and decentralized. And that's why we're seeing folks like Marathon, et cetera, experiment with, uh, chains like Kaspa, right? Like, cause a lot of incentive to go figure out how to solve this problem. I do think it's a a tight rope to walk though because Bitcoin, one of the reasons it has been so successful, is because it is so simple. And and that is always been a a challenge with Bitcoin is how much innovation is okay. And I think we're we're seeing some of this with like the OP_CAT, you know, versus CTV debates right now, right? And and I I for one, am like, pretty ambivalent to see one of these get merged. And it's just like what timeline is that going to happen, right? Is that two years? Is that five years? Like, it- that sort of challenge is really hard, and and I think this is also why these, you know, other scaling solutions can be so critical to this story, because it can help while Bitcoin is figuring out what Bitcoin wants to be. But I do think there's a danger path here. And and the danger path, I think is losing a little bit of Bitcoin's narrative and also its potential to generate long-term transaction fees. A great example of this is Ethereum post EIP-1559, right? Like if you look at Ethereum as a business after, you know, these changes, it's actually significantly decreased. And Ethereum, to some degree, has has lost its narrative. And like, th- those are, you know, existential problems, if that makes sense. But interesting things to to chat about."
+  },
+  {
+    "speaker": "Guest (Rena Shah)",
+    "content": "Do you think we're losing our Bitcoin narrative right now? Because I feel like we're we're redefining the Bitcoin narrative right now. When I like think about what brought me into this industry like 10 years ago is I thought Bitcoin was money. Like magical internet money. And like that's what actually brought me in because I was a miner. Literally a petroleum engineer. So, like, straight up creating the energy you use for mining at that point in time. Like you don't go more farm to table than that. But now when I think about Bitcoin, my relationship has changed that Bitcoin can be money, but Bitcoin can be something else. And like I gravitate towards our- the kind of the narrative mind shift of: Bitcoin might be the only chain that I can build on that full- truly is decentralized and has the ability to be fully permissionless, and I don't actually think other chains give me that level of comfort to experiment on like Bitcoin."
+  },
+  {
+    "speaker": "Guest (Rich Rines)",
+    "content": "It's an interesting kind of hypothesis. I'm I'm not sure that Bitcoin is losing its narrative. Like, I'm more pointing that out as one possible like Yeah. eventuality that that we could get into, and one of the reasons that, you know, minimizing some of the changes to the base layer ar- are likely a a good idea. But I think we've actually already seen Bitcoin's narrative change many times to your point, right? Like, I remember in 2013 when I first got involved with Bitcoin, it was all about this unseiz- uncensorable money. And I was like so stoked to pay for Bitcoin with uh, to pay for to pay for coffee with Bitcoin, right? Like that was like the coolest thing in the world, right? And since then, we've actually moved into \"No, it's a store value,\" and like the store value, digital gold narrative, and and I think it's important to, you know, allow Bitcoin to be what Bitcoin wants to be, and we've already started to expand the Overton window over the last, what's call it 18 months, with Ordinals, BRC-20s, RUNE, like we've already started to see all those things shift. But I think it's important that Bitcoin remains this global settlement layer for high value transac- Like that that is very critical to the story, and it's a little bit of playing like devil's advocate, right? Where it's important to have as much activity as as possible, but also to be aware of maybe some of the lessons that have come before us. You've heard a lot of the like \"Ethereum is a Bitcoin testnet.\" uh, over like the last, you know. And and and I think it's true, i- in some ways, right? Like we can, as Bitcoiners, take some of these learnings and then use it to lay our own path on a Bitcoin time scale."
+  },
+  {
+    "speaker": "Guest (Rena Shah)",
+    "content": "It's like if you want to do like sma- small value experiments, do it on any other chain. When you're ready to play with big money, you have to come to Bitcoin, because there's no there's no one who has the settlement and brand value like Bitcoin."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Ethereum is an L2 on Bitcoin is is one or a testnet for Bitcoin."
+  }
+]

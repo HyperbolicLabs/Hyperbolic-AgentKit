@@ -1,0 +1,70 @@
+[
+  {
+    "speaker": "Guest",
+    "content": "Uh, on-blockchain can actually verify the proof. It means the computation result is correct. So, this is how essentially ZK, or when I say like ZK proof can never be wrong, um that's kind of what I meant. It's that uh for a common defined computation logic, there will be a one-to-one binding between on-chain verifier contract and the off-chain computation logic. So, whenever you actually, you know, generate that computation logic, that can be verified and can only be verified by that particular and specific verifier contract. And uh you know, the the the promises of ZK is that this verifying combination cost is a constant value. No matter how big the off-chain combination is, you know, uh you can do that combination however you want, you can generate an AI model if you want, but the verifying process of the computation result is a constant cost of around 200k gas."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Okay. So so uh, uh, another another kind of observation here is like uh, let's say I'm a I'm a challenger. Uh, and I have the capacity to submit you know, malicious, incorrect, or correct ZK proofs. Yep. I could spam the network, right? And kind of kind of grind it to a halt with incorrect proofs. Um, is there any economic security that challengers have to commit in order to prevent spam or what, and I imagine this is the case is just the cost of gas to submit these proofs is enough of a disincentive to prevent spam?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "You're You're exactly right. Like, you know, because you know you"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Mhm"
+  },
+  {
+    "speaker": "Guest",
+    "content": "If you if you generate some malicious proof or like, you know, fake proof, um, first of all the verifier contract can never actually verify that. Right? So this is different, uh you know, than the uh, uh, you know, kind of optimistic roll-up challenge process where you need to run an interactive process to essentially kind of find which which step is actually wrong. And that's when the grieving can happen. But here, you don't have interactive challenge. The challenge itself is a proof itself. So, if you generate a wrong proof, then you submit it on-chain. The uh, uh, you know, essentially kind of it will throw an arrow, like it will throw an out-of-gas arrow. Um, so that will be enough of a deterrence for uh anyone who wants to actually generate fake proofs."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Mhm, mhm. Got it."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Amazing. Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And you know, this this particular architecture is not only for, uh, lowering costs, but it actually enables more features. Um, now what are some of the key features that are enabled by this? Is that a, you know, using ZK, it is very using pure ZK, it is very hard to prove completeness and non-existence. For example, if you want to prove that, okay, these set of transactions are all the transactions this particular user um, you know, had with Uniswap. This is very hard to do in in in ZK because, you know, how do you do in ZK, essentially you need to prove every single transaction in history to be able to confidently prove that okay, these are all the set of transactions that this particular user had with Uniswap. But using this kind of proposer uh, and a challenge model, it becomes much simpler. Because now, you know, as the first step of the proposal, um, the, uh, ABS will just be able to propose, uh, a set of transactions and claim that hey, look, I have this set of transactions and I claim this set is a complete set of, uh, you know, certain criteria, you know, matching certain criteria, matching certain filters. And, uh, now if that is actually incorrect, the proof you need to generate to dispute that particular, you know, uh, uh, statement is actually much simpler than generating the entire proof, right? So, like, let's say you're missing one particular transaction in that initial set. All the prover need to do is just generate a zero-knowledge proof, showing that hey, look, I find one additional transaction that matches your filtering criteria or filters. And but you know, uh, it's not actually included in your initial proposal and it can generate one ZK proof or one single transaction, and challenge that initial result. So, this architecture actually makes a lot of use cases visible, such as, uh, you know, if you want to prove something is a complete set, or similarly if you want to prove a user never interacted with with Uniswap. Right? So, we can do the same thing. You know, the the optimistic proposer can propose and say, look, this particular user never interacted with Uniswap. And if this is wrong, then the challenger, um, can only just generate a single ZK proof with a single transaction to dispute that particular claim. So"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Got it. Um, is there one more slide left?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Uh, yeah. That's uh, that's the one. Yep."
+  },
+  {
+    "speaker": "Andy",
+    "content": "That's the last one. Cool."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Um, so, this may be like a silly question, but, uh, what why do you, like why do you need to be an AVS? Couldn't you just have your own set of, like couldn't you just run your own chain and have your own set of consensus in a proof of stake manner that allows you to have the same slashing window? Like what, what other advantages come with being an AVS that you couldn't get by running like uh, I don't know, like a Cosmos chain or like your own L1? Um, I understand kind of like the boot-shopping economic security uh, is expensive. Um, but like I guess like, why do you need to be an AVS and and what demand do you anticipate for, uh, you know, kind of people wanting to, uh, secure Brevis?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Uh, yeah, I mean this is a this is a great question. Right? So, like, you know, I think this is not only for us, generally applicable for, uh, applicable for every AVS. And uh you know, uh, the I think I'm going to ask all of them the same question."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Right, the key answer Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, you know, you this is a great question actually. So, the the the key answer for us is actually the cost of capital. Uh, right? So, like, you know, uh, because uh, what EigenLayer enables here is that you have like re-stake services, uh, that are cross multiple different AVSs. And, the re, uh, result of that is that you essentially have a lower capital cost expectation for, um, you know, many of the re-stakers. So, for the same level of economic security, uh, because of this uh, economical scale for EigenLayer, uh, each AVS will be able to pay a bit less than, you know, just like running their independent uh, uh, Proof of Stake network. So, uh, that's kind of like the key reason for us to, um, use uh, uh, EigenLayer to boost bootstrap this entire uh, you know, security network. Um, and uh, you know, uh, that's that's that. And uh, um, in terms of usage, uh, we do expect a lot of usage coming up. Uh, for example, uh, we recently, you know, Brevis is very much ready and in production already. Uh, we recently launched a VIP, um, trader fee rebate program with Quanta, uh, which is one of the biggest uh, uh, you know, perpetual trade, uh, perpetual swap, uh, protocol aggregator, uh, on Optimism with like $60 billion trading volume and like millions of transactions. And, uh, we already see that there are a lot of users opting, um, you know, uh, uh, using Brevis VIP power features and uh, you know, we already see uh a lot of, uh, users and the traders are now claiming these fee rebates and constructing and helping the market to construct a more efficient market structure, uh, because they can essentially have market maker fee rebate. Right? So, you know, and uh, uh, in October and also November, we will be launching with many of our flagship partners. Uh, some of them are the biggest DeFi protocols in the world. Um, you know, with data-driven features. So, we do expect that this type of uh, uh, you know, uh, both like pure ZK and also the optimistic, um, you know, uh, co-processor, plus ZK fraud proof, model will be used a lot uh, by different kind of use cases as well. Uh, in terms of level of uh, se-, uh, you know, crypto economic security, uh, I do think that once we enable slashing, there will be a re-, reduction of the uh, um, of the of the re-staked amount uh, in in the AVS. But it's not a, uh, very uh, big deal for us because in the end of day, uh, we uh, use AVS as a additional security layer. Uh, but the ZK fraud proof is the last line of defense and security guarantee there. So you know, uh, we we expect how this will go is that as we scale out and scale up with more use cases and usage, more and more people will opt in and pay fees to use the optimistic, um, you know, co-processor model powered by EigenLayer. And once that happens, you know, we will actually gradually scale up back in terms of the amount of stake that is delegated to, uh, the Brevis AVS. Um, so yeah. Um, that's how we see this will evolve."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Awesome. Yeah, that makes uh, that makes a lot of sense. Uh, Andy, did you have a follow up there?"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um, yeah, I mean, I think like one thing that that people are, are, are really curious about with regards to kind of, how, how, uh, you know, Brevis as, as an AVS will, will uh, kind of grow um, and be able to supply a, a, a kind of layer of demand for all this ETH yield. Um, and all this ETH that's re-staked. Uh, I'm curious from your perspective like, how you, how you plan to uh, integrate into different applications and where you see the demand coming from for uh, ZK co-processor."
+  }
+]

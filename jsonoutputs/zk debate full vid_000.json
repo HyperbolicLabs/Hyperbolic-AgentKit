@@ -1,0 +1,50 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "I have a feeling this one is going to be another one where I'm kind of just staying out of the way. Uma and Vanishree are going at it.  "
+  },
+  {
+    "speaker": "Uma",
+    "content": "When you get $1 worth of GPU compute, you're actually doing a lot more compute than on a CPU."
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "That is how long ZKVMs will be ruling. So, ZKVMs will always be ruling. "
+  },
+  {
+    "speaker": "Andy",
+    "content": "I hope that once Vanishree comes out of stealth with what she's been building, that you guys can collaborate as well.  "
+  },
+  {
+    "speaker": "Rob",
+    "content": "GM. What's up guys? Welcome to another episode of The Rollup. Today we have a debate. This was a fun episode, it was a very friendly debate. We had a fun episode with Uma from Succinct and Vanishree from Firma. Firma has recently come out of stealth and they're working on custom ZK circuits.  Uma takes the side of generalizable ZKVMs. This is a question of convenience versus customizability. There's lots of parallels that we draw during this debate. Ultimately, this one is a really, really good deep dive into ZK and a couple of nuances versus tradeoffs of building a generalized environment or a very custom environment purpose built for a specific use case.  Hope you guys enjoyed today's episode. Before we get into it, a word from our sponsors.  Welcome aboard on our journey into the singularity.  This is the end game road map for Frax and Fraxdal, the new L2 out of the Frax ecosystem that is totally based on fractal scaling. Fraxdal, the modular L2 blockchain, built by Frax with modular and fractal scaling in mind. Fractal scaling is based on the Mandelbrot set of fractal images and it explains how L2s become L3s and the entire app chain life cycle goes through its evolution. The Frax ecosystem is made of some of the top builders in this space and has stemmed from its OG days of the Frax stablecoin. It is now in the LST space, the LRT space and this Fraxdal L2 joins the existing suite of Frax products including Frax Swap and Frax Lend. You can see Frax Ferry, the bridge to go from any chain, Arbitrum, Optimism, or mainnet, into the Fraxdal mainnet. Bridge your tokens and bring your Frax assets into the Fraxdal ecosystem. Join today to get the best out of Fraxdal. You are still early. Join today, take part in our expedition into the singularity. "
+  },
+  {
+    "speaker": "Andy",
+    "content": "Welcome back to The Rollup guys. Uh, today's episode, we're going to be discussing the tradeoffs of ZKVMs versus ZK circuits. Kind of this idea of generalizable ZKVMs versus more specialized ZK circuits. Kind of inspired by a tweet from Vanishree here a couple weeks ago. Um, and almost like a secondary follow-up to our recent episode with Uma and Brendan about Succinct's impact on Polygon's Avail.  So yeah, tons to talk about, excited. Um, Rob, good to see you. I feel like I've been kind of AFK from these episodes for a couple of days so good to be back. And, um yeah. "
+  },
+  {
+    "speaker": "Rob",
+    "content": "Let's get you back on, uh, real quick here.  Uh, I again, I have a feeling this one is going to be another one where I'm kind of just staying out of the way and Uma and Vanishree are going at it. Um, and yeah, we'll uh we'll get it started here. But I again, I think, uh, the idea here is like Andy said, ZKVMs and ZK circuits. Um, what are the tradeoffs? Why should we use one or the other? Um, and talking about the designs, uh, of both. So, yeah. I think first, we'll get it started with some intros.  Um, Vanishree, you're new to the channel. Welcome. And uh, yeah. Why don't you start?"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Thank you so much Robbie and Andy. It's great to be here.  Um, quick intro about myself is, I'm the founder of Firma. Firma is a universal proof generation layer that is designed to generate proofs for any proof system in, uh, cheap, performant, and reliable manner.  And, uh, a little bit about my personal background is that I'm a photographer. Um, I, um, I got introduced to zero-knowledge proofs long ago. Robbie, I, I, I, and Andy, I told you the story a while ago, uh, little quick stories that, uh, I, um, I learned about zero-knowledge proofs when I was an undergrad kid in India in a remote town and, uh, just was blown away. Who wouldn't get blown away, right? The ability to convince somebody, um, of the variety of a statement without even telling them any information whatsoever about the reasons why it should be true. It just does sound so, uh, impossible at its face value and how, how can there be so much of research and so much of advancements, and look at where we are.  Um, and, uh, um, since then everything that I've done is in line with my goals of, uh, goals of working on zero-knowledge proofs, uh, during my Ph.D at UCLA, um, uh, in cryptography, and working at the various projects including Mina, um, the Mina blockchain, um, on consensus protocol, the ZK circuits there, etcetera. And then, um, Firma.  Um, yeah. That's a little bit of background about myself. Thank you. "
+  },
+  {
+    "speaker": "Andy",
+    "content": "Awesome, Uma."
+  },
+  {
+    "speaker": "Uma",
+    "content": "Hello. I'm Uma. I think I've been on the podcast before. Um, I'm one of the co-founders of Succinct. We're building a ZKVM called SP1. So, basically what SP1 lets people do is, it lets any developer just write normal Rust and then use ZK. Uh, so you don't kind of have to write ZK circuits anymore. And then, we're also building a decentralized prover network around SP1 to make it easy for anyone using SP1 to use one API call to get their proofs generated, um, and not have to set up their own infrastructure."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Sweet.  Okay guys. Welcome on, uh, pleasure. Thank you for taking the time. Um, I think to take us off, going to pull up on the screen here, uh, the tweet from Vanishree. I'm going to read it out loud for those who aren't watching on the YouTube or on our website.  Um, so, Vanishree tweeted on July 28th,  \"Here's, here's a controversial take on the future of ZK. Ready?  In short, for any given project, ZKVMs will fade and custom ZK will take over. Here's why.  ZKVMs have been crucial for widespread adoption by significantly reducing time to market. However, this, this comes at the cost of high resource demand for proof generation. While this cost is decreasing, custom ZK is likely to be more performant. Consider an application's evolution. It starts with ZKVM, finds product market fit, achieves success, and then aims to improve its performance. Transitioning from ZKVM to custom ZK becomes an obvious choice as time to market is no longer an issue. Now, to be clear, this doesn't just, this doesn't diminish the value addition of ZKVMs at all. I think they'll be forever essential, but as a bootstrap mechanism for any new project. Feel free to challenge it.\"  And Uma kind of came back with a challenge, um, which I'll pull up on the screen shortly. But first, I think, uh, to explain your point of view further for, for the listeners, uh, would be great to kind of hear more from your side there. "
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "So, so before I talk about the exact, uh, tweet, I want to start by acknowledging the amount of impact that ZKVMs had, has, has, ZKVMs have had on our space. I think ZKVMs have, have catapulted the adoption of ZK. They have reduced, significantly reduced, the barrier to entry, reducing, um, by reducing the time to market and engineering costs. There is zero taking away from that. Right?  Um, I think, uh, like I said in the tweet, I think they're forever, they're, they're here forever to, to stay.  The bounds of my argument are the following:  when a project reaches a level of maturity, when, when, when these bootstrap constraints go away, the bootstrap constraints of time to market, and the bootstrap constraints of engineering costs go away, and when performance takes center stage, then, the question that needs to be asked is, will ZKVMs still be the right choice for them, or, will, will it make sense for those projects to consider custom ZK circuits? And my thesis is, as, as I mentioned in this tweet is, is that ZKVMs, ZKVMs are a great gateway mechanism for those projects. And, uh, custom circuits can increase performance. I think, uh, they will have a custom, custom, custom ZK circuits will have a space.  Um, yeah. That's the, that, that's the "
+  }
+]

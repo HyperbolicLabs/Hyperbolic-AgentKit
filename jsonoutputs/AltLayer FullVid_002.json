@@ -1,0 +1,122 @@
+[
+  {
+    "speaker": "Andy",
+    "content": "Um there’s kind of a use for governance but it’s also like kind of uh the most basic use case because of like regulatory reasons or because of just lack of uh uh decision-making within a DAO. Um like wh- wh- why is a rollup token a key part of this model? And like does that just provide more economic security or does that provide these th- th- these operators with like something to uh like some basically some better tokenomics or like what what’s the thought process here?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Look, I mean, re-staking is great but I think at some point people would have all these rolls will have a token let’s be honest it’s not going to go away. So if you’re launching a rollup there will have to be a token at some point in future. Uh up until recently the only thing that you could do with your token was put it in as a gas token that’s all or governance token, right? Uh so for example Arbitrum uh an Optimism have used OP token or the Arbitrum token as a governance token."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um they haven’t used for gas for many reasons, right? One is for example it creates all sorts of user experience issues right so for example if you want to come and use Arbitrum you have to go and change ETH blah blah blah right it is too painful. Um and the thing is like for Arbitrum Optimism it k- kind of even makes sense they might even do it right and it- it might even work. But the problem is that it may not work with app specific rollups because you’d have these 10,000’s you know islands, little islands working. And imagine if as a normal user you have to go and check and go and buy that really token to be able to transact on that specific chain it’s going to be painful, super painful. The other thing is that unless you generate huge revenue in your token in the end you’re paying Ethereum fees, right? Because you have to post data on Ethereum. So you have to at some point you have to convert your token to to ETH and then be able to pay that um to Ethereum validators. Which also kind of create some sort of sell pressure on your token essentially, right? So it’s not a good idea but eventually like what I’m saying that initially people all- all- everyone wanted to have their own token as gas token but I think people realized over time that’s not really a good idea for many reasons. And so, how could they token get used? And one way is to pair it up with re-staking. Right? So for example you could say look I- I’m- I’m willing to bring re-stake ETH because it gives you all the benefits of- of re-staking, and if let’s say my token let’s say goes down for whatever reasons at least I have some security that comes with ETH right so you give the balancing. But in the end you also want your token to be used. You also want to reduce you know, your- your you know full reliance on Ethereum that’s not ideal either right because you still want to capture value in your own token as well in some point. So, I would say it- it gives many benefits. Uh one is it gives more utility to your token. And it’s a much better choice compared to using your token as a gas token for your rollup, and the second thing is also brings value accrual to your your token so for example if you want- if you want sequencing room it would be distributed to let’s say your staker, that could happen through this mechanism."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Got it. Because I think those tokens are still kind of struggling with like how do we do how do we get utility? Like what’s the like what’s the uh you know what’s the point of having one? And obviously like there’s uh th- the token solves the nothing at stake problem currently in terms of like there’s governance and there’s DAO voting and there’s grants that you can do and there’s an ecosystem you can build. But yeah, I’m super keen to see more and more like L2s kind of take an innovative approach to how they want to do their tokenomics so."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah I mean honestly six months ago everyone th- so th-  people were coming to us on the realm side they were saying hey when would Arbitrum Orbit or when would OP Stacks support gas token, like custom gas token?"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "There’s demand for it, honestly. And and therefore we pushed Arbitrum Or- guys and OP guys we gave them feedback that hey you should have this feature as soon as possible because everyone is looking for it. But sadly when it actually went live people started to back off. Uh not saying that the feature was bad, it’s just they realized over time that that’s maybe not a good idea. It’s not a good idea to use your own dApp token as a gas token for your rollup because it just creates all sort of painful experiences. But there’s really ways to bring the token use and one- one way is this."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah. Cool."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Okay, so um, um so this is the squad part, so at a high level what happens is user takes in transactions, uh sends through their classical RPC providers, and this transaction goes to the network, uh which is built using re-staking, and then you could have different mechanisms that uh you know could employ to order transactions for example you could have round-robin mechanism where you could say I’m going to select um so every let’s say, uh sequencer has the right to sequence the first the text and block for example and it kind of rotates in certain way. It could be an auction mechanism uh where you know the rights to sequence of block is auctioned off to certain players, uh and people would bid. There could be consensus mechanism as well if you wanted. Unfortunately, at the moment, um as far as I know, EigenLayer does not have a consensus protocol built in among the operators. It- it doesn’t come out of the box."
+  },
+  {
+    "speaker": "Andy",
+    "content": "What does that mean?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "So so let’s say for example, I wanted to basically run a small Cosmos network. Let’s say style network, like through- through Tendermint. You can’t do that directly with EigenLayer. So at the moment the way EigenLayer works is these AVSs will sign things. But that’s it."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Okay."
+  },
+  {
+    "speaker": "Guest",
+    "content": "They don’t run a consensus protocol like PB- PBFT. Uh so and I- I I I Yeah. So- so so the AVSs amongst themselves cannot come to like a global a global consensus amongst themselves."
+  },
+  {
+    "speaker": "Guest",
+    "content": "In- in true consensus sense it’s not possible. Uh they would reach consensus in a multi-sig style way if you see what I mean. Like they- they would reach consensus in. Okay, here’s my thing, here’s my vote, but what if the you know, those votes are blocked in somewhere at the network level those those sort of things doesn’t get considered."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Understood."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Like ther- there are certain issues that you can’t build in but like eventually at some point I think EigenLayer will build this BFT as well so you could actually have a proper consensus among those nodes. So, to have like a Yeah. Little- little Cosmos chain, for example. Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um but yeah, th- as I said, there are different mechanisms you could build uh your squad and then again, the squad basically splits out a block which is ordered, and then that goes to Ethereum in the same way it goes to uh it works with other rollups today. Uh and again, um if let’s say, for example, if you see something like hey I’m going to I’m- I’m here to here’s my order and if you deviate from that order for example let’s say in an auction model, right? You are the one who bid and you are the winner of that bid, of the auction. But if you decide not to post that block, then you’ll be slashed for example. Right? So, this is where slashing comes to play. So, your stake gets So th-"
+  },
+  {
+    "speaker": "Andy",
+    "content": "So the- the sequencers who want to participate in the network and this kind of rotational model have to put up some Yes. Some collateral at stake that’s slashed."
+  },
+  {
+    "speaker": "Guest",
+    "content": "That’s the re-staking. Yeah. Yeah, exactly. That’s the re-staking thing. Right? So, everyone brings And those are"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Those are operators that are doing that or no. Those are like th- those are just separate entities."
+  },
+  {
+    "speaker": "Guest",
+    "content": "No, so operators are the ones that are running the client, th- the sequencing clients, Right. And users who have ETH, they would delegate their ETH to these operators."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Understood. Okay, so they would say look, I have 100 ETH. I’m going to delegate to you- to this operator, let’s say maybe Figment. And Figment is the one running that sequencer client for that rollup."
+  },
+  {
+    "speaker": "Andy",
+    "content": "And with those, would those would those users uh with- with those uh you know, uh stakers or re-stakers be able to would they be eligible for the yield that comes from the sequencing rights that they win in these lotteries or in these auctions?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yes. So, for example today Okay. So, that’s where the yield’s going to come from then. It’s going to come from the sequencing. Exactly. So, there are two ways in which you could get yield. One is by the way um EigenLayer recently released this post um I think about a month ago about this. They didn’t have the payment mechanism built in. But EigenLayer has released it very recently. But the idea is, the AVS will or the network will basically push incentives, and whatever incentive goes out 10% of that stays with the operator and the remaining goes to the delegators. If there’s $100 comes out in terms of rewards, then $10 will go to the operator and the remaining $90 will get distributed to all the all the delegators that have delegated to that specific operator. Okay? So, that’s something that they have fixed at the moment. So, you can’t change that metric right today. I think at some point they will make it flexible. But at this moment, you can actually do that, and you’re- you’re forced to pay 10% to the operator."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Uh so by the way there’s two mechanisms which you could- you could reward. One is like pure token, let’s say for example, your rollup doesn’t actually generate much revenue, right? Let’s say. In that case, you would pay uh incentives in your token, the rollup token. And let’s say when the future when your- when your sequencer uh you know, you- when your rollup kind of sees traction and when it has actually started to produce revenue, at that point you could potentially reduce your uh you know reduce your token incentive would broken inflation by saying okay, only 10% of that would come from inflation, the remaining would come from the actual revenue that my rollup makes."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yep."
+  },
+  {
+    "speaker": "Guest",
+    "content": "You could do that."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yep."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Okay. So um, the second part as I said is vital, it is uh challenger network. So, consider something like um unfortunately, um So, by the way, these two things are not built yet. Just to be very clear, this is something that we’re still thinking about it. And the reason it’s not built yet because there are certain things that we’re waiting for the underlying rollup stack to be developed. And I’ll give you an example of this. So, for example, vital, right? So, um vital is mainly for decentralized challenging. So, um again, um from Arbitrum context which is the only one I think, that is live with fraud I think probably Fuel as well has- has it. But let’s say, let’s start with Arbitrum. So, Arbitrum has this fraud proof mechanism being built uh but the problem is the people who can actually do challenges, they are permission today. And that’s changing with their new protocol that’s called Bold. Uh with Bold, anyone can become a challenger. And then if the um the rollup commits a certain-"
+  }
+]

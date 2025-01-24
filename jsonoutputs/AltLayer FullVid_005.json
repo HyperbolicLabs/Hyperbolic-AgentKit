@@ -1,0 +1,90 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "based model for verifications."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Exactly. I mean honestly many HLS networks you use BL signatures today."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yes."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Is is there a way to compress signatures from many parties into one single signature."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Awesome."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um, and this is like a um, mechanism like on the contract side so there's a way where um you ah the operators inform Ethereum that hey on Ethereum contracts that hey here's a block that looks not okay, and then you as a as a user can actually query the contract to get the state so you could say okay, tell me if there are any blocks that don't look okay to you and you would pull that data from the contract."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And lastly we have this um what we have built a gateway which is like a proxy. So as I said, you could have many AVSs, one AVS for each roll-up, so you can have one mock for let's say Optimism chain, one mock for Arbitrum chain, one mock for Base chain for example, and you want like a common gateway instead of kind of pinging each one of them individually, so you have this one common gateway that we call mock gateway, and you would say hey, can you tell me if Optimism blocks, ah block number X looks okay to you, or are there any alerts that you don't you find find weird ah for Optimism? And then it will kind of redirect to the right AVS and do everything for you. So it's kind of like a proxy and a wrapper around all the AVSs."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Ah well, this is the service manager side, it's basically a mechanism to ah handle all the on-chain components for AVSs, so registration thing, ah reporting thing, slashing thing, those sort of things that that get needed for AVSs."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And this is a basically a function where you can check for alerts directly through the contract. So it will it will you can make a query, this is a function call you can make a query, and ah the function will tell you whether um this chain has any invalid block that the mock has stated to be invalid."
+  },
+  {
+    "speaker": "Guest",
+    "content": "And ah that's it. Um I hope I'm not too too late. Still okay."
+  },
+  {
+    "speaker": "Andy",
+    "content": "No, it's good."
+  },
+  {
+    "speaker": "Andy",
+    "content": "My last question is um um what do you anticipate the the kind of ah demand for um like, I understand so we have that the supply side, operators are going to be providing into squad um ah vital and mock, um and where do you like what kind of demand you anticipate for for these as they go live from roll-up operators um and kind of ah wha- what is the yield situation potentially going to look like?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "So um, of course on the operator side everyone wants to have this because they know that um there's no slashing risk today at least for because of Eigen Eigen mechanism Eigen has enabled slashing. So you know for them it's like free to operate anything as long as their costs are covered, right?"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Um on the on the kind of reward side, um and of course many people want to use this because one it gives them, so as a as a roll-up builder you want to have mock because it gives you ah, I mean other than technical benefits, it gives token you know your token is some utility, right? Some a way to create a sync, a way to acc- accrue value and so on. So it's beneficial for the for the for the builders who are building their own chain. On the reward side, I think initially, most of the mock operators will get reward from token incentives. It won't necessarily be rewards in pure revenue by the roll-up because only handful of projects, you know handful of roll-ups actually make money, on Base of course Arbitrum you know Optimism, but they're they're not too many. So I think I I I suspect that initially ah, you know the rewards of the yield would come come from ah the token incentives directly by the by the project itself. Um, I mean again it depends. People say that whatever you you're getting yielded in terms of ETH if you've if if if any incentive that's around 1% or even lower than that that's fine because anyway it's it's it's not so much additional risk that you're taking as long as the underlying AVS is safe. So I would say something that tops up Ethereum yield by let's say 1%, I think that's something that people are expecting."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yep."
+  },
+  {
+    "speaker": "Guest",
+    "content": "But yeah it's not going to be a pure pure style incentives by the way. It's not going to be like I don't know um 10%, 20%, 30% API why, will never happen. Um one thing to know that because Eigen has this forum mechanism built so you could say I'm going to take my rewards, I'm going to give let's say 70% reward to my token stakers, and only 30% of rewards to to Ethereum restakers. So they could they could decide how they how they adjust their rewards to these different communities. So it's quite possible that, and you'd be potentially encouraged as a community to push a lot more incentives to your token stakers than to Ethereum stakers."
+  },
+  {
+    "speaker": "Andy",
+    "content": "No."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Very interesting. It it it seems like a lot of things that are happening in the space right now including in Eigen layer as well as outside are um it it seems like a lot of people are trying to lower the yields to ETH L1 validators and just like, how can we get this this capital moving elsewhere? Um so it's going to be really interesting to watch play out over the next couple years. Um Amit, I really enjoyed this conversation. I learned quite a bit and I appreciate you you taking the time."
+  },
+  {
+    "speaker": "Guest",
+    "content": "As always. Happy happy to be here. Thank you very much Andy for bringing me here."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Fantastic. Already, speak to you soon."
+  },
+  {
+    "speaker": "Guest",
+    "content": "See you soon, yep."
+  }
+]

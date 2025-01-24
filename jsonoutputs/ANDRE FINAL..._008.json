@@ -1,0 +1,62 @@
+[
+  {
+    "speaker": "Guest",
+    "content": "They they had some kind of fee splits."
+  },
+  {
+    "speaker": "Andy",
+    "content": "The Ethereum layer one was never giving it was never giving fee rebates like Sonic."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah but No, no, no. So so for them, it makes perfect sense. But but I'm saying for me to answer the question, when when should you go from 90% to 100%, I need that data."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, yeah, understood."
+  },
+  {
+    "speaker": "Guest",
+    "content": "I think they'll be making less than they would have if Ethereum was giving them some kind of fee rebates."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah. We did a podcast with Justin Drake, and this was his the entire thesis around composability was was just this that it it it would make more to join shared sequencer environments or in fact base sequencing because you have the net positive effects of composability, and you might lose some from giving up your centralized sequencer revenue, but it it would be offset and then some by the shared sequencer composability benefits."
+  },
+  {
+    "speaker": "Guest",
+    "content": "No, I 100% disagree, but in that case just launch on a layer one that already has all of that stuff wherever it's Solana Avalanche Sonic. Not plugging ourselves, but you know, there are a lot of options out there where you get that composability."
+  },
+  {
+    "speaker": "Andy",
+    "content": "We saw that same kind of phenomenon with regards to the LVR scenario on on six decks arbitrage currently where the question is like, should we should we basically conduct app specific sequencing for a decks, right, where they have their own transaction rules, and they kind of they have this their own kind of like isolated siloed app. But then the same conundrum comes, right, where it's like is the loss of composability, which is is where a lot of the uninformed flow is derived from, which is where the LPs on decks is get their get a lot of their uh, profits from or at least their ROI from is that is that loss of uninformed flow going to offset the potential loss in MEV or or gain MEV and and the reality that we kind of came to was until the composability benefits of like builder commitments or shared sequencing kind of comes about uh, the loss of uninformed flow is really not going to make it's not going to help anything. It's just going to pull both down in terms of the amount of revenues available to LPs. It's going to make LPs less profitable. Uh, it's not going to make a big change. Ironically, it's the same kind of scenario here with where should you deploy because and we keep coming back to this, Andre which is like in a future of you know, 200 200 um, 200 millisecond intent based interrupt zero-knowledge proof aggregation and chain abstraction. These questions change, you know, but for the current reality, these trade-offs are very present."
+  },
+  {
+    "speaker": "Guest",
+    "content": "So that Like like I'm I'm not discounting the potential future or the future that all of these roll-up teams are working towards, but I am acknowledging that there are on a daily basis new dApp builders and entrants into our markets. And I think right now, they are confused as hell about what they should be doing, or where they should be going, or who they should even be talking to. And I think it's enough of a barrier that it actually kind of stops you. I mean, looking at Yearn right, like like why did I launch that on Ethereum instead of Phantom? I mean, Phantom was the blockchain I had built. It makes sense that I would support that, right? But Ethereum was the only place to deploy because that's where the composability was, that's where all the apps was, that's where the yield was, that's where it made sense. And that's not the case nowadays anymore. You know, like like when when I was deploying that as a dApp builder, the answer was presented to me rather intuitively. Now, I feel a builder coming into the space. It's it's enough of a choice that it'll shut you down."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yep I"
+  },
+  {
+    "speaker": "Guest",
+    "content": "I don't think that's a good thing."
+  },
+  {
+    "speaker": "Andy",
+    "content": "One of our most read pieces is is a piece that we that we put out as to like if I'm a builder today, where where do I build, and it was basically like general purpose L2 or Solana slash fast L1 or app chain, and and it's just like honestly, the trade-offs of all of them, they they all exist. It's like not it wasn't just like plug into Ethereum. Um, so Andre, you're like to kind of wrap us up here. It's been a it's been a great conversation, but I really want to talk about some some of these app ideas um, for Sonic going into main net. You know, you're like uh, to me, you're like one of the OG kind of ideas for apps uh, in in in the space. I mean, we had we had Yearn, then then there was a keeper then we had some others that just kind of came and came and came and um, you just constantly had these iterations and ideas. And so, a couple that that I saw you recently tweet about that I'd love to learn more about, and I think that the community is particularly interested in if you're going to launch any of these primitives, uh, that you've been kind of teasing about uh, with the Sonic main net. The first one being, uh, protection markets. So, basically, this idea of generalized on-chain insurance for arbitrary claims using vaults with collateral deployed in into yield. That seems pretty interesting. Um, then there's another one they put called Levex, which is on chain leverage spot with arbitrary margin. We've seen this. I think in some other ecosystems, but you might have some twists. Um, and there's a couple others in in in particular, one that you al already mentioned, which was the Blockchain Bureau. On chain credit scores. Um, basically like, let's get some under collaterized lending going in DeFi. I mean, it was a dream kind of uh, you know, back in back in 2020. So, there's there's three or four app ideas there. Um, I mean, if if you just want to take a couple minutes and just talk about these and maybe how they work, or why you think that that there's product product market fit, uh, that'd be super cool. Just kind of like uh, talk you know, just run through them."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah. So, I mean, first question will they launch on Sonic? Uh, yeah, I mean I'm getting 90% of all the fees, and I'm confident they'll at least generate fees, whether they're successful or not, and I want to get paid. Um, my my persona there has definitely changed. If I'm going to be eating shit on Twitter, I might as well be getting paid. Um, Yearn keeper, etc. was not worth it. I got all the shit and none of the dollars, so screw that. Change of mentality there for me. And you built some fences."
+  },
+  {
+    "speaker": "Andy",
+    "content": "You became a legend. You became a legend."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Uh, not not sure if that's a good or a bad thing, but still. Um, but you know, again, going back to the going back to that I could only launch Yearn on Ethereum example. Some of the stuff I can only launch on not necessarily only Sonic. I could probably go Solana or Avalanche as well. But you need something that's low on fees, high on throughput, and and that's not Ethereum nowadays. Could argue it's one of the L2s. Um, but for obvious reasons, um, I'll be sticking to to to to Sonic. And I I also think it's a nice chance to to show people the new kind of stuff you can build with this new kind of speed. Um, and this is new speed, you know. This is this is speed we have not seen um, in blockchain yet. Um, protection markets that I've been toying with for a very long time. Um, the uh, the concept I consider a standard money market. You know, let's take Aave. You you deposit money. You deposit USDC, and someone borrows that USDC, right? Now, now in this case, instead of I'm still depositing USDC, but I'm deciding I am depositing USDC into let's say USDC UniSwap. Which means this this bucket that I'm depositing, this is underwriting UniSwap risk. So if there's an exploit there, then I will be paying via my deposit for this. Okay. Now on the counter side to that, you have someone that I have a million dollars in UniSwap. So I would like a million dollars of leverage. So I go borrow the USDC UniSwap, which is now deposited by that original depositor. Now I've as long as I'm holding that, I'm paying those interest rates. You know, and that's more equivalent to sort of monthly fees. Um, versus a lot of the existing insurance models we've seen are very high upfront fees because they have no way to do any kind of recurring systems. So this changes that already to a recurring system, so there's very little upfront cost, um, other than like whatever amount of collateral you need to, you know, cover the the difference in LTV, basically. But so now, let's say an exploit does happen. Now I can redeem my borrowed USDC UniSwap for the underlying USDC. If an exploit doesn't happen, then you know, the USDC depositor just keeps getting those interest rates. Um, and the nice thing about that is you can create any kind of arbitrary coverage without anyone needing to, you know, uh, an entity that stops it or controls it. So if I launch my new AMM, I can go to protection markets. I can deposit a hundred k of USDC for USDC my new AMM I create that market. And then anyone that wants to go deposit money in there, they can just borrow from that market, and then they've got coverage. You know? The the only time when there is interaction, and this is why it does need some layer of governance, and this is potentially why it needs a token, but I'm trying to not do tokens on any of the stuff because I don't think the current user base really understands tokens anymore. So I'm trying to get as far as I can without. Um, but in this example, you do need some kind of governance that decides when the claim becomes valid. So, you know, they don't create markets, they don't do any of that stuff, but you do need an arbitrator to be like an exploit has occurred. Sometimes it's easier. So one of the first things I'm launching with actually is a codified protection market for, um, uh, impermanent loss. Um, so I can I've got the on-chain formula that I've already created that measures the volatility, and that can show realized impermanent loss based on when did you deposit and where it is now. So in this case, you'll have USDC IL UniSwap because you deposited into the UniSwap pair. Um, and it's it's pre-"
+  }
+]

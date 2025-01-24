@@ -1,0 +1,162 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "GM GM, what is going on, guys? Today we have the pleasure of speaking with Nikhil, founder and CEO of Predicate, formerly Aethos and today we are going to be hearing about simplifying transaction prerequisites."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Nikhil, welcome to the show."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "Thanks so much for having me, excited to be here."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Absolutely, let's dive in."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "Awesome. So what I'll go through is I'll kind of give an overview of how we think about simplifying transaction prerequisites, and fundamentally and foundationally why EigenLayer is actually critical to that entire component to really build a decentralized system to make that all work."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "So before we do anything, I think it's first helpful to talk about, so what in the world are prerequisites? Why do they matter?"
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And before even looking at Web3, it's actually helpful to look at Web2."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "So you look in the early internet, all major applications pretty much have had some type of custom rules and conditions that they have on the backend and it was crucial for them to scale. And I have a few examples here. So let's take PayPal. PayPal built an entire anti-fraud mechanism because they were worried that, hey, we're about to build this entire payment system, and how do we ensure that you know malicious actors, people are trying to commit fraud are not actively engaging in the system? And so that way, when you and I go and use PayPal, how do we ensure that we're not like, uh, we don't, uh, get, basically, we don't interact with anyone who's about who's trying to fraud us?"
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And they built what they call really a policy engine for that on the backend. So it's an entire system of really pre-transaction rules."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "Another one is Airbnb. And it was a crucial part for Airbnb when we think about hey, you're going to have as a homeowner, you're going to have people you've never met before stay at your place."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And how do you know that they're not going to, they're not really going to trash your place? So Airbnb has an entire system to say, hey, wait, look, like we can't have certain guests if you don't follow our terms of service. And that, of course, is informed by prior hosts. So when you're about to host someone, you have some amount of trust that that prior hosts have said, look, this person's okay."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "Uber is very different here than you know, like PayPal, your B&Bs sounds a bit like you know, blacklisting at the end of the day. Uber is very different."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "So Uber has a policy engine, they call it a Paul's engine. And what they're thinking about is hey, you know, when I go and request an Uber, there's a number of pre-transaction conditions and rules that have to really be, be checked, right? So what type of car am I requesting? What's my Uber rating? Where am I calling it from? Where am I trying to go? What is the type of car that I've requested?"
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And then based off of all those things, they need to match me to a driver that, you know, meets all those different requirements. If they match me to a driver that doesn't, now suddenly I'm going to have a suboptimal experience, potentially even end up in the wrong place."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "So in these cases, that was Uber creating pre-transaction rules, crucial for them to actually build their overall network."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And then Netflix is another one. I think we've all, we all, we're all probably very familiar with like Netflix's geolocation, uh, capabilities, right? So we normally think of it as just geofencing."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And that's really part of it, but that's not the full story. And so I remember meeting the guy who has one of the patents that Netflix uses for geolocation, uh, this was back in 2011. And even at that time, it was very clear there was a clear reason for why Netflix was thinking about geolocation. And it's actually a business decision. For them it was having these pre-transaction rules, these conditions for how one interacts with Netflix, which then influences what is the type of content they can see. So if I'm in the US, I have access to certain content. If I'm in India, I have different content. The whole point is actually that Netflix is trying to make sure you have curated and custom content depending on where you're at. And Netflix, of course, is setting up those business partnerships with all those different media companies to make that fully realized."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "So point here being that prerequisites have been really common on the backend for Web2 companies and entire teams are dedicated to really, really building this. It's not just a small kind of side endeavor. It's really, really core. It's something that you have a lot of, that requires quite a bit of lift."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "So then when you look in Web3, you start seeing the same need of pre-transaction logic, especially when we think of crypto as starting to interface with a broader global economy."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "Uh, and there's a number of different cases for this. But you know, like we can look in TradFi for how, we can look at all these different cases of how crypto's really trying to shift into the next, uh, the next level, which is going to that, uh, that broader economy. So this can be of course if you look in TradFi you're starting to see companies like BlackRock and VanEck participate more actively on-chain. Fintech companies, of course, like PayPal or Robinhood, are also doing things on-chain. Robinhood for um, purchasing of assets, or you know, swapping assets, PayPal even all the way out to a, a stablecoin."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "Then of course, you have CBDCs where I would say this is still in like, depending on the country you're in, this is still either exploration or it's being implemented. But then of course, if you're starting to think about how a crypto rail is supposed to integrate with the rest of economy, you have to think about interfacing with the CBDC."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And then lastly, of course, we're seeing more retail adoption of crypto as well."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "But in all these cases, you know, like if you're starting to connect with the rest of the world, developers and crypto startups have to navigate the complexity of meeting the requirements for the rest of the world. You can't operate in isolation. And so this is an entire set of different things. You know, this could be, the one that immediately comes to everyone's mind if you're in the US is regulation, right? If I'm launching something I have to think about regulation for you know, AML, for SEC, for securities, all those kinds of things. That's part of it."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "But then of course, you have different business requirements as well. If you're partnering with an institution or partnering with a payment provider, or if you're partnering, or if you're just simply doing something that requires some type of real world interfacing, like there are still business requirements you might have. That can go all the way out to, you know, something like even exploit prevention."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And then of course, you have different local rules and community rules that you have to navigate."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "It's all increasing complexity. And that's really the problem that we face."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "So let's make that even more tangible. Now. Kind of give the broad view. So let's take an example, a Web3 example. So take Aleo. Uh, large privacy blockchain. And for them, they're really worried that what if we're seen as a mixer? Uh, hu-, like, really, really big implications if you're seen as a mixer if you're in the US, if you're in Europe. Basically, no one could use it."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "So their ecosystem passed a governance proposal around best practices for all the different bridges, for what bridges should have in place. This isn't mandated by the Aleo Foundation. It's an ecosystem initiative."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "In all of this, you see a number of different kind of, you know, requirements that you need to have in place, right? These are all pre-transaction rules. So you need a time delay. You need a limit of 10,000 USD per day of, in, in value from any address that's being bridged. You want to screen against illicit funds and, uh, malicious actors. If, you know, someone's participating in an exploit and then trying to move their funds onto Aleo to them launder them,"
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "um, looking at prohibited jurisdictions."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And, you know, like potentially adopting KYC tools. Uh, I think that's probably been something that most people are more hesitant about because, of course, that changes how the system works. But in this case, it's saying, hey, look, we as an ecosystem have certain things that we really care about for, for our, uh, for us to be able to thrive."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "A lot of this, this is like really complex stuff. This isn't really easy stuff to be able to implement. And if every different bridge has to put in something different, or every single bridge has to put in their own implementation of this, of course it's all overhead for them."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And then Sreeram actually makes it even more salient. I think, uh, of course he's always like really articulate from a philosophical standpoint. But"
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "here we can think of it more as like innately human and natural when we think of our evolutionary history. Uh, in this case, he talks about kind of a cell boundary that really what you're doing is you're allowing certain things to come in and not come in. And it's the same way we should think about a community, right? When you're building a community when you're building something that involves any type of biological existence, uh, an open border is not a border, actually. It's fundamentally the opposite."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And when we think of, you know, we're building on-chain applications, on-chain communities, communities inherently require some type of preconditions. And we do that already today, every day in real world, you know, when we go, when we go to a farmers market, or we go and shop at a local store. We're making associations based off of who we're transacting with."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "And so when we think of the scaling of Web3 and the scaling of crypto, you need those types of pieces in place."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "It, it's basically setting the ability to set values for who you transact with and how those transactions are actually done."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "This ensures what we really think of as a thriving community, a thriving ecosystem."
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "So this is the state of the world. And then the question, of course, leads to how can we actually empower application communities to build and thrive? How do we, one, you know, allow them to exist? How do we allow them to express values? And then of course, how can they scale into reaching the broader global economy?"
+  },
+  {
+    "speaker": "Nikhil",
+    "content": "So when we start with that question, you start saying, okay, great, so what are we really trying to solve for here?"
+  }
+]

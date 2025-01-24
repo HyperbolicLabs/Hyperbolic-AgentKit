@@ -1,0 +1,114 @@
+[
+  {
+    "speaker": "Rob",
+    "content": "Getting a little bit less than a nearly a uniswap pool so maybe there is something in between that is actually uh uh profitable and interesting niche"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Right And and I would imagine that uh the reason why those uh large orders are oftentimes um uh are are part of some bundles is because that um some routing or some solvers who are executing those large orders via uh some RFQ uh so not RFQ uh via like solver-based protocols like you know Cow, Uni X or uh one inch Fusion or whatever uh might be accessing uh multiple liquidity pools uh at the same time when they might be executing those"
+  },
+  {
+    "speaker": "Rob",
+    "content": "For sure They they access multiple liquidity pools pools but it's not just that you can be a part of a bundle It's also that you can be competing for priority yourself"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Right Sure sure sure Yeah"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Right So you can just have a single transaction that needs to do something You you know you can be doing a liquidation"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Mhm"
+  },
+  {
+    "speaker": "Rob",
+    "content": "And then you are going through some swap"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Yeah yeah yeah Yeah"
+  },
+  {
+    "speaker": "Rob",
+    "content": "You want to have priority yeah because you're doing the liquidation and so you cannot go through some like other channel and loose priority because of that"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um but you need to so basically you need to get priority for a different reason"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Mhm"
+  },
+  {
+    "speaker": "Rob",
+    "content": "And that happens a lot as I understand"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Mhm mhm"
+  },
+  {
+    "speaker": "Rob",
+    "content": "In terms of volume that's also pretty significant"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Mhm"
+  },
+  {
+    "speaker": "Rob",
+    "content": "There are things that you cannot actually we say that everything is on chain so you can look and see but there are actually interesting use cases and pieces of the data that would be great to have but you can actually not collect those that is I mean you can collect all the swap information and all that but you cannot necessarily figure out what the intent of the user doing it is"
+  },
+  {
+    "speaker": "Rob",
+    "content": "And so it's sometimes difficult to have the full picture"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Mhm"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Um and again it's that becomes a question of your prior Do you think that that's important do you think that's not important And I think that people should just try all those different things and basically see what sticks There's one of the advantages of being in define is that we can try everything and"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Right"
+  },
+  {
+    "speaker": "Rob",
+    "content": "see what works"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Yeah I think I generally agree uh with with the take that yeah we should just kind of try and see how how it works because at the end of the day like as you as as Alex you mentioned that uh um like getting exact picture on how the inflow and work or like inflow for like goals in terms of whether it's part of the bundle or whether it's uh whether whether there is actively seeking for composability or not or how much percentage of that of that is part of the bundles is in my opinion uh quite a uh quite a heavy lifting uh if you want to really try to figure it out Um but one one one thing that I do think is is very true is that um um we we also want to have composability We also want to be able to address this composability uh issues and I believe that uh there are solutions in this space as as mentioned that can be potentially addressing that even to like maybe not to 100% extent but to the extent that is sufficient to be able to to provide let's say uh if someone is trying to liquidate something on Aave and that they wanna immediately sell of some positions Um they can still be able to to parte part part take in uh and and route those orders via let's say uh our Surrealis uh mechanism by our AS and such that they can um uh still be able to get the uh transaction execution guarantees uh in in somewhat atomic uh fashions Um and and and just a matter of like okay what what are the pathways they're taking Are they gonna be using some sort of builder commitments Are they gonna be using some sort of extra sequencer uh or what like that part is still uh uh TBD Um but I I think that uh it's it it's in my opinion it's not a uh unsolvable uh problem per se Yeah And and I'll just one one quick comment uh on on the part that uh Alex alluded to about the the L2 uh uh not L2 uh because yeah I I think initially when the idea of like uh AS has been circulated um there's been a lot of uh confusion uh on Twitter uh that uh people are saying like oh this is it's an L2 And I think one biggest differentiation here or the difference between those two uh paradigms is that one is uh clearly uh executing on those transactions and that uh uh there are performing some sort like you know uh fraud proof or uh some some you know ZK for verifications of the state transitions while the AS side is clearly not doing any of that and is not bearing any of those uh trust and liveness overhead that is associated with executing at uh uh state transitions on an off-chain uh machine So that's is like one stark difference that I wanted to just point out for people who might be uh uh confused about the those two different uh uh set up Yeah"
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah I think that's like uh app specific sequencing took me off of the app chains ledge pretty hard Um I was pretty sad on that and now it's kind of like oh wait this is this is almost like meeting in the middle And I think just to kind of wrap the conversation"
+  },
+  {
+    "speaker": "Guest 2",
+    "content": "Totally"
+  },
+  {
+    "speaker": "Andy",
+    "content": "They I when I first got into Ethereum it was like 2017 and then I think in 2020 I think Vitalik put a post describing Ethereum as the on-chain dark forest And And I think that all of this conversation today has been like reminiscent of this idea of of kind of shining light into the on-chain dark forest to make us closer and bring us closer to kind of taking down uh if you will the centralized uh ar arbitrageurs but really just this kind of the all this liquidity and user based on on Binance and kind of bring a fair system on chain Alex I think made a ton of really good points with regards to decentralized nature of systems being much more ripe for price discovery and much more ripe for low latency But I think that if we as an industry can kind of strive to create the most decentralized systems with some of these with kind of sacrificing a little bit for latency then you know we can we can kind of find a a happy middle But I also feel that like there's going to be builders in the space who will kind of go on both sides of each spectrum Um you know kind of the left and the right of speed versus kind of full decentralization But it's been inspiring to kind of hear from your perspectives how you see new solutions that don't have to make a choice between these two trade-offs and kind of build with both in mind to the best of the current infrastructure stack that exists today which I think is like this is going to be super empowering for uh builders and developers of the coming years who get into crypto as well as just making the on-chain landscape more fair So broadly I just want to say this is extremely extremely knowledgeable conversation I am glad that you guys came and super super fun to kind of understand how you guys are thinking about the on-chain dynamics from somebody who's like in the infrastructure side but also has like lost money from impermanent loss far too many times and like has LP'd on every dex since the beginning of dexes So it's been great Thank you guys"
+  },
+  {
+    "speaker": "Guest 1",
+    "content": "Thank you very much Thank you Andy Thank you Robbie"
+  },
+  {
+    "speaker": "Rob",
+    "content": "Thank you Angie thank you Robbie and it's good having you"
+  },
+  {
+    "speaker": "Guest 2",
+    "content": "Absolutely Thank you guys"
+  }
+]

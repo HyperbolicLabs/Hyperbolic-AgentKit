@@ -1,0 +1,162 @@
+[
+  {
+    "speaker": "Guest",
+    "content": "need to wait to get another 32 ETH, which is a lot of money, you know? So it's it's better for solo stakers, uh and and it's better efficiency for staking overall."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yep."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yep. Great."
+  },
+  {
+    "speaker": "Rob",
+    "content": "And anything anything else in the upgrade to be to be aware of?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "I mean, as I said, I think there's that account abstraction EIP that was I I I can't remember if it was included in Capella or pushed out to the next upgrade because there was a bit of discussion around this. Uh and a few other things that um, as I said, aren't directly user-facing. I believe there's one that allows you to exit a validator from the execution layer, which essentially means that you can send a normal Ethereum transaction on the normal kind of um, where you do normal transactions, uh and essentially do uh exit a validator. So with uh withdraw the stake but also shut down that validator. Right now you can only do it from the consensus layer side, which means that the staking protocols that exist today aren't fully trustless because you have to basically go to them and say, 'Hey, I want to exit this validator,' and they have to go to the the validator operator and say exit it. In the future with this upgrade that's coming, uh you won't have to do that. You can just send the exit message on the normal user-facing side, yeah, and you have a fully trustless staking protocol, which is cool."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yep. Okay."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Awesome, Anton. Thank you so much for uh joining us today. Hope you have a great week in Bangkok. Um, try to, you know, it's a marathon, it's not a sprint, so."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, yeah. Exactly, yeah. Yeah. Thanks for having me on. It's been a great discussion."
+  },
+  {
+    "speaker": "Andy",
+    "content": "I got one more question for you."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Oh yeah, yeah, for sure."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Could you could you show the camera your tattoo that you got there?"
+  },
+  {
+    "speaker": "Guest",
+    "content": "Oh, yeah, sure. Yeah. I don't know how many people know where this is from, but."
+  },
+  {
+    "speaker": "Andy",
+    "content": "All right, shout out. First tell us where where this is from."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, so this is from an anime called Hunter x Hunter. Um, yeah, it's a very popular anime. Uh, it's uh, it's a very, like the scene, I'm not to spoil it too much for people, but like the this like this scene, I guess in the anime is like the culmination of the whole story essentially. Uh, and it just it means a lot to me like personally. But if I say, say why it means a lot to me, I'm going to spoil it for people and I don't want to spoil it."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Okay."
+  },
+  {
+    "speaker": "Rob",
+    "content": "That's okay."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "It's an intense look that guy has on his face, so like definitely definitely looks captivating. But my my question was uh around the next tattoo."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Oh, yeah. Yeah, yeah, yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Oh, yes, yes. So I said on my my podcast recently that um, for a long time now, I wanted to get like an ETH tattoo on the other arm like here. Yeah. And I would only do it when ETH got to 10k."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yep."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Wow."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Sorry. Yeah, yeah. And that, since like I I've been saying ETH is going to go to 10k since 2019. So it's been a long time coming, but once ETH hits 10k, uh, you know, I want to get the design done maybe before then, but I kind of have an idea of what design I want. Uh, but yeah, I want to get that here because Ethereum changed my life in so many ways, and it's not just about like ETH getting to 10k. But I think obviously like ETH getting to 10k means that Ethereum has succeeded in such a large way and has kept building, kept improving, kept growing. Uh, and yeah, I just wanted to to get that. But that's the only, I think, crypto tattoo I'll get. I'm not going to get like the Terra Luna thing like."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yes. Yes."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Oh, that's thing."
+  },
+  {
+    "speaker": "Rob",
+    "content": "No, we're good."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Like I'm not going to regret getting that."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, yeah, yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "I think you'll be safe with the Ethereum."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, exactly, yeah, yeah."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Let's uh, let's run this back with that new tattoo."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah. Yeah, we'll we'll have our next pod at 10k."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Exactly."
+  },
+  {
+    "speaker": "Andy",
+    "content": "Yeah, yeah, definitely, yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Shouldn't be too long."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Yeah, exactly, next week or something, yeah."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Yeah, yeah."
+  },
+  {
+    "speaker": "Rob",
+    "content": "Thanks, Anthony. Cheers, guys."
+  },
+  {
+    "speaker": "Guest",
+    "content": "Thanks, Anthony. Cheers."
+  }
+]
