@@ -11,12 +11,16 @@ import asyncio
 
 # Load environment variables from .env file
 load_dotenv(override=True)
+load_dotenv(override=True)
 
+# Add the parent directory to PYTHONPATH
 # Add the parent directory to PYTHONPATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
 from langchain_core.messages import HumanMessage
+# from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+# from langchain_nomic.embeddings import NomicEmbeddings
 # from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 # from langchain_nomic.embeddings import NomicEmbeddings
 from langchain_anthropic import ChatAnthropic
@@ -32,12 +36,20 @@ from langchain.tools import Tool
 from langchain_core.runnables import RunnableConfig
 
 # Import CDP related modules
+# from langchain.text_splitter import RecursiveCharacterTextSplitter
+# from langchain_community.document_loaders import WebBaseLoader
+# from langchain_community.vectorstores import SKLearnVectorStore
+from langchain.tools import Tool
+from langchain_core.runnables import RunnableConfig
+
+# Import CDP related modules
 from cdp_langchain.agent_toolkits import CdpToolkit
 from cdp_langchain.utils import CdpAgentkitWrapper
 from cdp_langchain.tools import CdpTool
 from pydantic import BaseModel, Field
 from cdp import Wallet
 
+# Import Hyperbolic related modules
 # Import Hyperbolic related modules
 from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
 from hyperbolic_langchain.utils import HyperbolicAgentkitWrapper
@@ -291,7 +303,14 @@ add_reposted_tool = Tool(
 # # Load and process documents
 # docs = [WebBaseLoader(url).load() for url in urls]
 # docs_list = [item for sublist in docs for item in sublist]
+# # Load and process documents
+# docs = [WebBaseLoader(url).load() for url in urls]
+# docs_list = [item for sublist in docs for item in sublist]
 
+# text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+#     chunk_size=1000, chunk_overlap=200
+# )
+# doc_splits = text_splitter.split_documents(docs_list)
 # text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
 #     chunk_size=1000, chunk_overlap=200
 # )
@@ -301,7 +320,12 @@ add_reposted_tool = Tool(
 #     documents=doc_splits,
 #     embedding=OpenAIEmbeddings(model="text-embedding-3-small"),
 # )
+# vectorstore = SKLearnVectorStore.from_documents(
+#     documents=doc_splits,
+#     embedding=OpenAIEmbeddings(model="text-embedding-3-small"),
+# )
 
+# retriever = vectorstore.as_retriever(k=3)
 # retriever = vectorstore.as_retriever(k=3)
 
 # retrieval_tool = Tool(
@@ -309,7 +333,13 @@ add_reposted_tool = Tool(
 #     description="Useful for retrieving information from the knowledge base about running Ethereum operations.",
 #     func=retriever.get_relevant_documents
 # )
+# retrieval_tool = Tool(
+#     name="retrieval_tool",
+#     description="Useful for retrieving information from the knowledge base about running Ethereum operations.",
+#     func=retriever.get_relevant_documents
+# )
 
+# Multi-token deployment setup
 # Multi-token deployment setup
 DEPLOY_MULTITOKEN_PROMPT = """
 This tool deploys a new multi-token contract with a specified base URI for token metadata.
@@ -324,11 +354,16 @@ class DeployMultiTokenInput(BaseModel):
         description="The base URI template for token metadata. Must contain {id} placeholder.",
         example="https://example.com/metadata/{id}.json"
     )
+        description="The base URI template for token metadata. Must contain {id} placeholder.",
+        example="https://example.com/metadata/{id}.json"
+    )
 
 def deploy_multi_token(wallet: Wallet, base_uri: str) -> str:
     """Deploy a new multi-token contract with the specified base URI."""
+    """Deploy a new multi-token contract with the specified base URI."""
     if "{id}" not in base_uri:
         raise ValueError("base_uri must contain {id} placeholder")
+    
     
     deployed_contract = wallet.deploy_multi_token(base_uri)
     result = deployed_contract.wait()
@@ -695,6 +730,17 @@ async def initialize_agent():
         wallet_data = agentkit.export_wallet()
         with open(wallet_data_file, "w") as f:
             f.write(wallet_data)
+        # Configure CDP Agentkit
+        values = {}
+        if wallet_data is not None:
+            values = {"cdp_wallet_data": wallet_data}
+        
+        agentkit = CdpAgentkitWrapper(**values)
+        
+        # Save wallet data
+        wallet_data = agentkit.export_wallet()
+        with open(wallet_data_file, "w") as f:
+            f.write(wallet_data)
 
         # Initialize toolkits and get tools
         twitter_toolkit = TwitterToolkit.from_twitter_api_wrapper(twitter_api_wrapper)
@@ -865,7 +911,20 @@ async def run_with_progress(func, *args, **kwargs):
     
     try:
         # Handle both async and sync generators
+        # Handle both async and sync generators
         generator = func(*args, **kwargs)
+        
+        if hasattr(generator, '__aiter__'):  # Check if it's an async generator
+            async for chunk in generator:
+                progress.stop()  # Stop spinner before output
+                yield chunk     # Yield the chunk immediately
+                progress.start()  # Restart spinner while waiting for next chunk
+        else:  # Handle synchronous generators
+            for chunk in generator:
+                progress.stop()
+                yield chunk
+                progress.start()
+            
         
         if hasattr(generator, '__aiter__'):  # Check if it's an async generator
             async for chunk in generator:
@@ -1194,14 +1253,32 @@ async def run_autonomous_mode(agent_executor, config, runnable_config, twitter_a
                 elif "tools" in chunk:
                     print_system(chunk["tools"]["messages"][0].content)
                 print_system("-------------------")
+                    print_system(chunk["tools"]["messages"][0].content)
+                print_system("-------------------")
 
+            print_system(f"Completed cycle. Waiting {MENTION_CHECK_INTERVAL/60} minutes before next check...")
+            await asyncio.sleep(MENTION_CHECK_INTERVAL)
             print_system(f"Completed cycle. Waiting {MENTION_CHECK_INTERVAL/60} minutes before next check...")
             await asyncio.sleep(MENTION_CHECK_INTERVAL)
 
         except KeyboardInterrupt:
             print_system("\nSaving state and exiting...")
             twitter_state.save()
+            print_system("\nSaving state and exiting...")
+            twitter_state.save()
             sys.exit(0)
+            
+        except Exception as e:
+            print_error(f"Unexpected error: {str(e)}")
+            print_error(f"Error type: {type(e).__name__}")
+            if hasattr(e, '__traceback__'):
+                import traceback
+                traceback.print_tb(e.__traceback__)
+            
+            print_system("Continuing after error...")
+            await asyncio.sleep(MENTION_CHECK_INTERVAL)
+
+async def main():
             
         except Exception as e:
             print_error(f"Unexpected error: {str(e)}")
