@@ -354,9 +354,6 @@ class DeployMultiTokenInput(BaseModel):
         description="The base URI template for token metadata. Must contain {id} placeholder.",
         example="https://example.com/metadata/{id}.json"
     )
-        description="The base URI template for token metadata. Must contain {id} placeholder.",
-        example="https://example.com/metadata/{id}.json"
-    )
 
 def deploy_multi_token(wallet: Wallet, base_uri: str) -> str:
     """Deploy a new multi-token contract with the specified base URI."""
@@ -1253,8 +1250,6 @@ async def run_autonomous_mode(agent_executor, config, runnable_config, twitter_a
                 elif "tools" in chunk:
                     print_system(chunk["tools"]["messages"][0].content)
                 print_system("-------------------")
-                    print_system(chunk["tools"]["messages"][0].content)
-                print_system("-------------------")
 
             print_system(f"Completed cycle. Waiting {MENTION_CHECK_INTERVAL/60} minutes before next check...")
             await asyncio.sleep(MENTION_CHECK_INTERVAL)
@@ -1267,18 +1262,6 @@ async def run_autonomous_mode(agent_executor, config, runnable_config, twitter_a
             print_system("\nSaving state and exiting...")
             twitter_state.save()
             sys.exit(0)
-            
-        except Exception as e:
-            print_error(f"Unexpected error: {str(e)}")
-            print_error(f"Error type: {type(e).__name__}")
-            if hasattr(e, '__traceback__'):
-                import traceback
-                traceback.print_tb(e.__traceback__)
-            
-            print_system("Continuing after error...")
-            await asyncio.sleep(MENTION_CHECK_INTERVAL)
-
-async def main():
             
         except Exception as e:
             print_error(f"Unexpected error: {str(e)}")
