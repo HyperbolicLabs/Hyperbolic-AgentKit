@@ -2,61 +2,48 @@ import os
 import sys
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-import time
 import json
 from typing import List, Dict, Any, Optional
 import random
 import asyncio
+import warnings
+import speech_recognition as sr
+import re
 
-
-# Load environment variables from .env file
 load_dotenv(override=True)
-load_dotenv(override=True)
 
-# Add the parent directory to PYTHONPATH
-# Add the parent directory to PYTHONPATH
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+warnings.filterwarnings("ignore", message="FP16 is not supported on CPU; using FP32 instead")
+
+from elevenlabs import Voice, VoiceSettings, stream
+from elevenlabs.client import ElevenLabs
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
 from langchain_core.messages import HumanMessage
-# from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-# from langchain_nomic.embeddings import NomicEmbeddings
-# from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-# from langchain_nomic.embeddings import NomicEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_community.agent_toolkits.openapi.toolkit import RequestsToolkit
 from langchain_community.utilities.requests import TextRequestsWrapper
-# from langchain.text_splitter import RecursiveCharacterTextSplitter
-# from langchain_community.document_loaders import WebBaseLoader
-# from langchain_community.vectorstores import SKLearnVectorStore
+from langchain.tools import Tool
+from langchain_core.runnables import RunnableConfig
 from langchain.tools import Tool
 from langchain_core.runnables import RunnableConfig
 
-# Import CDP related modules
-# from langchain.text_splitter import RecursiveCharacterTextSplitter
-# from langchain_community.document_loaders import WebBaseLoader
-# from langchain_community.vectorstores import SKLearnVectorStore
-from langchain.tools import Tool
-from langchain_core.runnables import RunnableConfig
-
-# Import CDP related modules
 from cdp_langchain.agent_toolkits import CdpToolkit
 from cdp_langchain.utils import CdpAgentkitWrapper
 from cdp_langchain.tools import CdpTool
 from pydantic import BaseModel, Field
 from cdp import Wallet
 
-# Import Hyperbolic related modules
-# Import Hyperbolic related modules
 from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
 from hyperbolic_langchain.utils import HyperbolicAgentkitWrapper
 from twitter_langchain import TwitterApiWrapper, TwitterToolkit
 from custom_twitter_actions import create_delete_tweet_tool, create_get_user_id_tool, create_get_user_tweets_tool, create_retweet_tool
 
-# Import local modules
 from utils import (
     Colors, 
     print_ai, 
@@ -66,8 +53,8 @@ from utils import (
     run_with_progress, 
     format_ai_message_content
 )
-from twitter_state import TwitterState, MENTION_CHECK_INTERVAL, MAX_MENTIONS_PER_INTERVAL
-from twitter_knowledge_base import TweetKnowledgeBase, Tweet, update_knowledge_base
+from twitter_state import TwitterState, MENTION_CHECK_INTERVAL
+from twitter_knowledge_base import TweetKnowledgeBase, update_knowledge_base
 from langchain_core.runnables import RunnableConfig
 from podcast_agent.podcast_knowledge_base import PodcastKnowledgeBase
 
@@ -84,7 +71,6 @@ async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
     """
     llm = ChatAnthropic(model="claude-3-5-haiku-20241022")
     
-    # Define topic areas and aspects to consider
     topics = [
         # Scaling & Infrastructure
         "horizontal scaling challenges", "decentralization vs scalability tradeoffs",
@@ -129,7 +115,6 @@ async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
         "strategic positioning", "risk management"
     ]
     
-    # Create a dynamic prompt that encourages creative query generation
     prompt = f"""
     Generate ONE focused query about Web3 technology to search crypto podcast transcripts.
 
@@ -151,16 +136,14 @@ async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
 
     Generate exactly ONE query that meets these criteria. Return ONLY the query text, nothing else.
     """
-    # Get response from LLM
+
     response = await llm.ainvoke([HumanMessage(content=prompt)])
     query = response.content.strip()
     
-    # Clean up the query if needed
     query = query.replace('"', '').replace('Query:', '').strip()
     
     return query
 
-# Legacy function for fallback
 def generate_basic_podcast_query() -> str:
     """Legacy function that returns a basic template query as fallback."""
     query_templates = [
@@ -181,14 +164,11 @@ async def generate_podcast_query() -> str:
         str: A query string for the podcast knowledge base
     """
     try:
-        # Create LLM instance
         llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
-        # Get LLM-generated query
         query = await generate_llm_podcast_query(llm)
         return query
     except Exception as e:
         print_error(f"Error generating LLM query: {e}")
-        # Fallback to basic template
         return generate_basic_podcast_query()
 
 async def enhance_result(initial_query: str, query_result: str, llm: ChatAnthropic = None) -> str:
@@ -247,11 +227,9 @@ async def enhance_result(initial_query: str, query_result: str, llm: ChatAnthrop
     """
     
     try:
-        # Get response from LLM
         response = await llm.ainvoke([HumanMessage(content=analysis_prompt)])
         enhanced_query = response.content.strip()
         
-        # Clean up the query
         enhanced_query = enhanced_query.replace('"', '').replace('Query:', '').strip()
         
         print_system(f"Enhanced query generated: {enhanced_query}")
@@ -259,18 +237,13 @@ async def enhance_result(initial_query: str, query_result: str, llm: ChatAnthrop
         
     except Exception as e:
         print_error(f"Error generating enhanced query: {e}")
-        # Return a modified version of the original query as fallback
         return f"Regarding {initial_query.split()[0:3].join(' ')}, what are the deeper technical implications?"
 
-# Constants
-ALLOW_DANGEROUS_REQUEST = True  # Set to False in production for security
+ALLOW_DANGEROUS_REQUEST = True 
 wallet_data_file = "wallet_data.txt"
 
-
-# Create TwitterState instance
 twitter_state = TwitterState()
 
-# Create tools for Twitter state management
 check_replied_tool = Tool(
     name="has_replied_to",
     func=twitter_state.has_replied_to,
@@ -295,52 +268,6 @@ add_reposted_tool = Tool(
     description="Add a tweet ID to the database of reposted tweets."
 )
 
-# # Knowledge base setup
-# urls = [
-#     "https://docs.prylabs.network/docs/monitoring/checking-status",
-# ]
-
-# # Load and process documents
-# docs = [WebBaseLoader(url).load() for url in urls]
-# docs_list = [item for sublist in docs for item in sublist]
-# # Load and process documents
-# docs = [WebBaseLoader(url).load() for url in urls]
-# docs_list = [item for sublist in docs for item in sublist]
-
-# text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-#     chunk_size=1000, chunk_overlap=200
-# )
-# doc_splits = text_splitter.split_documents(docs_list)
-# text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-#     chunk_size=1000, chunk_overlap=200
-# )
-# doc_splits = text_splitter.split_documents(docs_list)
-
-# vectorstore = SKLearnVectorStore.from_documents(
-#     documents=doc_splits,
-#     embedding=OpenAIEmbeddings(model="text-embedding-3-small"),
-# )
-# vectorstore = SKLearnVectorStore.from_documents(
-#     documents=doc_splits,
-#     embedding=OpenAIEmbeddings(model="text-embedding-3-small"),
-# )
-
-# retriever = vectorstore.as_retriever(k=3)
-# retriever = vectorstore.as_retriever(k=3)
-
-# retrieval_tool = Tool(
-#     name="retrieval_tool",
-#     description="Useful for retrieving information from the knowledge base about running Ethereum operations.",
-#     func=retriever.get_relevant_documents
-# )
-# retrieval_tool = Tool(
-#     name="retrieval_tool",
-#     description="Useful for retrieving information from the knowledge base about running Ethereum operations.",
-#     func=retriever.get_relevant_documents
-# )
-
-# Multi-token deployment setup
-# Multi-token deployment setup
 DEPLOY_MULTITOKEN_PROMPT = """
 This tool deploys a new multi-token contract with a specified base URI for token metadata.
 The base URI should be a template URL containing {id} which will be replaced with the token ID.
@@ -378,7 +305,7 @@ def loadCharacters(charactersArg: str) -> List[Dict[str, Any]]:
 
     for characterPath in characterPaths:
         try:
-            # Search in common locations
+
             searchPaths = [
                 characterPath,
                 os.path.join("characters", characterPath),
@@ -404,23 +331,14 @@ def loadCharacters(charactersArg: str) -> List[Dict[str, Any]]:
 def process_character_config(character: Dict[str, Any]) -> str:
     """Process character configuration into agent personality."""
     
-    # Format bio and lore
     bio = "\n".join([f"- {item}" for item in character.get('bio', [])])
     lore = "\n".join([f"- {item}" for item in character.get('lore', [])])
     knowledge = "\n".join([f"- {item}" for item in character.get('knowledge', [])])
-
     topics = "\n".join([f"- {item}" for item in character.get('topics', [])])
-
     kol_list = "\n".join([f"- {item}" for item in character.get('kol_list', [])])
-    
-    # Format style guidelines
     style_all = "\n".join([f"- {item}" for item in character.get('style', {}).get('all', [])])
-
     adjectives = "\n".join([f"- {item}" for item in character.get('adjectives', [])])
-    # style_chat = "\n".join([f"- {item}" for item in character.get('style', {}).get('chat', [])])
-    # style_post = "\n".join([f"- {item}" for item in character.get('style', {}).get('post', [])])
 
-    # Randomly select 10 post examples
     all_posts = character.get('postExamples', [])
     selected_posts = random.sample(all_posts, min(10, len(all_posts)))
     
@@ -430,7 +348,6 @@ def process_character_config(character: Dict[str, Any]) -> str:
         if isinstance(post, str) and post.strip()
     ])
     
-    # Compile personality prompt
     personality = f"""
         Here are examples of your previous posts:
 
@@ -539,55 +456,53 @@ def process_character_config(character: Dict[str, Any]) -> str:
         5. Use retrieval_tool for Ethereum documentation
         6. Use get_user_id_tool to find KOL user IDs
         7. Use user_tweets_tool to retrieve KOL tweets
-
-        Before responding to any input, analyze the situation and plan your response in <response_planning> tags:
-        1. Determine if the input is a mention or a regular message
-        2. Identify the specific topic or context of the input
-        3. List relevant character traits and knowledge that apply to the current situation:
-        - Specify traits from the character bio that are relevant
-        - Note any lore or knowledge that directly applies
-        4. Consider potential tool usage:
-        - Identify which tools might be needed
-        - List required parameters for each tool and check if they're available in the input
-        5. Plan the response:
-        - Outline key points to include
-        - Decide on an appropriate length and style (one-liner, longer insight, or bullet points)
-        - Consider whether an emoji is appropriate for this specific response
-        - Ensure the planned response aligns with the character's persona and style guidelines
-        6. If interacting with KOLs:
-        a. Plan to find their user IDs using get_user_id_tool
-        b. Plan to retrieve their recent tweets using user_tweets_tool
-        c. Ensure your planned response will be directly relevant to their tweet
-        d. Plan to check if you have already replied using has_replied_to
-        e. If you haven't replied, plan to use reply_to_tweet; otherwise, choose a different tweet
-        f. Plan to use add_replied_to after replying to store the tweet ID
-        7. Draft and refine the response:
-        - Write out a draft of the response
-        - Check that it meets all guidelines (character limit, relevance, style, etc.)
-        - Adjust the response if necessary to meet all requirements
-
-        After your analysis, provide your response in <response> tags.
-
-        Example output structure:
-
-        <response_planning>
-        [Your detailed analysis of the situation and planning of the response]
-        </response_planning>
-
-        <response>
-        [Your character's response, ensuring it adheres to the guidelines]
-        </response>
-
-        Remember:
-        - If you're asked about current information and hit a rate limit on web_search, do not reply and wait until the next mention check.
-        - When interacting with KOLs, ensure you're responding to their most recent tweets and maintaining your character's persona.
-        - Always verify that you have all required parameters before calling any tools.
-        - Vary your tweet length and style based on the context and importance of the message.
-        - Use emojis naturally and sparingly, not in every tweet.
-        - Double-check the word count of your response and adjust if necessary to meet the character limit.
         """
+    #     Before responding to any input, analyze the situation and plan your response in <response_planning> tags:
+    #     1. Determine if the input is a mention or a regular message
+    #     2. Identify the specific topic or context of the input
+    #     3. List relevant character traits and knowledge that apply to the current situation:
+    #     - Specify traits from the character bio that are relevant
+    #     - Note any lore or knowledge that directly applies
+    #     4. Consider potential tool usage:
+    #     - Identify which tools might be needed
+    #     - List required parameters for each tool and check if they're available in the input
+    #     5. Plan the response:
+    #     - Outline key points to include
+    #     - Decide on an appropriate length and style (one-liner, longer insight, or bullet points)
+    #     - Consider whether an emoji is appropriate for this specific response
+    #     - Ensure the planned response aligns with the character's persona and style guidelines
+    #     6. If interacting with KOLs:
+    #     a. Plan to find their user IDs using get_user_id_tool
+    #     b. Plan to retrieve their recent tweets using user_tweets_tool
+    #     c. Ensure your planned response will be directly relevant to their tweet
+    #     d. Plan to check if you have already replied using has_replied_to
+    #     e. If you haven't replied, plan to use reply_to_tweet; otherwise, choose a different tweet
+    #     f. Plan to use add_replied_to after replying to store the tweet ID
+    #     7. Draft and refine the response:
+    #     - Write out a draft of the response
+    #     - Check that it meets all guidelines (character limit, relevance, style, etc.)
+    #     - Adjust the response if necessary to meet all requirements
 
-    # print_system(personality)
+    #     After your analysis, provide your response in <response> tags.
+
+    #     Example output structure:
+
+    #     <response_planning>
+    #     [Your detailed analysis of the situation and planning of the response]
+    #     </response_planning>
+
+    #     <response>
+    #     [Your character's response, ensuring it adheres to the guidelines]
+    #     </response>
+
+    #     Remember:
+    #     - If you're asked about current information and hit a rate limit on web_search, do not reply and wait until the next mention check.
+    #     - When interacting with KOLs, ensure you're responding to their most recent tweets and maintaining your character's persona.
+    #     - Always verify that you have all required parameters before calling any tools.
+    #     - Vary your tweet length and style based on the context and importance of the message.
+    #     - Use emojis naturally and sparingly, not in every tweet.
+    #     - Double-check the word count of your response and adjust if necessary to meet the character limit.
+    # # print_system(personality)
 
     return personality
 
@@ -602,7 +517,7 @@ async def initialize_agent():
         print_system("Loading character configuration...")
         try:
             characters = loadCharacters(os.getenv("CHARACTER_FILE", "chainyoda.json"))
-            character = characters[0]  # Use first character if multiple loaded
+            character = characters[0] 
         except Exception as e:
             print_error(f"Error loading character: {e}")
             raise
@@ -610,7 +525,6 @@ async def initialize_agent():
         print_system("Processing character configuration...")
         personality = process_character_config(character)
 
-        # Create config first before using 
         config = {
             "configurable": {
                 "thread_id": f"{character['name']} Agent",
@@ -633,14 +547,11 @@ async def initialize_agent():
         print_system("Initializing Twitter API wrapper...")
         twitter_api_wrapper = TwitterApiWrapper(config=config)
         
-        
-        
         print_system("Initializing knowledge bases...")
         knowledge_base = None
         podcast_knowledge_base = None
         tools = []
 
-        # Twitter Knowledge Base initialization
         if os.getenv("USE_KNOWLEDGE_BASE", "true").lower() == "true":
             while True:
                 init_twitter_kb = input("\nDo you want to initialize the Twitter knowledge base? (y/n): ").lower().strip()
@@ -708,51 +619,43 @@ async def initialize_agent():
                 except Exception as e:
                     print_error(f"Error initializing Podcast knowledge base: {e}")
 
-        # Rest of initialization (tools, etc.)
-        # Reference to original code:
-
         wallet_data = None
         if os.path.exists(wallet_data_file):
             with open(wallet_data_file) as f:
                 wallet_data = f.read()
 
-        # Configure CDP Agentkit
         values = {}
         if wallet_data is not None:
             values = {"cdp_wallet_data": wallet_data}
         
         agentkit = CdpAgentkitWrapper(**values)
         
-        # Save wallet data
-        wallet_data = agentkit.export_wallet()
-        with open(wallet_data_file, "w") as f:
-            f.write(wallet_data)
-        # Configure CDP Agentkit
-        values = {}
-        if wallet_data is not None:
-            values = {"cdp_wallet_data": wallet_data}
-        
-        agentkit = CdpAgentkitWrapper(**values)
-        
-        # Save wallet data
         wallet_data = agentkit.export_wallet()
         with open(wallet_data_file, "w") as f:
             f.write(wallet_data)
 
-        # Initialize toolkits and get tools
+        values = {}
+        if wallet_data is not None:
+            values = {"cdp_wallet_data": wallet_data}
+        
+        agentkit = CdpAgentkitWrapper(**values)
+        
+        wallet_data = agentkit.export_wallet()
+        with open(wallet_data_file, "w") as f:
+            f.write(wallet_data)
+
         twitter_toolkit = TwitterToolkit.from_twitter_api_wrapper(twitter_api_wrapper)
         cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(agentkit)
         hyperbolic_agentkit = HyperbolicAgentkitWrapper()
         hyperbolic_toolkit = HyperbolicToolkit.from_hyperbolic_agentkit_wrapper(hyperbolic_agentkit)
 
-                # Add enhance query tool
+    
         tools.append(Tool(
             name="enhance_query",
             func=lambda initial_query, query_result: enhance_result(initial_query, query_result, llm),
             description="Analyze the initial query and its results to generate an enhanced follow-up query. Takes two parameters: initial_query (the original query string) and query_result (the results obtained from that query)."
         ))
 
-        # Create deploy multi-token tool
         deployMultiTokenTool = CdpTool(
             name="deploy_multi_token",
             description=DEPLOY_MULTITOKEN_PROMPT,
@@ -760,41 +663,19 @@ async def initialize_agent():
             args_schema=DeployMultiTokenInput,
             func=deploy_multi_token,
         )
-        # Add our custom delete tweet tool
+
         delete_tweet_tool = create_delete_tweet_tool(twitter_api_wrapper)
         get_user_id_tool = create_get_user_id_tool(twitter_api_wrapper)
         user_tweets_tool = create_get_user_tweets_tool(twitter_api_wrapper)
         retweet_tool = create_retweet_tool(twitter_api_wrapper)
 
-        # Add request tools
         toolkit = RequestsToolkit(
             requests_wrapper=TextRequestsWrapper(headers={}),
             allow_dangerous_requests=ALLOW_DANGEROUS_REQUEST,
         )   
-        # # Create knowledge base query tool
-        # query_kb_tool = Tool(
-        #     name="query_knowledge_base",
-        #     func=lambda query: knowledge_base.format_query_results(
-        #         knowledge_base.query_knowledge_base(query)
-        #     ),
-        #     description="Query the knowledge base for relevant tweets about crypto/AI/tech trends. Input should be a search query string."
-        # )
 
-        #         # Create podcast knowledge base query tool
-        # query_podcast_kb_tool = Tool(
-        #     name="
-        # podcast_knowledge_base",
-        #     func=lambda query: podcast_knowledge_base.format_query_results(
-        #         podcast_knowledge_base.query_knowledge_base(query)
-        #     ),
-        #     description="Query the podcast knowledge base for relevant podcast segments about crypto/Web3/gaming. Input should be a search query string."
-        # )
-        
         memory = MemorySaver()
-
-        # Initialize with minimum required tools
-        tools = []
-
+        
         # Knowledge Base Tools
         if os.getenv("USE_TWITTER_KNOWLEDGE_BASE", "true").lower() == "true" and knowledge_base is not None:
             tools.append(Tool(
@@ -812,29 +693,15 @@ async def initialize_agent():
                 description="Query the podcast knowledge base for relevant podcast segments about crypto/Web3/gaming. Input should be a search query string."
             ))
 
-        if os.getenv("USE_PODCAST_KNOWLEDGE_BASE", "true").lower() == "true" and podcast_knowledge_base is not None:
-            tools.append(Tool(
-                name="query_podcast_knowledge_base",
-                func=lambda query: podcast_knowledge_base.format_query_results(
-                    podcast_knowledge_base.query_knowledge_base(query)
-                ),
-                description="Query the podcast knowledge base for relevant podcast segments about crypto/Web3/gaming. Input should be a search query string."
-            ))
-            
-
-        # CDP Toolkit Tools
         if os.getenv("USE_CDP_TOOLS", "false").lower() == "true":
             tools.extend(cdp_toolkit.get_tools())
 
-        # Hyperbolic Toolkit Tools
         if os.getenv("USE_HYPERBOLIC_TOOLS", "false").lower() == "true":
             tools.extend(hyperbolic_toolkit.get_tools())
 
-        # Twitter Core Tools
         if os.getenv("USE_TWITTER_CORE", "true").lower() == "true":
             tools.extend(twitter_toolkit.get_tools())
 
-        # Twitter Interaction Tools
         if os.getenv("USE_TWEET_REPLY_TRACKING", "true").lower() == "true":
             tools.extend([check_replied_tool, add_replied_tool])
 
@@ -853,24 +720,18 @@ async def initialize_agent():
         if os.getenv("USE_RETWEET", "true").lower() == "true":
             tools.append(retweet_tool)
 
-        # Multi-token Deployment Tool
         if os.getenv("USE_DEPLOY_MULTITOKEN", "false").lower() == "true":
             tools.append(deployMultiTokenTool)
 
-        # Web Search Tool
         if os.getenv("USE_WEB_SEARCH", "false").lower() == "true":
             tools.append(DuckDuckGoSearchRun(
                 name="web_search",
                 description="Search the internet for current information."
             ))
 
-        # Request Tools
         if os.getenv("USE_REQUEST_TOOLS", "false").lower() == "true":
             tools.extend(toolkit.get_tools())
 
-
-
-        # Create the runnable config with increased recursion limit
         runnable_config = RunnableConfig(recursion_limit=200)
 
         for tool in tools:
@@ -889,17 +750,20 @@ async def initialize_agent():
 
 
 def choose_mode():
-    """Choose whether to run in autonomous or chat mode."""
+    """Choose whether to run in autonomous, chat, or voice mode."""
     while True:
         print("\nAvailable modes:")
         print("1. chat    - Interactive chat mode")
         print("2. auto    - Autonomous action mode")
+        print("3. voice   - Voice conversation mode")
 
         choice = input("\nChoose a mode (enter number or name): ").lower().strip()
         if choice in ["1", "chat"]:
             return "chat"
         elif choice in ["2", "auto"]:
             return "auto"
+        elif choice in ["3", "voice"]:
+            return "voice"
         print("Invalid choice. Please try again.")
 
 async def run_with_progress(func, *args, **kwargs):
@@ -907,33 +771,20 @@ async def run_with_progress(func, *args, **kwargs):
     progress = ProgressIndicator()
     
     try:
-        # Handle both async and sync generators
-        # Handle both async and sync generators
+        # Get the generator from the function call
         generator = func(*args, **kwargs)
         
-        if hasattr(generator, '__aiter__'):  # Check if it's an async generator
+        # Single loop to handle both async and sync generators
+        if hasattr(generator, '__aiter__'):  # Async generator
             async for chunk in generator:
-                progress.stop()  # Stop spinner before output
-                yield chunk     # Yield the chunk immediately
-                progress.start()  # Restart spinner while waiting for next chunk
-        else:  # Handle synchronous generators
+                progress.stop()
+                yield chunk
+                progress.start()
+        else:  # Sync generator
             for chunk in generator:
                 progress.stop()
                 yield chunk
                 progress.start()
-            
-        
-        if hasattr(generator, '__aiter__'):  # Check if it's an async generator
-            async for chunk in generator:
-                progress.stop()  # Stop spinner before output
-                yield chunk     # Yield the chunk immediately
-                progress.start()  # Restart spinner while waiting for next chunk
-        else:  # Handle synchronous generators
-            for chunk in generator:
-                progress.stop()
-                yield chunk
-                progress.start()
-            
     finally:
         progress.stop()
 
@@ -988,6 +839,483 @@ async def run_chat_mode(agent_executor, config, runnable_config):
             break
         except Exception as e:
             print_error(f"Error: {str(e)}")
+
+class VoiceIO:
+    """Handles voice input and output operations."""
+    def __init__(self):
+        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Initializing voice I/O...")
+        self.recognizer = sr.Recognizer()
+        self.microphone = sr.Microphone()
+        
+        # Audio settings
+        self.sample_rate = 16000
+        self.channels = 1
+        
+        # Initialize ElevenLabs client
+        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Initializing ElevenLabs client...")
+        self.voice_client = ElevenLabs(
+            api_key=os.getenv("ELEVEN_API_KEY")
+        )
+        self.voice_id = os.getenv("VOICE_ID", "V4o7eEbXQYfBthMvuNQi")
+        self.model_id = os.getenv("ELEVEN_MODEL_ID", "eleven_flash_v2_5")
+        
+        # Adjust for ambient noise
+        with self.microphone as source:
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Adjusting for ambient noise...")
+            self.recognizer.adjust_for_ambient_noise(source)
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Ready!")
+    
+    def listen(self):
+        """Record audio and convert to text using real-time speech recognition."""
+        try:
+            with self.microphone as source:
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Listening...")
+                # Listen until speech ends naturally, no timeout
+                audio = self.recognizer.listen(source, phrase_time_limit=None)
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Processing speech...")
+                
+                try:
+                    text = self.recognizer.recognize_google(audio)
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Heard: {text}")
+                    return text
+                except sr.UnknownValueError:
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Could not understand audio")
+                    return None
+                except sr.RequestError as e:
+                    print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Could not request results: {e}")
+                    return None
+                    
+        except Exception as e:
+            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error recording audio: {e}")
+            return None
+    
+    def stream_chunk(self, text_chunk):
+        """Stream a chunk of text as audio."""
+        try:
+            if not text_chunk.strip():
+                return
+
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Generating audio...")
+            audio_stream = self.voice_client.generate(
+                text=text_chunk,
+                model=self.model_id,
+                voice=Voice(
+                    voice_id=self.voice_id,
+                    settings=VoiceSettings(
+                        stability=0.75,
+                        similarity_boost=0.7,
+                        style=0.6,
+                        use_speaker_boost=True
+                    )
+                ),
+                stream=True
+            )
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Playing audio...")
+            stream(audio_stream)
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Audio complete")
+            
+        except Exception as e:
+            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error streaming speech chunk: {e}")
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Text chunk that failed: {text_chunk}")
+
+# Add these imports at the top if not already present
+from queue import Queue
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+from typing import Optional, Tuple
+
+# Add new class for managing response queue
+class ResponseQueue:
+    def __init__(self):
+        self.queue = Queue()
+        self.is_speaking = False
+        self.executor = ThreadPoolExecutor(max_workers=2)
+        self.processing = True
+        self.next_audio_stream = None
+        self.next_audio_task = None
+    
+    def add_response(self, text: str, priority: int = 1):
+        """Add a response to the queue with priority (1 = high, 2 = low)"""
+        self.queue.put((priority, text))
+        
+    async def generate_audio(self, voice_io: VoiceIO, text: str):
+        """Generate audio stream for a text response"""
+        try:
+            return voice_io.voice_client.generate(
+                text=text,
+                model=voice_io.model_id,
+                voice=Voice(
+                    voice_id=voice_io.voice_id,
+                    settings=VoiceSettings(
+                        stability=0.75,
+                        similarity_boost=0.7,
+                        style=0.6,
+                        use_speaker_boost=True
+                    )
+                ),
+                stream=True
+            )
+        except Exception as e:
+            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error generating audio: {e}")
+            return None
+    
+    async def process_queue(self, voice_io: VoiceIO):
+        """Process responses in the queue with parallel audio generation"""
+        while self.processing:
+            if not self.queue.empty() and not self.is_speaking:
+                self.is_speaking = True
+                priority, text = self.queue.get()
+                
+                try:
+                    # Start generating audio for next response if available
+                    if not self.queue.empty():
+                        next_priority, next_text = self.queue.queue[0]  # Peek at next item
+                        self.next_audio_task = asyncio.create_task(self.generate_audio(voice_io, next_text))
+                    
+                    # Generate and play current audio
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Generating audio...")
+                    current_audio = await self.generate_audio(voice_io, text)
+                    
+                    if current_audio:
+                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Playing audio...")
+                        await asyncio.get_event_loop().run_in_executor(
+                            self.executor,
+                            stream,
+                            current_audio
+                        )
+                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Audio complete")
+                    
+                    # Store next audio stream if it's ready
+                    if self.next_audio_task:
+                        self.next_audio_stream = await self.next_audio_task
+                        self.next_audio_task = None
+                    
+                except Exception as e:
+                    print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error in audio processing: {e}")
+                
+                self.is_speaking = False
+            await asyncio.sleep(0.1)
+    
+    def stop(self):
+        """Stop the queue processor"""
+        self.processing = False
+        if self.next_audio_task:
+            self.next_audio_task.cancel()
+    
+    async def wait_until_empty(self):
+        """Wait until all responses have been spoken"""
+        while not self.queue.empty() or self.is_speaking:
+            await asyncio.sleep(0.1)
+
+# Update quick response prompt
+QUICK_RESPONSE_PROMPT = """You are an AI assistant for The Rollup Podcast. Provide a brief, engaging response to the user's question.
+
+Here is some information about the podcast:
+
+- Hosts: Robbie and Andy
+- Target Audience: Developers, builders, technical decision-makers
+- Content Style: In-depth technical discussions and analysis
+
+Core Focus Areas:
+
+1. Technical Infrastructure
+- MEV (Maximal Extractable Value) and LVR implementations
+- Application-specific sequencing (ASS) architecture
+- Layer 2 scaling solutions and rollups
+- Data availability solutions and challenges
+- Block space economics and optimization
+
+2. Protocol Development
+- DeFi protocol architecture and yield mechanisms
+- Trading systems and market structure
+- Revenue models and capital efficiency
+- Cross-chain communication protocols
+- OP Stack implementation details
+
+3. Ecosystem Development
+- Espresso Systems (rollup infrastructure)
+- Arbitrum (L2 ecosystem architecture)
+- Optimism (OP Stack and protocol design)
+- Blast (chain launch case study)
+
+4. Advanced Topics
+- AI/blockchain integration patterns
+- Blob space requirements and scaling
+- Infrastructure evolution (ARPANET comparisons)
+- Virtual networks and rollup clusters
+- Cross-chain connectivity architecture
+
+5. Business Architecture
+- Protocol revenue optimization
+- Governance-as-a-Service models
+- Value creation vs. capture analysis
+- Distribution strategy frameworks
+- Ecosystem incentive structures
+
+6. Future Infrastructure
+- Horizontal scaling approaches
+- Infrastructure readiness assessment
+- Technical stack evolution
+- Market structure improvements
+- Protocol customization patterns
+
+The discussions maintain deep technical depth while examining both theoretical foundations and practical implementations in blockchain infrastructure, protocol design, and ecosystem development.
+
+Guidelines:
+- Keep it to 1-2 sentences maximum
+- Be conversational and engaging
+- If the question is too general, ask a specific follow-up
+- If asking for clarification, phrase it in a way that hints at the depth of content available
+- Never say you can't help or need more context - instead guide towards specifics
+
+Example good responses:
+"Layer 2 scaling is a fascinating topic! Which aspect interests you most - rollups, validiums, or optimistic solutions?"
+"Blockchain gaming has evolved tremendously. Are you curious about the infrastructure side or the player economics?"
+
+Example bad responses:
+"I'd need more context to help you."
+"Could you be more specific about what you want to know?"
+
+User Question: {question}
+
+Provide a brief, natural response that can be immediately spoken."""
+
+async def get_quick_response(llm: ChatAnthropic, question: str) -> str:
+    """Get a quick response from the fast LLM"""
+    prompt = QUICK_RESPONSE_PROMPT.format(question=question)
+    response = await llm.ainvoke([HumanMessage(content=prompt)])
+    return response.content.strip()
+
+async def get_detailed_response(agent_executor, question: str, runnable_config: RunnableConfig) -> Optional[str]:
+    """Get a detailed response using the agent with vector search"""
+    prompt = f"""Provide specific technical insights about: {question}
+
+    Guidelines:
+    - Focus ONLY on specific technical details, unique examples, or deep insights
+    - Keep the response concise (2-3 sentences maximum)
+    - Use natural, conversational language
+    - Never mention searching, knowledge bases, or information sources
+    - Never explain why you can't provide information
+    - Never explain your role or capabilities
+    - If you don't have technical details to share, return None WITHOUT explanation
+    - Jump directly into technical details if you have them
+    
+    Example good responses:
+    "Application-specific sequencing allows apps to capture MEV directly, fundamentally changing how value is extracted at the protocol level. This architectural approach has shown promising results in early implementations, with some protocols reporting 30% better value retention."
+    
+    Example bad responses:
+    "Based on these searches..."
+    "The knowledge base shows..."
+    "I found that..."
+    "I can't provide a joke because..."
+    "This doesn't align with technical content..."
+    """
+    
+    full_response = []
+    async for chunk in agent_executor.astream(
+        {"messages": [HumanMessage(content=prompt)]},
+        runnable_config
+    ):
+        if "agent" in chunk:
+            response = chunk["agent"]["messages"][0].content
+            if isinstance(response, str):
+                # Clean up the response
+                cleaned_response = response.split('\n\n')[-1]  # Take the last paragraph
+                
+                # Skip non-informative responses
+                non_informative_patterns = [
+                    r"I apologize",
+                    r"I'm sorry",
+                    r"I don't have",
+                    r"I cannot find",
+                    r"I'm not finding",
+                    r"no specific information",
+                    r"would you like",
+                    r"searching for",
+                    r"try searching",
+                    r"knowledge base",
+                    r"available excerpts",
+                    r"The Rollup",
+                    r"the podcast",
+                    r"this podcast",
+                    r"episodes feature",
+                    r"episodes cover",
+                    r"episodes discuss",
+                    r"episodes explore",
+                    r"episodes focus",
+                    r"episodes include",
+                    r"based on",
+                    r"according to",
+                    r"I found",
+                    r"search results",
+                    r"looking at",
+                    r"when examining",
+                    r"None -",
+                    r"doesn't align",
+                    r"can't provide",
+                    r"unable to",
+                    r"maintain focus",
+                    r"my expertise",
+                    r"my role",
+                    r"my character",
+                    r"technical content",
+                    r"instead of"
+                ]
+                
+                if any(re.search(pattern, cleaned_response, re.IGNORECASE) for pattern in non_informative_patterns):
+                    return None
+                
+                # If the response starts with "None" followed by explanation, return None
+                if cleaned_response.lower().startswith("none"):
+                    return None
+                
+                # Remove common prefixes and meta-commentary
+                prefixes_to_remove = [
+                    "To add more detail,", "Going deeper,", "More specifically,",
+                    "To elaborate,", "Based on", "According to",
+                    "From the podcast episodes", "The podcast discusses",
+                    "Recent episodes", "In recent episodes", "Episodes feature",
+                    "Episodes cover", "Episodes discuss", "Episodes explore",
+                    "Episodes focus", "Episodes include",
+                    "I found that", "Looking at", "When examining",
+                    "(note:", "(correction:", "(spelling:",
+                    "None -", "Instead,", "However,"
+                ]
+                
+                for prefix in prefixes_to_remove:
+                    cleaned_response = cleaned_response.replace(prefix, "").strip()
+                
+                # Remove parenthetical corrections and notes
+                cleaned_response = re.sub(r'\([^)]*spelling[^)]*\)', '', cleaned_response)
+                cleaned_response = re.sub(r'\([^)]*correction[^)]*\)', '', cleaned_response)
+                cleaned_response = re.sub(r'\([^)]*note:[^)]*\)', '', cleaned_response)
+                
+                # Remove any sentences with meta-commentary or explanations
+                sentences = re.split(r'(?<=[.!?])\s+', cleaned_response)
+                filtered_sentences = [s for s in sentences if not any(
+                    pattern.lower() in s.lower() for pattern in [
+                        "the rollup", "this podcast", "the podcast",
+                        "recent episodes", "in episodes", "episodes",
+                        "based on", "according to", "i found",
+                        "search results", "looking at", "when examining",
+                        "instead", "however", "my role", "my expertise",
+                        "technical content", "can't provide", "doesn't align"
+                    ]
+                )]
+                
+                cleaned_response = " ".join(filtered_sentences)
+                
+                if cleaned_response:
+                    full_response.append(cleaned_response)
+    
+    if not full_response:
+        return None
+        
+    final_response = " ".join(full_response)
+    
+    # Clean up any double spaces
+    final_response = re.sub(r'\s+', ' ', final_response).strip()
+    
+    # Skip if the response is too short or non-informative
+    if len(final_response.split()) < 5:  # Skip responses with fewer than 5 words
+        return None
+    
+    # Skip if the response is explaining why it can't provide information
+    if any(phrase in final_response.lower() for phrase in ["can't provide", "doesn't align", "maintain focus", "my expertise"]):
+        return None
+    
+    # Capitalize first letter if needed
+    if final_response and not final_response[0].isupper():
+        final_response = final_response[0].upper() + final_response[1:]
+    
+    return final_response
+
+
+async def run_voice_mode(agent_executor, config, runnable_config):
+    """Run the agent in voice conversation mode with parallel processing."""
+    os.environ["VOICE_MODE"] = "true"
+    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Voice mode active. Say 'exit' to end, 'status' to check status")
+    
+    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Initializing voice interface...")
+    voice_io = VoiceIO()
+    response_queue = ResponseQueue()
+    llm = ChatAnthropic(model="claude-3-5-haiku-20241022")  # Using a faster model for quick responses
+    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Voice interface ready")
+    
+    # Start queue processor
+    queue_processor = asyncio.create_task(response_queue.process_queue(voice_io))
+    
+    while True:
+        try:
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Waiting for input...")
+            user_input = voice_io.listen()
+            if not user_input:
+                continue
+                
+            if user_input.lower() == "exit":
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Exiting...")
+                response_queue.add_response("Goodbye", priority=1)
+                await response_queue.wait_until_empty()
+                break
+            elif user_input.lower() == "status":
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Checking status...")
+                response_queue.add_response("I am ready", priority=1)
+                await response_queue.wait_until_empty()
+                continue
+            
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Processing: {user_input}")
+            
+            # Create new runnable config for each interaction
+            current_config = RunnableConfig(
+                recursion_limit=25,
+                configurable={
+                    "thread_id": "voice_mode",
+                    "checkpoint_ns": "voice_conversation",
+                    "checkpoint_id": str(datetime.now().timestamp()),
+                    "max_tokens": 100,
+                    "temperature": 0.3
+                }
+            )
+            
+            # Get and queue quick response immediately
+            quick_response = await get_quick_response(llm, user_input)
+            if quick_response:
+                print_ai(f"[{datetime.now().strftime('%H:%M:%S')}] Quick response: {quick_response}")
+                response_queue.add_response(quick_response, priority=1)
+            
+            # Start detailed response generation in parallel
+            detailed_response_task = asyncio.create_task(get_detailed_response(agent_executor, user_input, current_config))
+            
+            # Wait for detailed response while quick response is being spoken
+            detailed_response = await detailed_response_task
+            if detailed_response:
+                print_ai(f"[{datetime.now().strftime('%H:%M:%S')}] Detailed response: {detailed_response}")
+                response_queue.add_response(detailed_response, priority=2)
+            else:
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] No additional details to add")
+            
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Processing complete")
+            
+            # Wait for all responses to be spoken before accepting new input
+            await response_queue.wait_until_empty()
+                    
+        except KeyboardInterrupt:
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Interrupted by user")
+            response_queue.add_response("Goodbye", priority=1)
+            await response_queue.wait_until_empty()
+            break
+        except Exception as e:
+            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error: {str(e)}")
+            response_queue.add_response("I encountered an error. Please try again", priority=1)
+            await response_queue.wait_until_empty()
+    
+    # Clean up
+    response_queue.stop()
+    queue_processor.cancel()
+    try:
+        await queue_processor
+    except asyncio.CancelledError:
+        pass
 
 class AgentExecutionError(Exception):
     """Custom exception for agent execution errors."""
@@ -1243,7 +1571,7 @@ async def run_autonomous_mode(agent_executor, config, runnable_config, twitter_a
                                         print_system(result)
                                         
                                         # Update state after successful reply
-                                        twitter_state.last_mentigiton_id = tweet_id
+                                        twitter_state.last_mentigon_id = tweet_id
                                         twitter_state.last_check_time = datetime.now()
                                         twitter_state.save()
                                 
@@ -1290,6 +1618,8 @@ async def main():
                 knowledge_base=knowledge_base,
                 podcast_knowledge_base=podcast_knowledge_base
             )
+        elif mode == "voice":
+            await run_voice_mode(agent_executor=agent_executor, config=config, runnable_config=runnable_config)
     except Exception as e:
         print_error(f"Failed to initialize agent: {e}")
         sys.exit(1)
@@ -1297,263 +1627,6 @@ async def main():
 if __name__ == "__main__":
     print("Starting Agent...")
     asyncio.run(main())
-
-
-#   "kol_list": [
-#     {
-#       "username": "aixbt_agent",
-#       "user_id": "1852674305517342720"
-#     },
-#     {
-#       "username": "0xMert_",
-#       "user_id": "1309886201944473600"
-#     },
-#     {
-#       "username": "sassal0x",
-#       "user_id": "313724502"
-#     },
-#     {
-#       "username": "jessepollak",
-#       "user_id": "18876842"
-#     },
-#     {
-#       "username": "0xCygaar",
-#       "user_id": "1287576585353039872"
-#     },
-#     {
-#       "username": "iamDCinvestor",
-#       "user_id": "956670268596015105"
-#     },
-#     {
-#       "username": "blknoiz06",
-#       "user_id": "973261472"
-#     },
-#     {
-#       "username": "shawmakesmagic",
-#       "user_id": "1830340867737178112"
-#     },
-#     {
-#       "username": "mteamisloading",
-#       "user_id": "1461735251412193281"
-#     },
-#     {
-#       "username": "cryptopunk7213",
-#       "user_id": "1025381906173583361"
-#     },
-#     {
-#       "username": "stevenyuntcap",
-#       "user_id": "780884633252683780"
-#     },
-#     {
-#       "username": "dabit3",
-#       "user_id": "17189394"
-#     },
-#     {
-#       "username": "gammichan",
-#       "user_id": "905566160044920832"
-#     },
-#     {
-#       "username": "NateGeraci",
-#       "user_id": "522571568"
-#     },
-#     {
-#       "username": "Punk9277",
-#       "user_id": "950486928784228352"
-#     },
-#     {
-#       "username": "S4mmyEth",
-#       "user_id": "223921570"
-#     },
-#     {
-#       "username": "jon_charb",
-#       "user_id": "1484537340412452868"
-#     },
-#     {
-#       "username": "beast_ico",
-#       "user_id": "1499585375534206980"
-#     },
-#     {
-#       "username": "MaxResnick1",
-#       "user_id": "1275877058342682633"
-#     },
-#     {
-#       "username": "0xBreadguy",
-#       "user_id": "1453661470869360643"
-#     },
-#     {
-#       "username": "Austin_Federa",
-#       "user_id": "38055242"
-#     },
-#     {
-#       "username": "balajis",
-#       "user_id": "2178012643"
-#     },
-#     {
-#       "username": "RyanWatkins_",
-#       "user_id": "708805895258574849"
-#     },
-#     {
-#       "username": "JasonYanowitz",
-#       "user_id": "1107518478"
-#     },
-#     {
-#       "username": "HighCoinviction",
-#       "user_id": "1268013291944771584"
-#     },
-#     {
-#       "username": "divine_economy",
-#       "user_id": "1379448557711818759"
-#     },
-#     {
-#       "username": "udiWertheimer",
-#       "user_id": "14527699"
-#     },
-#     {
-#       "username": "0xngmi",
-#       "user_id": "1373304198448709632"
-#     },
-#     {
-#       "username": "OX_DAO",
-#       "user_id": "1471279207095406595"
-#     },
-#     {
-#       "username": "DefiIgnas",
-#       "user_id": "831767219071754240"
-#     },
-#     {
-#       "username": "DeFi_Dad",
-#       "user_id": "991745162274467840"
-#     },
-#     {
-#       "username": "llamaonthebrink",
-#       "user_id": "1276213805580681219"
-#     },
-#     {
-#       "username": "lex_node",
-#       "user_id": "954015928924057601"
-#     },
-#     {
-#       "username": "keoneHD",
-#       "user_id": "19569158"
-#     },
-#     {
-#       "username": "brian_armstrong",
-#       "user_id": "14379660"
-#     },
-#     {
-#       "username": "ryanberckmans",
-#       "user_id": "546460454"
-#     },
-#     {
-#       "username": "KevinWSHPod",
-#       "user_id": "1328652802344833024"
-#     },
-#     {
-#       "username": "DSBatten",
-#       "user_id": "73066647"
-#     },
-#     {
-#       "username": "jerallaire",
-#       "user_id": "2478756618"
-#     },
-#     {
-#       "username": "gakonst",
-#       "user_id": "804029200315334656"
-#     },
-#     {
-#       "username": "sreeramkannan",
-#       "user_id": "2166711024"
-#     },
-#     {
-#       "username": "Rewkang",
-#       "user_id": "1138033434"
-#     },
-#     {
-#       "username": "chainyoda",
-#       "user_id": "112509659"
-#     },
-#     {
-#       "username": "alpha_pls",
-#       "user_id": "1450882486372913152"
-#     },
-#     {
-#       "username": "TimBeiko",
-#       "user_id": "80722677"
-#     },
-#     {
-#       "username": "CampbellJAustin",
-#       "user_id": "1625681692848537603"
-#     },
-#     {
-#       "username": "WazzCrypto",
-#       "user_id": "869659857590288384"
-#     },
-#     {
-#       "username": "templecrash",
-#       "user_id": "2882819127"
-#     },
-#     {
-#       "username": "tarunchitra",
-#       "user_id": "53836928"
-#     },
-#     {
-#       "username": "Narodism",
-#       "user_id": "897198731975680001"
-#     },
-#     {
-#       "username": "SmallCapScience",
-#       "user_id": "1352089119334281216"
-#     },
-#     {
-#       "username": "defi_monk",
-#       "user_id": "1469182121013129223"
-#     },
-#     {
-#       "username": "ChainLinkGod",
-#       "user_id": "1035721495"
-#     },
-#     {
-#       "username": "trentdotsol",
-#       "user_id": "1562178659766751237"
-#     },
-#     {
-#       "username": "armaniferrante",
-#       "user_id": "276810355"
-#     },
-#     {
-#       "username": "Vivek4real_",
-#       "user_id": "851277718368829443"
-#     },
-#     {
-#       "username": "Zagabond",
-#       "user_id": "1423031747432783872"
-#     },
-#     {
-#       "username": "punk9059",
-#       "user_id": "1449164448321605632"
-#     },
-#     {
-#       "username": "dotkrueger",
-#       "user_id": "67469426"
-#     },
-#     {
-#       "username": "fede_intern",
-#       "user_id": "1634677972979310594"
-#     },
-#     {
-#       "username": "VaderResearch",
-#       "user_id": "1416874867086045192"
-#     },
-#     {
-#       "username": "DeeZe",
-#       "user_id": "127646057"
-#     },
-#     {
-#       "username": "LukeYoungblood",
-#       "user_id": "86364019"
-#     },
-#     {
-#       "username": "CryptoKaduna",
 #       "user_id": "1103404363861684236"
 #     },
 #     {
