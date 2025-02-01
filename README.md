@@ -85,3 +85,10 @@ Blockchain Operations (via CDP):
 - Persistent wallet management
 - X (Twitter) integration
 - Modern web interface powered by Gradio
+
+
+## For the audio agent, must run (macos)
+```bash
+brew install portaudio
+brew install mpv
+```
