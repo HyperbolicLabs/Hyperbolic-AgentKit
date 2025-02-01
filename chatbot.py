@@ -1627,38 +1627,3 @@ async def main():
 if __name__ == "__main__":
     print("Starting Agent...")
     asyncio.run(main())
-#       "user_id": "1103404363861684236"
-#     },
-#     {
-#       "username": "Shaughnessy119",
-#       "user_id": "2215937899"
-#     },
-#     {
-#       "username": "LucaNetz",
-#       "user_id": "807982663000674305"
-#     },
-#     {
-#       "username": "0xstark",
-#       "user_id": "14053424"
-#     },
-#     {
-#       "username": "DavidFBailey",
-#       "user_id": "30597171"
-#     },
-#     {
-#       "username": "Defi0xJeff",
-#       "user_id": "1460252469745782790"
-#     },
-#     {
-#       "username": "Darrenlautf",
-#       "user_id": "987634087274823680"
-#     },
-#     {
-#       "username": "mdudas",
-#       "user_id": "7184612"
-#     },
-#     {
-#       "username": "dankrad",
-#       "user_id": "115069952"
-#     }
-# ],
