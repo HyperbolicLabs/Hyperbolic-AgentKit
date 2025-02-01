@@ -69,6 +69,3 @@ videofiles/
 
 jsonoutputs/
 
-audio_agent_copy.py
-podcast_kb.db
-.podcast_kb.db.lock
