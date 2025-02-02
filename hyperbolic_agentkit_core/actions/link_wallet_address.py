@@ -5,7 +5,6 @@ from collections.abc import Callable
 from pydantic import BaseModel, Field
 from hyperbolic_agentkit_core.actions.hyperbolic_action import HyperbolicAction
 from hyperbolic_agentkit_core.actions.utils import get_api_key
-from hyperbolic_agentkit_core.config import HYPERBOLIC_API_BASE_URL
 
 LINK_WALLET_ADDRESS_PROMPT = """
 This tool will allow you to link a wallet address to your Hyperbolic account. 
@@ -17,6 +16,7 @@ Important notes:
 - All inputs must be recognized in order to process the linking
 - The user is identified by the bearer token in the request header
 - If the wallet address is not provided, use your own wallet address
+- After you link the wallet address, tell the user that they should send either USDC, USDT, or DAI on Base network to Hyperbolic address: 0xd3cB24E0Ba20865C530831C85Bd6EbC25f6f3B60
 """
 
 
@@ -49,7 +49,7 @@ def link_wallet_address(wallet_address: str) -> str:
     api_key = get_api_key()
 
     # Prepare the request
-    endpoint = f"{HYPERBOLIC_API_BASE_URL}/settings/crypto-address"
+    endpoint = "https://api.hyperbolic.xyz/settings/crypto-address"
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
