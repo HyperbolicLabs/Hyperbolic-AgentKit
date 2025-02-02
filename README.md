@@ -2,7 +2,6 @@
 
 This repository is inspired by and modified from Coinbase's [CDP Agentkit](https://github.com/coinbase/cdp-agentkit). We extend our gratitude to the Coinbase Developer Platform team for their original work.
 
-
 A template for running an AI agent with both blockchain and compute capabilities, plus X posting using:
 - [Hyperbolic Compute Platform](https://app.hyperbolic.xyz/)
 - [Coinbase Developer Platform (CDP) Agentkit](https://github.com/coinbase/cdp-agentkit/)
@@ -10,19 +9,44 @@ A template for running an AI agent with both blockchain and compute capabilities
 This template demonstrates a chatbot that can:
 
 Compute Operations (via Hyperbolic):
-- Connect ethereum wallet address to Hyperbolic account (only send USDC, USDT, or DAI on Base network to Hyperbolic address: 0xd3cB24E0Ba20865C530831C85Bd6EbC25f6f3B60)
+- Connect ethereum wallet address to Hyperbolic account 
 - Rent GPU compute resources
+- Terminate GPU instances
 - Check GPU availability
 - Monitor GPU status
-- Access to GPU machines
+- Query billing history
+- ssh access to GPU machines
 - Run command lines on remote GPU machines
+
+How to pay for compute using crypto:
+- Prompt the agent to connect your ethereum wallet address to hyperbolic (ex. "connect my wallet 0x7C9CB45454545A6222a29843A603b6e56ee93 to hyperbolic")
+- From your wallet, send desired amount of USDC, USDT, or DAI on Base network to Hyperbolic address: 0xd3cB24E0Ba20865C530831C85Bd6EbC25f6f3B60
+- The funds will now be available in your Hyperbolic account and can be used to pay for compute
 
 Blockchain Operations (via CDP):
 - Deploy tokens (ERC-20 & NFTs)
 - Manage wallets
 - Execute transactions
 - Interact with smart contracts
-- Post on X
+
+Twitter Operations:
+- Get X account info
+- Get User ID from username
+- Get an accounts's recent tweets, given their username/user ID
+- Post tweet
+- Delete tweet
+- Reply to tweet, and check if a tweet has been replied to
+- Retweet a tweet, and check if a tweet has been retweeted
+
+Other Python Scripts that can be run directly:
+- podcast_agent/aiagenteditor.py: A tool for trimming videofiles using gemini and ffmpeg
+- podcast_agent/geminivideo.py: A tool for transcribing video files using gemini
+
+To access Gemini, you should create a servicekey using google cloud and add it as eaccservicekey.json in the root directory
+
+Knowledge Base Integrations:
+- Twitter Knowledge Base: scrapes tweets from specified list of KOLs and uses them as a knowledge base for the agent to create relevant X posts
+- Podcast Knowledge Base: uses podcast transcripts as a knowledge base for the agent to accurately answer questions about a podcast
 
 ## Prerequisites
 
