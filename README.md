@@ -10,6 +10,7 @@ A template for running an AI agent with both blockchain and compute capabilities
 This template demonstrates a chatbot that can:
 
 Compute Operations (via Hyperbolic):
+- Connect ethereum wallet address to Hyperbolic account (only send USDC, USDT, or DAI on Base network to Hyperbolic address: 0xd3cB24E0Ba20865C530831C85Bd6EbC25f6f3B60)
 - Rent GPU compute resources
 - Check GPU availability
 - Monitor GPU status
