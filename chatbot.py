@@ -55,6 +55,7 @@ from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
 from hyperbolic_langchain.utils import HyperbolicAgentkitWrapper
 from twitter_langchain import TwitterApiWrapper, TwitterToolkit
 from custom_twitter_actions import create_delete_tweet_tool, create_get_user_id_tool, create_get_user_tweets_tool, create_retweet_tool
+from github_agent.custom_github_actions import GitHubAPIWrapper, create_evaluate_profiles_tool
 
 # Import local modules
 from utils import (
@@ -505,6 +506,12 @@ def process_character_config(character: Dict[str, Any]) -> str:
         - Retrieve tweets using user_tweets_tool
         - Reply to the most recent tweet of the selected KOL
 
+        6. GitHub Interaction:
+        -  Read GitHub profile URLs from CSV files
+        -  Judge the quality of the Candidate's GitHub profile based on their contributions, top languages, and primary language
+        -  Prioritize accepting candidates with high contributions and having Python in their top languages
+        -  Make final acceptance/rejection decisions based on the evaluation summary
+
         Important guidelines:
         1. Always stay in character
         2. Use your knowledge and capabilities appropriately
@@ -539,6 +546,8 @@ def process_character_config(character: Dict[str, Any]) -> str:
         5. Use retrieval_tool for Ethereum documentation
         6. Use get_user_id_tool to find KOL user IDs
         7. Use user_tweets_tool to retrieve KOL tweets
+        8. Use evaluate_github_profiles_tool for reviewing GitHub candidates
+           
 
         Before responding to any input, analyze the situation and plan your response in <response_planning> tags:
         1. Determine if the input is a mention or a regular message
@@ -867,6 +876,23 @@ async def initialize_agent():
         # Request Tools
         if os.getenv("USE_REQUEST_TOOLS", "false").lower() == "true":
             tools.extend(toolkit.get_tools())
+
+        # Add GitHub profile evaluation tool
+        if os.getenv("USE_GITHUB_TOOLS", "true").lower() == "true":
+            try:
+                github_token = os.getenv("GITHUB_TOKEN")
+                if not github_token:
+                    raise ValueError("GitHub token not found. Please set the GITHUB_TOKEN environment variable.")
+                else:
+                    print_system("Initializing GitHub API wrapper...")
+                    github_wrapper = GitHubAPIWrapper(github_token)
+                    print_system("Creating GitHub profile evaluation tool...")
+                    github_tool = create_evaluate_profiles_tool(github_wrapper)
+                    tools.append(github_tool)
+                    print_system("Successfully added GitHub profile evaluation tool")
+            except Exception as e:
+                print_error(f"Error initializing GitHub tools: {str(e)}")
+                print_error("GitHub tools will not be available")
 
 
 
