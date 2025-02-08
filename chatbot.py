@@ -7,22 +7,34 @@ from typing import List, Dict, Any, Optional
 import random
 import asyncio
 import warnings
-import speech_recognition as sr
+from deepgram import (
+    DeepgramClient,
+    DeepgramClientOptions,
+    LiveTranscriptionEvents,
+    LiveOptions,
+    Microphone
+)
+from cartesia import Cartesia
 import re
+from queue import Queue
+from concurrent.futures import ThreadPoolExecutor
+import torch
+import numpy as np
+import sounddevice as sd
+import pyaudio
+from collections import deque
 
 load_dotenv(override=True)
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 warnings.filterwarnings("ignore", message="FP16 is not supported on CPU; using FP32 instead")
 
-from elevenlabs import Voice, VoiceSettings, stream
-from elevenlabs.client import ElevenLabs
-
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
 from langchain_core.messages import HumanMessage
 from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from langchain_community.tools import DuckDuckGoSearchRun
@@ -58,6 +70,9 @@ from twitter_knowledge_base import TweetKnowledgeBase, update_knowledge_base
 from langchain_core.runnables import RunnableConfig
 from podcast_agent.podcast_knowledge_base import PodcastKnowledgeBase
 
+from voice_pipeline.agents.pipeline_factory import VoicePipelineFactory, PipelineCredentials, PipelineConfig
+from voice_pipeline.agents.cartesia_tts import CartesiaTTSConfig
+
 async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
     """
     Generates a dynamic, contextually-aware query for the podcast knowledge base using an LLM.
@@ -69,7 +84,7 @@ async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
     Returns:
         str: A generated query string
     """
-    llm = ChatAnthropic(model="claude-3-5-haiku-20241022")
+    llm = ChatOpenAI(model="gpt-4o-mini-2024-07-18") #change model to 4o
     
     topics = [
         # Scaling & Infrastructure
@@ -512,7 +527,19 @@ async def initialize_agent():
     """Initialize the agent with tools and configuration."""
     try:
         print_system("Initializing LLM...")
-        llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+        # Use GPT-4 Mini for faster responses
+        from langchain_openai import ChatOpenAI
+        llm = ChatOpenAI(
+            model="gpt-4o-mini-2024-07-18",  # GPT-4 Mini model
+            temperature=0.7,
+            streaming=True,
+            max_tokens=150,  # Keep responses concise for voice interaction
+            presence_penalty=0.5,   # Encourage topic diversity
+            frequency_penalty=0.5,  # Reduce repetition
+            model_kwargs={
+                "response_format": { "type": "text" }  # Force text responses
+            }
+        )
 
         print_system("Loading character configuration...")
         try:
@@ -840,482 +867,675 @@ async def run_chat_mode(agent_executor, config, runnable_config):
         except Exception as e:
             print_error(f"Error: {str(e)}")
 
+class AudioBuffer:
+    """Handles audio buffering and VAD processing."""
+    def __init__(self, sample_rate=16000, chunk_size=512):
+        self.sample_rate = sample_rate
+        self.chunk_size = chunk_size
+        # Increase buffer size to ~5 seconds at 16kHz (160 chunks of 512 samples)
+        self.buffer = deque(maxlen=160)  
+        self.is_speaking = False
+        # Adjust silence threshold based on Silero recommendations
+        self.silence_threshold = 40  # Number of consecutive silent chunks to consider speech ended
+        self.silence_counter = 0
+        self.min_speech_duration_ms = 250  # Minimum speech duration in milliseconds
+        self.speech_pad_ms = 30  # Padding for speech segments in milliseconds
+        
+        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Loading Silero VAD model...")
+        
+        # Initialize Silero VAD using their recommended approach
+        model, utils = torch.hub.load(
+            repo_or_dir='snakers4/silero-vad',
+            model='silero_vad',
+            force_reload=False,
+            onnx=False
+        )
+        
+        self.vad_model = model
+        self.get_speech_timestamps = utils[0]
+        
+        # Move model to GPU if available
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.vad_model.to(self.device)
+        
+        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] VAD model loaded on {self.device}")
+    
+    def add_audio(self, audio_chunk: np.ndarray) -> None:
+        """Add audio chunk to buffer."""
+        # Convert to float32 if not already
+        if audio_chunk.dtype != np.float32:
+            audio_chunk = audio_chunk.astype(np.float32)
+        
+        # Ensure audio is mono
+        if len(audio_chunk.shape) > 1:
+            audio_chunk = audio_chunk.mean(axis=1)
+        
+        # Normalize audio to [-1, 1] range if needed
+        if np.abs(audio_chunk).max() > 1.0:
+            audio_chunk = audio_chunk / np.abs(audio_chunk).max()
+        
+        self.buffer.append(audio_chunk)
+    
+    def check_voice_activity(self) -> bool:
+        """Check if voice activity is detected in the current buffer using Silero VAD."""
+        if len(self.buffer) < 2:  # Need at least 2 chunks for processing
+            return False
+        
+        # Concatenate buffer chunks
+        audio = np.concatenate(list(self.buffer))
+        
+        # Convert to tensor
+        tensor = torch.from_numpy(audio).float()
+        if tensor.ndim == 1:
+            tensor = tensor.unsqueeze(0)
+        
+        # Move to same device as model
+        tensor = tensor.to(self.device)
+        
+        # Get speech timestamps
+        speech_timestamps = self.get_speech_timestamps(
+            tensor,
+            self.vad_model,
+            threshold=0.5,
+            min_speech_duration_ms=self.min_speech_duration_ms,
+            speech_pad_ms=self.speech_pad_ms,
+            return_seconds=False
+        )
+        
+        # Update speaking state based on timestamps
+        if speech_timestamps:
+            self.is_speaking = True
+            self.silence_counter = 0
+        else:
+            self.silence_counter += 1
+            if self.silence_counter >= self.silence_threshold:
+                self.is_speaking = False
+        
+        return self.is_speaking
+    
+    def clear(self):
+        """Clear the audio buffer."""
+        self.buffer.clear()
+        self.is_speaking = False
+        self.silence_counter = 0
+    
+    def __del__(self):
+        """Cleanup resources."""
+        # Clear CUDA cache if using GPU
+        if self.device.type == 'cuda':
+            torch.cuda.empty_cache()
+
 class VoiceIO:
     """Handles voice input and output operations."""
     def __init__(self):
         print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Initializing voice I/O...")
-        self.recognizer = sr.Recognizer()
-        self.microphone = sr.Microphone()
         
-        # Audio settings
-        self.sample_rate = 16000
-        self.channels = 1
-        
-        # Initialize ElevenLabs client
-        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Initializing ElevenLabs client...")
-        self.voice_client = ElevenLabs(
-            api_key=os.getenv("ELEVEN_API_KEY")
+        # Initialize Deepgram with v3 SDK
+        config = DeepgramClientOptions(
+            verbose=False  # Set to True for debug logging
         )
-        self.voice_id = os.getenv("VOICE_ID", "V4o7eEbXQYfBthMvuNQi")
-        self.model_id = os.getenv("ELEVEN_MODEL_ID", "eleven_flash_v2_5")
+        self.deepgram = DeepgramClient(api_key=os.getenv("DEEPGRAM_API_KEY"), config=config)
         
-        # Adjust for ambient noise
-        with self.microphone as source:
-            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Adjusting for ambient noise...")
-            self.recognizer.adjust_for_ambient_noise(source)
-            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Ready!")
-    
-    def listen(self):
-        """Record audio and convert to text using real-time speech recognition."""
+        # Initialize Cartesia
+        self.cartesia = Cartesia(api_key=os.getenv("CARTESIA_API_KEY"))
+        self.voice_id = os.getenv("CARTESIA_VOICE_ID")
+        self.model_id = os.getenv("CARTESIA_MODEL_ID", "sonic-english")
+        
+        # Initialize PyAudio for output only
+        self.pyaudio = pyaudio.PyAudio()
+        self.audio_stream = None
+        self.sample_rate = 44100  # Cartesia's preferred sample rate
+        
+        # Add interruption handling
+        self.is_interrupted = asyncio.Event()
+        self.vad_detected = asyncio.Event()
+        self.speaking = asyncio.Event()
+        
+        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Ready!")
+
+    async def listen(self):
+        """Record audio and convert to text using Deepgram's real-time transcription."""
+        connection = None
+        microphone = None
         try:
-            with self.microphone as source:
-                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Listening...")
-                # Listen until speech ends naturally, no timeout
-                audio = self.recognizer.listen(source, phrase_time_limit=None)
-                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Processing speech...")
-                
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Starting listen operation...")
+            
+            transcript = []
+            is_finished = asyncio.Event()
+            has_started = False
+            connection_ready = asyncio.Event()
+            
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Initializing Deepgram connection...")
+            
+            # Setup Deepgram streaming configuration
+            options = LiveOptions(
+                model="nova-2",
+                punctuate=True,
+                language="en-US",
+                encoding="linear16",
+                channels=1,
+                sample_rate=16000,
+                smart_format=True,
+                interim_results=True,
+                utterance_end_ms="1000",
+                vad_events=True
+            )
+
+            # Create a connection to Deepgram
+            connection = self.deepgram.listen.websocket.v("1")
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Created Deepgram connection")
+            
+            # Define event handlers
+            def on_message(_, result, **kwargs):
+                nonlocal has_started
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Received message event: {result}")
                 try:
-                    text = self.recognizer.recognize_google(audio)
-                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Heard: {text}")
-                    return text
-                except sr.UnknownValueError:
-                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Could not understand audio")
-                    return None
-                except sr.RequestError as e:
-                    print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Could not request results: {e}")
-                    return None
-                    
+                    if hasattr(result, 'channel') and hasattr(result.channel, 'alternatives'):
+                        sentence = result.channel.alternatives[0].transcript
+                        if len(sentence) > 0:
+                            has_started = True
+                            transcript.append(sentence)
+                            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Heard: {sentence}")
+                            if hasattr(result, 'speech_final') and result.speech_final:
+                                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Speech final detected")
+                                is_finished.set()
+                except Exception as e:
+                    print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error in message handler: {e}")
+
+            def on_error(_, error, **kwargs):
+                print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error event received: {error}")
+                is_finished.set()
+
+            def on_close(_, close, **kwargs):
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Close event received: {close}")
+                if has_started:  # Only set finished if we've received some speech
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Setting finished on close (has_started=True)")
+                    is_finished.set()
+                else:
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Not setting finished on close (has_started=False)")
+
+            def on_metadata(_, metadata, **kwargs):
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Metadata event received: {metadata}")
+
+            def on_utterance_end(_, utterance_end, **kwargs):
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Utterance end event received: {utterance_end}")
+                if has_started:  # Only set finished if we've received some speech
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Setting finished on utterance end (has_started=True)")
+                    is_finished.set()
+                else:
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Not setting finished on utterance end (has_started=False)")
+
+            def on_open(_, open, **kwargs):
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Open event received: {open}")
+                connection_ready.set()
+
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Registering event handlers...")
+            # Register event handlers
+            connection.on(LiveTranscriptionEvents.Open, on_open)
+            connection.on(LiveTranscriptionEvents.Transcript, on_message)
+            connection.on(LiveTranscriptionEvents.Error, on_error)
+            connection.on(LiveTranscriptionEvents.Close, on_close)
+            connection.on(LiveTranscriptionEvents.Metadata, on_metadata)
+            connection.on(LiveTranscriptionEvents.UtteranceEnd, on_utterance_end)
+
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Starting Deepgram connection...")
+            # Start the connection with options
+            connection.start(options)
+            
+            # Wait for connection to be ready
+            try:
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Waiting for connection to be ready...")
+                await asyncio.wait_for(connection_ready.wait(), timeout=5.0)
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Deepgram connection ready")
+            except asyncio.TimeoutError:
+                print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Timeout waiting for connection")
+                return None
+            
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Initializing microphone...")
+            # Create and start microphone
+            microphone = Microphone(connection.send)
+            
+            try:
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Starting microphone...")
+                # Start the microphone
+                microphone.start()
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Microphone started")
+                
+                # Wait for speech to complete or timeout
+                timeout = 30  # 30 seconds timeout
+                try:
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Waiting for speech (timeout={timeout}s)...")
+                    await asyncio.wait_for(is_finished.wait(), timeout)
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Speech wait completed")
+                except asyncio.TimeoutError:
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Listening timeout")
+                
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Adding final delay...")
+                # Add a small delay to ensure we get the final transcript
+                await asyncio.sleep(0.5)
+                
+                # Only return transcript if we actually heard something
+                if has_started and transcript:
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Returning transcript: {' '.join(transcript)}")
+                    return " ".join(transcript)
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] No speech detected (has_started={has_started})")
+                return None
+                
+            finally:
+                # Clean up microphone
+                if microphone:
+                    try:
+                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Cleaning up microphone...")
+                        microphone.finish()
+                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Microphone cleanup complete")
+                    except Exception as e:
+                        print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error cleaning up microphone: {e}")
+                
+                # Clean up connection
+                if connection:
+                    try:
+                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Cleaning up connection...")
+                        connection.finish()  # Don't await the finish call
+                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Connection cleanup complete")
+                    except Exception as e:
+                        print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error cleaning up connection: {e}")
+        
         except Exception as e:
             print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error recording audio: {e}")
+            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error details: {type(e).__name__}: {str(e)}")
+            import traceback
+            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Traceback: {traceback.format_exc()}")
+            # Ensure cleanup on error
+            if microphone:
+                try:
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Emergency cleanup of microphone...")
+                    microphone.finish()
+                except:
+                    pass
+            if connection:
+                try:
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Emergency cleanup of connection...")
+                    connection.finish()  # Don't await the finish call
+                except:
+                    pass
             return None
-    
-    def stream_chunk(self, text_chunk):
-        """Stream a chunk of text as audio."""
+
+    async def stream_chunk(self, text: str):
+        """Stream a chunk of text as audio using Cartesia."""
+        interruption_checker = None  # Define at the start of the method
         try:
-            if not text_chunk.strip():
+            if not text.strip():
                 return
 
-            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Generating audio...")
-            audio_stream = self.voice_client.generate(
-                text=text_chunk,
-                model=self.model_id,
-                voice=Voice(
-                    voice_id=self.voice_id,
-                    settings=VoiceSettings(
-                        stability=0.75,
-                        similarity_boost=0.7,
-                        style=0.6,
-                        use_speaker_boost=True
-                    )
-                ),
-                stream=True
+            # Set speaking flag
+            self.speaking.set()
+            
+            # Start interruption checker
+            interruption_checker = asyncio.create_task(self.check_for_interruption())
+
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Generating audio for text of length {len(text)}...")
+            
+            # Generate audio using Cartesia
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Calling Cartesia TTS with format: pcm_f32le, {self.sample_rate}Hz")
+            audio_data = self.cartesia.tts.bytes(
+                model_id=self.model_id,
+                transcript=text,
+                voice_id=self.voice_id,
+                output_format={
+                    "container": "wav",
+                    "encoding": "pcm_f32le",
+                    "sample_rate": self.sample_rate,
+                }
             )
-            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Playing audio...")
-            stream(audio_stream)
-            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Audio complete")
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Received {len(audio_data)} bytes from Cartesia")
+            
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Parsing WAV header...")
+            # Parse WAV header to find data chunk
+            offset = 12  # Skip RIFF header and chunk size
+            while offset < len(audio_data):
+                chunk_id = audio_data[offset:offset + 4]
+                chunk_size = int.from_bytes(audio_data[offset + 4:offset + 8], 'little')
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Found chunk: {chunk_id}, size: {chunk_size}")
+                
+                if chunk_id == b'data':
+                    data_offset = offset + 8  # Skip chunk ID and size
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Found data chunk at offset {data_offset}")
+                    break
+                    
+                offset += 8 + chunk_size  # Move to next chunk
+            else:
+                raise ValueError("Could not find data chunk in WAV file")
+            
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Converting audio data to numpy array...")
+            # Convert audio data to numpy array, skipping WAV header
+            audio_array = np.frombuffer(audio_data[data_offset:], dtype=np.float32)
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Converted to numpy array of shape {audio_array.shape}, dtype {audio_array.dtype}")
+            
+            # Initialize audio stream if needed
+            if not self.audio_stream:
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Initializing PyAudio stream...")
+                self.audio_stream = self.pyaudio.open(
+                    format=pyaudio.paFloat32,
+                    channels=1,
+                    rate=self.sample_rate,
+                    output=True,
+                    frames_per_buffer=1024
+                )
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] PyAudio stream initialized")
+            
+            # Calculate chunk size to ensure it's a multiple of 4 (float32 size)
+            chunk_size = 1024  # Base chunk size (must be multiple of 4 for float32)
+            total_samples = len(audio_array)
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Processing {total_samples} samples in chunks of {chunk_size}")
+            
+            # Process audio in chunks
+            chunks_processed = 0
+            for i in range(0, total_samples, chunk_size):
+                # Check for interruption
+                if self.is_interrupted.is_set():
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Stopping audio due to interruption")
+                    break
+                
+                # Get chunk and ensure it's properly sized
+                chunk = audio_array[i:min(i + chunk_size, total_samples)]
+                original_chunk_size = len(chunk)
+                
+                if len(chunk) % 4 != 0:  # Pad the last chunk if needed
+                    pad_size = 4 - (len(chunk) % 4)
+                    chunk = np.pad(chunk, (0, pad_size), 'constant')
+                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Padded chunk {chunks_processed} from {original_chunk_size} to {len(chunk)} samples")
+                
+                # Write the chunk to the stream
+                try:
+                    chunk_bytes = chunk.tobytes()
+                    self.audio_stream.write(chunk_bytes, len(chunk))
+                    chunks_processed += 1
+                except Exception as e:
+                    print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error writing chunk {chunks_processed}: {e}")
+                    print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Chunk details: size={len(chunk)}, byte_size={len(chunk.tobytes())}")
+                    raise
+                
+                # Small sleep to prevent blocking
+                await asyncio.sleep(0.001)
+            
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Audio complete - processed {chunks_processed} chunks")
             
         except Exception as e:
             print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error streaming speech chunk: {e}")
-            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Text chunk that failed: {text_chunk}")
+            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error details: {type(e).__name__}: {str(e)}")
+            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Full traceback:")
+            import traceback
+            print_error(traceback.format_exc())
+        finally:
+            # Clear flags
+            self.speaking.clear()
+            if interruption_checker:  # Only cancel if it was created
+                interruption_checker.cancel()
+                try:
+                    await interruption_checker
+                except asyncio.CancelledError:
+                    pass
 
-# Add these imports at the top if not already present
-from queue import Queue
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
-from typing import Optional, Tuple
+    async def check_for_interruption(self):
+        """Background task to check for voice activity while speaking."""
+        connection = None
+        microphone = None
+        try:
+            # Setup Deepgram streaming configuration for VAD
+            options = LiveOptions(
+                model="nova-2",
+                punctuate=False,  # Don't need punctuation for VAD
+                language="en-US",
+                encoding="linear16",
+                channels=1,
+                sample_rate=16000,
+                smart_format=True,
+                interim_results=False,
+                vad_events=True
+            )
 
-# Add new class for managing response queue
+            # Create a connection to Deepgram
+            connection = self.deepgram.listen.websocket.v("1")
+            connection_ready = asyncio.Event()
+            
+            # Define VAD event handlers
+            def on_speech_started(event):
+                # Add a small delay to verify it's real speech
+                async def verify_speech():
+                    await asyncio.sleep(0.5)  # Wait 500ms to verify it's not a false positive
+                    if self.speaking.is_set():  # Only set interruption if we're still speaking
+                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] VAD detected sustained speech")
+                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Interruption detected!")
+                        self.is_interrupted.set()
+                    self.vad_detected.set()
+                
+                # Create task for verification
+                asyncio.create_task(verify_speech())
+
+            def on_error(error):
+                print_error(f"[{datetime.now().strftime('%H:%M:%S')}] VAD Error: {error}")
+
+            def on_close(close):
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] VAD connection closed: {close}")
+
+            def on_open(open):
+                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] VAD connection opened: {open}")
+                connection_ready.set()
+
+            # Register event handlers
+            connection.on(LiveTranscriptionEvents.SpeechStarted, on_speech_started)
+            connection.on(LiveTranscriptionEvents.Error, on_error)
+            connection.on(LiveTranscriptionEvents.Close, on_close)
+            connection.on(LiveTranscriptionEvents.Open, on_open)
+
+            # Start the connection with options
+            connection.start(options)
+            
+            # Wait for connection to be ready
+            try:
+                await asyncio.wait_for(connection_ready.wait(), timeout=5.0)
+            except asyncio.TimeoutError:
+                print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Timeout waiting for VAD connection")
+                return
+            
+            # Create and start microphone for VAD
+            microphone = Microphone(connection.send)
+            microphone.start()
+            
+            # Keep running until interrupted
+            while not self.is_interrupted.is_set():
+                await asyncio.sleep(0.1)
+                
+        except Exception as e:
+            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error in interruption checker: {e}")
+        finally:
+            if microphone:
+                try:
+                    microphone.finish()
+                except:
+                    pass
+            if connection:
+                try:
+                    connection.finish()
+                except:
+                    pass
+
+    def __del__(self):
+        """Cleanup resources."""
+        if hasattr(self, 'audio_stream') and self.audio_stream:
+            try:
+                self.audio_stream.stop_stream()
+                self.audio_stream.close()
+            except:
+                pass
+        
+        if hasattr(self, 'pyaudio'):
+            try:
+                self.pyaudio.terminate()
+            except:
+                pass
+
 class ResponseQueue:
     def __init__(self):
         self.queue = Queue()
         self.is_speaking = False
         self.executor = ThreadPoolExecutor(max_workers=2)
         self.processing = True
-        self.next_audio_stream = None
-        self.next_audio_task = None
+        self._stop_event = asyncio.Event()
     
-    def add_response(self, text: str, priority: int = 1):
-        """Add a response to the queue with priority (1 = high, 2 = low)"""
-        self.queue.put((priority, text))
+    def add_response(self, text: str):
+        """Add a response to the queue"""
+        if self.processing:
+            self.queue.put(text)
+    
+    def clear_queue(self):
+        """Clear the response queue when interrupted"""
+        while not self.queue.empty():
+            try:
+                self.queue.get_nowait()
+            except:
+                pass
         
-    async def generate_audio(self, voice_io: VoiceIO, text: str):
-        """Generate audio stream for a text response"""
-        try:
-            return voice_io.voice_client.generate(
-                text=text,
-                model=voice_io.model_id,
-                voice=Voice(
-                    voice_id=voice_io.voice_id,
-                    settings=VoiceSettings(
-                        stability=0.75,
-                        similarity_boost=0.7,
-                        style=0.6,
-                        use_speaker_boost=True
-                    )
-                ),
-                stream=True
-            )
-        except Exception as e:
-            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error generating audio: {e}")
-            return None
-    
     async def process_queue(self, voice_io: VoiceIO):
-        """Process responses in the queue with parallel audio generation"""
-        while self.processing:
-            if not self.queue.empty() and not self.is_speaking:
-                self.is_speaking = True
-                priority, text = self.queue.get()
-                
-                try:
-                    # Start generating audio for next response if available
-                    if not self.queue.empty():
-                        next_priority, next_text = self.queue.queue[0]  # Peek at next item
-                        self.next_audio_task = asyncio.create_task(self.generate_audio(voice_io, next_text))
+        """Process responses in the queue"""
+        try:
+            while self.processing and not self._stop_event.is_set():
+                if not self.queue.empty() and not self.is_speaking:
+                    self.is_speaking = True
+                    text = self.queue.get()
                     
-                    # Generate and play current audio
-                    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Generating audio...")
-                    current_audio = await self.generate_audio(voice_io, text)
-                    
-                    if current_audio:
-                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Playing audio...")
-                        await asyncio.get_event_loop().run_in_executor(
-                            self.executor,
-                            stream,
-                            current_audio
-                        )
-                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Audio complete")
-                    
-                    # Store next audio stream if it's ready
-                    if self.next_audio_task:
-                        self.next_audio_stream = await self.next_audio_task
-                        self.next_audio_task = None
-                    
-                except Exception as e:
-                    print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error in audio processing: {e}")
-                
-                self.is_speaking = False
-            await asyncio.sleep(0.1)
+                    try:
+                        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Processing response: {text}")
+                        await voice_io.stream_chunk(text)
+                        
+                        # Check if we were interrupted
+                        if voice_io.is_interrupted.is_set():
+                            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Response interrupted by user")
+                            voice_io.is_interrupted.clear()  # Reset interruption flag
+                            # Don't break or clear queue, just continue with next response
+                            
+                    except Exception as e:
+                        print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error in audio processing: {e}")
+                    finally:
+                        self.is_speaking = False
+                await asyncio.sleep(0.1)
+        except asyncio.CancelledError:
+            print_system("Response queue processing cancelled")
+            self.stop()
+        except Exception as e:
+            print_error(f"Error in queue processing: {e}")
+            self.stop()
     
     def stop(self):
         """Stop the queue processor"""
         self.processing = False
-        if self.next_audio_task:
-            self.next_audio_task.cancel()
+        self._stop_event.set()
+        # Clear the queue
+        self.clear_queue()
     
     async def wait_until_empty(self):
         """Wait until all responses have been spoken"""
-        while not self.queue.empty() or self.is_speaking:
-            await asyncio.sleep(0.1)
-
-# Update quick response prompt
-QUICK_RESPONSE_PROMPT = """You are an AI assistant for The Rollup Podcast. Provide a brief, engaging response to the user's question.
-
-Here is some information about the podcast:
-
-- Hosts: Robbie and Andy
-- Target Audience: Developers, builders, technical decision-makers
-- Content Style: In-depth technical discussions and analysis
-
-Core Focus Areas:
-
-1. Technical Infrastructure
-- MEV (Maximal Extractable Value) and LVR implementations
-- Application-specific sequencing (ASS) architecture
-- Layer 2 scaling solutions and rollups
-- Data availability solutions and challenges
-- Block space economics and optimization
-
-2. Protocol Development
-- DeFi protocol architecture and yield mechanisms
-- Trading systems and market structure
-- Revenue models and capital efficiency
-- Cross-chain communication protocols
-- OP Stack implementation details
-
-3. Ecosystem Development
-- Espresso Systems (rollup infrastructure)
-- Arbitrum (L2 ecosystem architecture)
-- Optimism (OP Stack and protocol design)
-- Blast (chain launch case study)
-
-4. Advanced Topics
-- AI/blockchain integration patterns
-- Blob space requirements and scaling
-- Infrastructure evolution (ARPANET comparisons)
-- Virtual networks and rollup clusters
-- Cross-chain connectivity architecture
-
-5. Business Architecture
-- Protocol revenue optimization
-- Governance-as-a-Service models
-- Value creation vs. capture analysis
-- Distribution strategy frameworks
-- Ecosystem incentive structures
-
-6. Future Infrastructure
-- Horizontal scaling approaches
-- Infrastructure readiness assessment
-- Technical stack evolution
-- Market structure improvements
-- Protocol customization patterns
-
-The discussions maintain deep technical depth while examining both theoretical foundations and practical implementations in blockchain infrastructure, protocol design, and ecosystem development.
-
-Guidelines:
-- Keep it to 1-2 sentences maximum
-- Be conversational and engaging
-- If the question is too general, ask a specific follow-up
-- If asking for clarification, phrase it in a way that hints at the depth of content available
-- Never say you can't help or need more context - instead guide towards specifics
-
-Example good responses:
-"Layer 2 scaling is a fascinating topic! Which aspect interests you most - rollups, validiums, or optimistic solutions?"
-"Blockchain gaming has evolved tremendously. Are you curious about the infrastructure side or the player economics?"
-
-Example bad responses:
-"I'd need more context to help you."
-"Could you be more specific about what you want to know?"
-
-User Question: {question}
-
-Provide a brief, natural response that can be immediately spoken."""
-
-async def get_quick_response(llm: ChatAnthropic, question: str) -> str:
-    """Get a quick response from the fast LLM"""
-    prompt = QUICK_RESPONSE_PROMPT.format(question=question)
-    response = await llm.ainvoke([HumanMessage(content=prompt)])
-    return response.content.strip()
-
-async def get_detailed_response(agent_executor, question: str, runnable_config: RunnableConfig) -> Optional[str]:
-    """Get a detailed response using the agent with vector search"""
-    prompt = f"""Provide specific technical insights about: {question}
-
-    Guidelines:
-    - Focus ONLY on specific technical details, unique examples, or deep insights
-    - Keep the response concise (2-3 sentences maximum)
-    - Use natural, conversational language
-    - Never mention searching, knowledge bases, or information sources
-    - Never explain why you can't provide information
-    - Never explain your role or capabilities
-    - If you don't have technical details to share, return None WITHOUT explanation
-    - Jump directly into technical details if you have them
+        try:
+            while not self._stop_event.is_set() and (not self.queue.empty() or self.is_speaking):
+                await asyncio.sleep(0.1)
+        except asyncio.CancelledError:
+            self.stop()
     
-    Example good responses:
-    "Application-specific sequencing allows apps to capture MEV directly, fundamentally changing how value is extracted at the protocol level. This architectural approach has shown promising results in early implementations, with some protocols reporting 30% better value retention."
-    
-    Example bad responses:
-    "Based on these searches..."
-    "The knowledge base shows..."
-    "I found that..."
-    "I can't provide a joke because..."
-    "This doesn't align with technical content..."
-    """
-    
-    full_response = []
-    async for chunk in agent_executor.astream(
-        {"messages": [HumanMessage(content=prompt)]},
-        runnable_config
-    ):
-        if "agent" in chunk:
-            response = chunk["agent"]["messages"][0].content
-            if isinstance(response, str):
-                # Clean up the response
-                cleaned_response = response.split('\n\n')[-1]  # Take the last paragraph
-                
-                # Skip non-informative responses
-                non_informative_patterns = [
-                    r"I apologize",
-                    r"I'm sorry",
-                    r"I don't have",
-                    r"I cannot find",
-                    r"I'm not finding",
-                    r"no specific information",
-                    r"would you like",
-                    r"searching for",
-                    r"try searching",
-                    r"knowledge base",
-                    r"available excerpts",
-                    r"The Rollup",
-                    r"the podcast",
-                    r"this podcast",
-                    r"episodes feature",
-                    r"episodes cover",
-                    r"episodes discuss",
-                    r"episodes explore",
-                    r"episodes focus",
-                    r"episodes include",
-                    r"based on",
-                    r"according to",
-                    r"I found",
-                    r"search results",
-                    r"looking at",
-                    r"when examining",
-                    r"None -",
-                    r"doesn't align",
-                    r"can't provide",
-                    r"unable to",
-                    r"maintain focus",
-                    r"my expertise",
-                    r"my role",
-                    r"my character",
-                    r"technical content",
-                    r"instead of"
-                ]
-                
-                if any(re.search(pattern, cleaned_response, re.IGNORECASE) for pattern in non_informative_patterns):
-                    return None
-                
-                # If the response starts with "None" followed by explanation, return None
-                if cleaned_response.lower().startswith("none"):
-                    return None
-                
-                # Remove common prefixes and meta-commentary
-                prefixes_to_remove = [
-                    "To add more detail,", "Going deeper,", "More specifically,",
-                    "To elaborate,", "Based on", "According to",
-                    "From the podcast episodes", "The podcast discusses",
-                    "Recent episodes", "In recent episodes", "Episodes feature",
-                    "Episodes cover", "Episodes discuss", "Episodes explore",
-                    "Episodes focus", "Episodes include",
-                    "I found that", "Looking at", "When examining",
-                    "(note:", "(correction:", "(spelling:",
-                    "None -", "Instead,", "However,"
-                ]
-                
-                for prefix in prefixes_to_remove:
-                    cleaned_response = cleaned_response.replace(prefix, "").strip()
-                
-                # Remove parenthetical corrections and notes
-                cleaned_response = re.sub(r'\([^)]*spelling[^)]*\)', '', cleaned_response)
-                cleaned_response = re.sub(r'\([^)]*correction[^)]*\)', '', cleaned_response)
-                cleaned_response = re.sub(r'\([^)]*note:[^)]*\)', '', cleaned_response)
-                
-                # Remove any sentences with meta-commentary or explanations
-                sentences = re.split(r'(?<=[.!?])\s+', cleaned_response)
-                filtered_sentences = [s for s in sentences if not any(
-                    pattern.lower() in s.lower() for pattern in [
-                        "the rollup", "this podcast", "the podcast",
-                        "recent episodes", "in episodes", "episodes",
-                        "based on", "according to", "i found",
-                        "search results", "looking at", "when examining",
-                        "instead", "however", "my role", "my expertise",
-                        "technical content", "can't provide", "doesn't align"
-                    ]
-                )]
-                
-                cleaned_response = " ".join(filtered_sentences)
-                
-                if cleaned_response:
-                    full_response.append(cleaned_response)
-    
-    if not full_response:
-        return None
-        
-    final_response = " ".join(full_response)
-    
-    # Clean up any double spaces
-    final_response = re.sub(r'\s+', ' ', final_response).strip()
-    
-    # Skip if the response is too short or non-informative
-    if len(final_response.split()) < 5:  # Skip responses with fewer than 5 words
-        return None
-    
-    # Skip if the response is explaining why it can't provide information
-    if any(phrase in final_response.lower() for phrase in ["can't provide", "doesn't align", "maintain focus", "my expertise"]):
-        return None
-    
-    # Capitalize first letter if needed
-    if final_response and not final_response[0].isupper():
-        final_response = final_response[0].upper() + final_response[1:]
-    
-    return final_response
-
+    def __del__(self):
+        """Cleanup resources"""
+        self.stop()
+        if hasattr(self, 'executor'):
+            self.executor.shutdown(wait=False)
 
 async def run_voice_mode(agent_executor, config, runnable_config):
-    """Run the agent in voice conversation mode with parallel processing."""
-    os.environ["VOICE_MODE"] = "true"
-    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Voice mode active. Say 'exit' to end, 'status' to check status")
+    """Run the agent in voice conversation mode using the voice pipeline."""
+    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Initializing voice pipeline...")
     
-    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Initializing voice interface...")
-    voice_io = VoiceIO()
-    response_queue = ResponseQueue()
-    llm = ChatAnthropic(model="claude-3-5-haiku-20241022")  # Using a faster model for quick responses
-    print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Voice interface ready")
-    
-    # Start queue processor
-    queue_processor = asyncio.create_task(response_queue.process_queue(voice_io))
-    
-    while True:
-        try:
-            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Waiting for input...")
-            user_input = voice_io.listen()
-            if not user_input:
-                continue
-                
-            if user_input.lower() == "exit":
-                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Exiting...")
-                response_queue.add_response("Goodbye", priority=1)
-                await response_queue.wait_until_empty()
-                break
-            elif user_input.lower() == "status":
-                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Checking status...")
-                response_queue.add_response("I am ready", priority=1)
-                await response_queue.wait_until_empty()
-                continue
-            
-            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Processing: {user_input}")
-            
-            # Create new runnable config for each interaction
-            current_config = RunnableConfig(
-                recursion_limit=25,
-                configurable={
-                    "thread_id": "voice_mode",
-                    "checkpoint_ns": "voice_conversation",
-                    "checkpoint_id": str(datetime.now().timestamp()),
-                    "max_tokens": 100,
-                    "temperature": 0.3
-                }
-            )
-            
-            # Get and queue quick response immediately
-            quick_response = await get_quick_response(llm, user_input)
-            if quick_response:
-                print_ai(f"[{datetime.now().strftime('%H:%M:%S')}] Quick response: {quick_response}")
-                response_queue.add_response(quick_response, priority=1)
-            
-            # Start detailed response generation in parallel
-            detailed_response_task = asyncio.create_task(get_detailed_response(agent_executor, user_input, current_config))
-            
-            # Wait for detailed response while quick response is being spoken
-            detailed_response = await detailed_response_task
-            if detailed_response:
-                print_ai(f"[{datetime.now().strftime('%H:%M:%S')}] Detailed response: {detailed_response}")
-                response_queue.add_response(detailed_response, priority=2)
-            else:
-                print_system(f"[{datetime.now().strftime('%H:%M:%S')}] No additional details to add")
-            
-            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Processing complete")
-            
-            # Wait for all responses to be spoken before accepting new input
-            await response_queue.wait_until_empty()
-                    
-        except KeyboardInterrupt:
-            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Interrupted by user")
-            response_queue.add_response("Goodbye", priority=1)
-            await response_queue.wait_until_empty()
-            break
-        except Exception as e:
-            print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error: {str(e)}")
-            response_queue.add_response("I encountered an error. Please try again", priority=1)
-            await response_queue.wait_until_empty()
-    
-    # Clean up
-    response_queue.stop()
-    queue_processor.cancel()
     try:
-        await queue_processor
-    except asyncio.CancelledError:
-        pass
+        # Create pipeline credentials
+        credentials = PipelineCredentials(
+            deepgram_api_key=os.getenv("DEEPGRAM_API_KEY"),
+            cartesia_api_key=os.getenv("CARTESIA_API_KEY"),
+            openai_api_key=os.getenv("OPENAI_API_KEY")
+        )
+        
+        # Configure TTS
+        tts_config = CartesiaTTSConfig(
+            voice_id=os.getenv("CARTESIA_VOICE_ID", ""),
+            model_id=os.getenv("CARTESIA_MODEL_ID", "sonic-english"),
+            sample_rate=44100,
+            num_channels=1
+        )
+        
+        # Configure pipeline
+        pipeline_config = PipelineConfig(
+            allow_interruptions=True,
+            interrupt_speech_duration=0.5,
+            interrupt_min_words=3,
+            min_endpointing_delay=0.5,
+            max_endpointing_delay=6.0,
+            preemptive_synthesis=True
+        )
+        
+        # Create pipeline
+        pipeline = VoicePipelineFactory.create_pipeline(
+            credentials=credentials,
+            config=pipeline_config,
+            tts_config=tts_config
+        )
+        
+        # Setup pipeline event handlers
+        @pipeline.on("user_started_speaking")
+        def on_user_start():
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] User started speaking")
+            
+        @pipeline.on("user_stopped_speaking")
+        def on_user_stop():
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] User stopped speaking")
+            
+        @pipeline.on("agent_started_speaking")
+        def on_agent_start():
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Agent started speaking")
+            
+        @pipeline.on("agent_stopped_speaking")
+        def on_agent_stop():
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Agent stopped speaking")
+            
+        @pipeline.on("user_speech_committed")
+        def on_user_commit(message):
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] User: {message.content}")
+            
+        @pipeline.on("agent_speech_committed")
+        def on_agent_commit(message):
+            print_ai(f"[{datetime.now().strftime('%H:%M:%S')}] Agent: {message.content}")
+            
+        @pipeline.on("agent_speech_interrupted")
+        def on_interrupt(message):
+            print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Speech interrupted")
+            
+        # Start pipeline
+        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Starting voice pipeline...")
+        await pipeline.start()
+        
+        print_system(f"[{datetime.now().strftime('%H:%M:%S')}] Voice mode active. Speak to interact, say 'exit' to end.")
+        
+        try:
+            # Keep running until interrupted
+            while True:
+                await asyncio.sleep(0.1)
+                
+        except KeyboardInterrupt:
+            print_system(f"\n[{datetime.now().strftime('%H:%M:%S')}] Stopping voice pipeline...")
+            
+        finally:
+            # Cleanup
+            await pipeline.stop()
+            
+    except Exception as e:
+        print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error in voice mode: {str(e)}")
+        print_error(f"[{datetime.now().strftime('%H:%M:%S')}] Error details: {type(e).__name__}: {str(e)}")
+        import traceback
+        print_error(traceback.format_exc())
 
 class AgentExecutionError(Exception):
     """Custom exception for agent execution errors."""
