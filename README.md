@@ -2,6 +2,7 @@
 
 This repository is inspired by and modified from Coinbase's [CDP Agentkit](https://github.com/coinbase/cdp-agentkit). We extend our gratitude to the Coinbase Developer Platform team for their original work.
 
+For the voice agent, we extend the work of [langchain-ai/react-voice-agent](https://github.com/langchain-ai/react-voice-agent).
 
 A template for running an AI agent with both blockchain and compute capabilities, plus X posting using:
 - [Hyperbolic Compute Platform](https://app.hyperbolic.xyz/)
