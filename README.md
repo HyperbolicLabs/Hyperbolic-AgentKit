@@ -77,7 +77,7 @@ Blockchain Operations (via CDP):
    - Choose between chat mode or autonomous mode
    - Start interacting with blockchain and compute resources!
 
-   b. **Web Interface (Gradio)**
+   c. **Web Interface (Gradio)**
    ```bash
    poetry run python gradio_ui.py
    ```
