@@ -19,7 +19,8 @@ It takes the following inputs:
 
 Important notes:
 - All inputs must be recognized in order to process the rental
-- If the inputs are not recognized, automatically use the GetAvailableGpus Action to get the available GPUs
+- If you have already used the GetAvailableGpus Action in the conversation, do not use it again and instead use the inputs from the previous response.
+- If you have not used the GetAvailableGpus Action in the conversation, always use the GetAvailableGpus Action to get the available GPUs, and obtain the inputs for cluster_name and node_name from the response. The user will provide the gpu_count.
 - After renting, you will be able to find it through the GetGPUStatus Action, access it through the SSHAccess Action and run commands on it through the RemoteShell Action.
 """
 

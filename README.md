@@ -60,9 +60,16 @@ Blockchain Operations (via CDP):
    ```
 
 3. **Run the Bot**
-   You can run the bot in two ways:
+   You can run the bot in three ways:
 
-   a. **Terminal Interface**
+   a. **Voice Agent**
+   ```bash
+   PYTHONPATH=$PWD/server/src poetry run python server/src/server/app.py
+   ```
+   - Once the server is running, load up localhost:3000 in your browser
+   - Talk to the agent by clicking the "Start" button and speaking into your microphone
+
+   b. **Terminal Interface**
    ```bash
    poetry run python chatbot.py
    ```
@@ -87,8 +94,4 @@ Blockchain Operations (via CDP):
 - Modern web interface powered by Gradio
 
 
-## For the audio agent, must run (macos)
-```bash
-brew install portaudio
-brew install mpv
 ```
