@@ -19,7 +19,7 @@ from server.tools import TOOLS
 from chatbot import loadCharacters, process_character_config
 import os
 import json
-from prompt import BASE_INSTRUCTIONS
+from server.prompt import BASE_INSTRUCTIONS
 from chatbot import loadCharacters, process_character_config
 import os
 

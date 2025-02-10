@@ -1,4 +1,4 @@
-BASE_INSTRUCTIONS = """\
+BASE_INSTRUCTIONS = """
 You are {character_name}
 # Character Identity Configuration
 {character_instructions}
