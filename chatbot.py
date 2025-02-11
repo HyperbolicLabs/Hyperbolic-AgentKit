@@ -7,14 +7,16 @@ import json
 from typing import List, Dict, Any, Optional
 import random
 import asyncio
+import warnings
 
 
 # Load environment variables from .env file
 load_dotenv(override=True)
 load_dotenv(override=True)
 
-# Add the parent directory to PYTHONPATH
-# Add the parent directory to PYTHONPATH
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+warnings.filterwarnings("ignore", message="FP16 is not supported on CPU; using FP32 instead")
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
@@ -275,13 +277,24 @@ twitter_state = TwitterState()
 check_replied_tool = Tool(
     name="has_replied_to",
     func=twitter_state.has_replied_to,
-    description="Check if we have already replied to a tweet. Input should be a tweet ID string."
+    description="""Check if we have already replied to a tweet. MUST be used before replying to any tweet.
+    Input: tweet ID string.
+    Rules:
+    1. Always check this before replying to any tweet
+    2. If returns True, do NOT reply and select a different tweet
+    3. If returns False, proceed with reply_to_tweet then add_replied_to"""
 )
 
 add_replied_tool = Tool(
     name="add_replied_to",
     func=twitter_state.add_replied_tweet,
-    description="Add a tweet ID to the database of replied tweets."
+    description="""Add a tweet ID to the database of replied tweets. 
+    MUST be used after successfully replying to a tweet.
+    Input: tweet ID string.
+    Rules:
+    1. Only use after successful reply_to_tweet
+    2. Must verify with has_replied_to first
+    3. Stores tweet ID permanently to prevent duplicate replies"""
 )
 
 check_reposted_tool = Tool(
@@ -404,8 +417,7 @@ def loadCharacters(charactersArg: str) -> List[Dict[str, Any]]:
 
 def process_character_config(character: Dict[str, Any]) -> str:
     """Process character configuration into agent personality."""
-    
-    # Format bio and lore
+    # Extract core character elements
     bio = "\n".join([f"- {item}" for item in character.get('bio', [])])
     lore = "\n".join([f"- {item}" for item in character.get('lore', [])])
     knowledge = "\n".join([f"- {item}" for item in character.get('knowledge', [])])
@@ -421,186 +433,149 @@ def process_character_config(character: Dict[str, Any]) -> str:
     # style_chat = "\n".join([f"- {item}" for item in character.get('style', {}).get('chat', [])])
     # style_post = "\n".join([f"- {item}" for item in character.get('style', {}).get('post', [])])
 
-    # Randomly select 10 post examples
+    # Select and format post examples
     all_posts = character.get('postExamples', [])
     selected_posts = random.sample(all_posts, min(10, len(all_posts)))
-    
     post_examples = "\n".join([
         f"Example {i+1}: {post}"
         for i, post in enumerate(selected_posts)
         if isinstance(post, str) and post.strip()
     ])
-    
-    # Compile personality prompt
+
     personality = f"""
-        Here are examples of your previous posts:
+    Here are examples of your previous posts:
+    <post_examples>
+    {post_examples}
+    </post_examples>
 
-        <post_examples>
-        {post_examples}
-        </post_examples>
-        
-        You are an AI character designed to interact on social media, particularly Twitter, in the blockchain and cryptocurrency space. Your personality, knowledge, and capabilities are defined by the following information:
+    You are an AI character designed to interact on social media with this configuration:
 
-        <character_bio>
-        {bio}
-        </character_bio>
+    <character_bio>
+    {bio}
+    </character_bio>
 
-        <character_lore>
-        {lore}
-        </character_lore>
+    <character_lore>
+    {lore}
+    </character_lore>
 
-        <character_knowledge>
-        {knowledge}
-        </character_knowledge>
+    <character_knowledge>
+    {knowledge}
+    </character_knowledge>
 
-        <character_adjectives>
-        {adjectives}
-        </character_adjectives>
+    <character_adjectives>
+    {adjectives}
+    </character_adjectives>
 
-        Here is the list of Key Opinion Leaders (KOLs) to interact with:
+    <kol_list>
+    {kol_list}
+    </kol_list>
 
-        <kol_list>
-        {kol_list}
-        </kol_list>
+    <style_guidelines>
+    {style_all}
+    </style_guidelines>
 
-        When communicating, adhere to these style guidelines:
-
-        <style_guidelines>
-        {style_all}
-        </style_guidelines>
-
-        Focus on these topics:
-
-        <topics>
-        {topics}
-        </topics>
-
-        Your core capabilities include:
-
-        1. Blockchain Operations (via Coinbase Developer Platform - CDP):
-        - Interact onchain
-        - Deploy and manage tokens and wallets
-        - Request funds from faucet on network ID `base-sepolia`
-
-        2. Compute Operations (via Hyperbolic):
-        - Rent compute resources
-        - Check GPU status and availability
-        - Connect to remote servers via SSH (use ssh_connect)
-        - Execute commands on remote server (use remote_shell)
-
-        3. System Operations:
-        - Check SSH connection status with 'ssh_status'
-        - Search the internet for current information
-        - Post updates on X (Twitter)
-        - Monitor and respond to mentions
-        - Track replied tweets in database
-
-        4. Knowledge Base Access:
-        - Use DuckDuckGoSearchRun web_search tool for current information
-        - Query Ethereum operations documentation
-        - Access real-time blockchain information
-        - Retrieve relevant technical documentation
-
-        5. Twitter Interaction with Key Opinion Leaders (KOLs):
-        - Find user IDs using get_user_id_tool
-        - Retrieve tweets using user_tweets_tool
-        - Reply to the most recent tweet of the selected KOL
-
-        6. GitHub Interaction:
-        -  Read GitHub profile URLs from CSV files
-        -  Judge the quality of the Candidate's GitHub profile based on their contributions, top languages, and primary language
-        -  Prioritize accepting candidates with high contributions and having Python in their top languages
-        -  Make final acceptance/rejection decisions based on the evaluation summary
-
-        Important guidelines:
-        1. Always stay in character
-        2. Use your knowledge and capabilities appropriately
-        3. Maintain consistent personality traits
-        4. Follow style guidelines for all communications
-        5. Use tools and capabilities when needed
-        6. Do not reply to spam or bot mentions
-        7. Ensure all tweets are less than 280 characters
-        8. Vary your response style:
-        - Generally use punchy one-liners (< 100 characters preferred)
-        - Occasionally provide longer, more insightful posts
-        - Sometimes use bullet points for clarity
-        9. Respond directly to the core point
-        10. Use emojis sparingly and naturally, not in every tweet
-        11. Verify response relevance before posting:
-            - Must reference specific blockchain/project if mentioned
-            - Must directly address KOL's main point
-            - Must match approved topics list
-        12. No multi-part threads or responses
-        13. Avoid qualifying statements or hedging language
-        14. Check each response against filters:
-            - Character limit adhered to
-            - Contains relevant keyword
-            - Directly matches conversation topic
-            - Appropriate emoji usage (if any)
-
-        When using tools:
-        1. Check if you've replied to tweets using has_replied_to
-        2. Track replied tweets using add_replied_to
-        3. Check if you've reposted tweets using has_reposted
-        4. Track reposted tweets using add_reposted
-        5. Use retrieval_tool for Ethereum documentation
-        6. Use get_user_id_tool to find KOL user IDs
-        7. Use user_tweets_tool to retrieve KOL tweets
-        8. Use evaluate_github_profiles_tool for reviewing GitHub candidates
-           
-
-        Before responding to any input, analyze the situation and plan your response in <response_planning> tags:
-        1. Determine if the input is a mention or a regular message
-        2. Identify the specific topic or context of the input
-        3. List relevant character traits and knowledge that apply to the current situation:
-        - Specify traits from the character bio that are relevant
-        - Note any lore or knowledge that directly applies
-        4. Consider potential tool usage:
-        - Identify which tools might be needed
-        - List required parameters for each tool and check if they're available in the input
-        5. Plan the response:
-        - Outline key points to include
-        - Decide on an appropriate length and style (one-liner, longer insight, or bullet points)
-        - Consider whether an emoji is appropriate for this specific response
-        - Ensure the planned response aligns with the character's persona and style guidelines
-        6. If interacting with KOLs:
-        a. Plan to find their user IDs using get_user_id_tool
-        b. Plan to retrieve their recent tweets using user_tweets_tool
-        c. Ensure your planned response will be directly relevant to their tweet
-        d. Plan to check if you have already replied using has_replied_to
-        e. If you haven't replied, plan to use reply_to_tweet; otherwise, choose a different tweet
-        f. Plan to use add_replied_to after replying to store the tweet ID
-        7. Draft and refine the response:
-        - Write out a draft of the response
-        - Check that it meets all guidelines (character limit, relevance, style, etc.)
-        - Adjust the response if necessary to meet all requirements
-
-        After your analysis, provide your response in <response> tags.
-
-        Example output structure:
-
-        <response_planning>
-        [Your detailed analysis of the situation and planning of the response]
-        </response_planning>
-
-        <response>
-        [Your character's response, ensuring it adheres to the guidelines]
-        </response>
-
-        Remember:
-        - If you're asked about current information and hit a rate limit on web_search, do not reply and wait until the next mention check.
-        - When interacting with KOLs, ensure you're responding to their most recent tweets and maintaining your character's persona.
-        - Always verify that you have all required parameters before calling any tools.
-        - Vary your tweet length and style based on the context and importance of the message.
-        - Use emojis naturally and sparingly, not in every tweet.
-        - Double-check the word count of your response and adjust if necessary to meet the character limit.
-        """
-
-    # print_system(personality)
+    <topics>
+    {topics}
+    </topics>
+    """
 
     return personality
 
+def create_agent_tools(llm, twitter_api_wrapper, knowledge_base, podcast_knowledge_base, agentkit, config):
+    """Create and return a list of tools for the agent to use."""
+    tools = []
 
+    # Add enhance query tool
+    tools.append(Tool(
+        name="enhance_query",
+        func=lambda initial_query, query_result: enhance_result(initial_query, query_result, llm),
+        description="Analyze the initial query and its results to generate an enhanced follow-up query. Takes two parameters: initial_query (the original query string) and query_result (the results obtained from that query)."
+    ))
+
+    # Create CDP tools
+    deployMultiTokenTool = CdpTool(
+        name="deploy_multi_token",
+        description=DEPLOY_MULTITOKEN_PROMPT,
+        cdp_agentkit_wrapper=agentkit,
+        args_schema=DeployMultiTokenInput,
+        func=deploy_multi_token,
+    )
+
+    # Create Twitter tools
+    delete_tweet_tool = create_delete_tweet_tool(twitter_api_wrapper)
+    get_user_id_tool = create_get_user_id_tool(twitter_api_wrapper)
+    user_tweets_tool = create_get_user_tweets_tool(twitter_api_wrapper)
+    
+    retweet_tool = create_retweet_tool(twitter_api_wrapper)
+
+    # Create toolkits
+    twitter_toolkit = TwitterToolkit.from_twitter_api_wrapper(twitter_api_wrapper)
+    cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(agentkit)
+    hyperbolic_agentkit = HyperbolicAgentkitWrapper()
+    hyperbolic_toolkit = HyperbolicToolkit.from_hyperbolic_agentkit_wrapper(hyperbolic_agentkit)
+    toolkit = RequestsToolkit(
+        requests_wrapper=TextRequestsWrapper(headers={}),
+        allow_dangerous_requests=ALLOW_DANGEROUS_REQUEST,
+    )
+
+    # Add Knowledge Base Tools based on environment variables
+    if os.getenv("USE_TWITTER_KNOWLEDGE_BASE", "true").lower() == "true" and knowledge_base is not None:
+        tools.append(Tool(
+            name="query_knowledge_base",
+            description="Query the knowledge base for relevant tweets about crypto/AI/tech trends.",
+            func=lambda query: knowledge_base.query_knowledge_base(query)
+        ))
+
+    if os.getenv("USE_PODCAST_KNOWLEDGE_BASE", "true").lower() == "true" and podcast_knowledge_base is not None:
+        tools.append(Tool(
+            name="query_podcast_knowledge_base",
+            func=lambda query: podcast_knowledge_base.format_query_results(
+                podcast_knowledge_base.query_knowledge_base(query)
+            ),
+            description="Query the podcast knowledge base for relevant podcast segments about crypto/Web3/gaming. Input should be a search query string."
+        ))
+
+    # Add tools based on environment variables
+    if os.getenv("USE_CDP_TOOLS", "false").lower() == "true":
+        tools.extend(cdp_toolkit.get_tools())
+
+    if os.getenv("USE_HYPERBOLIC_TOOLS", "false").lower() == "true":
+        tools.extend(hyperbolic_toolkit.get_tools())
+
+    if os.getenv("USE_TWITTER_CORE", "true").lower() == "true":
+        tools.extend(twitter_toolkit.get_tools())
+
+    if os.getenv("USE_TWEET_REPLY_TRACKING", "true").lower() == "true":
+        tools.extend([check_replied_tool, add_replied_tool])
+
+    if os.getenv("USE_TWEET_REPOST_TRACKING", "true").lower() == "true":
+        tools.extend([check_reposted_tool, add_reposted_tool])
+
+    if os.getenv("USE_TWEET_DELETE", "true").lower() == "true":
+        tools.append(delete_tweet_tool)
+
+    if os.getenv("USE_USER_ID_LOOKUP", "true").lower() == "true":
+        tools.append(get_user_id_tool)
+
+    if os.getenv("USE_USER_TWEETS_LOOKUP", "true").lower() == "true":
+        tools.append(user_tweets_tool)
+
+    if os.getenv("USE_RETWEET", "true").lower() == "true":
+        tools.append(retweet_tool)
+
+    if os.getenv("USE_DEPLOY_MULTITOKEN", "false").lower() == "true":
+        tools.append(deployMultiTokenTool)
+
+    if os.getenv("USE_WEB_SEARCH", "false").lower() == "true":
+        tools.append(DuckDuckGoSearchRun(
+            name="web_search",
+            description="Search the internet for current information."
+        ))
+
+    if os.getenv("USE_REQUEST_TOOLS", "false").lower() == "true":
+        tools.extend(toolkit.get_tools())
+
+    return tools
 
 async def initialize_agent():
     """Initialize the agent with tools and configuration."""
@@ -647,7 +622,6 @@ async def initialize_agent():
         print_system("Initializing knowledge bases...")
         knowledge_base = None
         podcast_knowledge_base = None
-        tools = []
 
         # Twitter Knowledge Base initialization
         if os.getenv("USE_KNOWLEDGE_BASE", "true").lower() == "true":
@@ -736,146 +710,9 @@ async def initialize_agent():
         wallet_data = agentkit.export_wallet()
         with open(wallet_data_file, "w") as f:
             f.write(wallet_data)
-        # Configure CDP Agentkit
-        values = {}
-        if wallet_data is not None:
-            values = {"cdp_wallet_data": wallet_data}
-        
-        agentkit = CdpAgentkitWrapper(**values)
-        
-        # Save wallet data
-        wallet_data = agentkit.export_wallet()
-        with open(wallet_data_file, "w") as f:
-            f.write(wallet_data)
 
-        # Initialize toolkits and get tools
-        twitter_toolkit = TwitterToolkit.from_twitter_api_wrapper(twitter_api_wrapper)
-        cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(agentkit)
-        hyperbolic_agentkit = HyperbolicAgentkitWrapper()
-        hyperbolic_toolkit = HyperbolicToolkit.from_hyperbolic_agentkit_wrapper(hyperbolic_agentkit)
-
-                # Add enhance query tool
-        tools.append(Tool(
-            name="enhance_query",
-            func=lambda initial_query, query_result: enhance_result(initial_query, query_result, llm),
-            description="Analyze the initial query and its results to generate an enhanced follow-up query. Takes two parameters: initial_query (the original query string) and query_result (the results obtained from that query)."
-        ))
-
-        # Create deploy multi-token tool
-        deployMultiTokenTool = CdpTool(
-            name="deploy_multi_token",
-            description=DEPLOY_MULTITOKEN_PROMPT,
-            cdp_agentkit_wrapper=agentkit,
-            args_schema=DeployMultiTokenInput,
-            func=deploy_multi_token,
-        )
-        # Add our custom delete tweet tool
-        delete_tweet_tool = create_delete_tweet_tool(twitter_api_wrapper)
-        get_user_id_tool = create_get_user_id_tool(twitter_api_wrapper)
-        user_tweets_tool = create_get_user_tweets_tool(twitter_api_wrapper)
-        retweet_tool = create_retweet_tool(twitter_api_wrapper)
-
-        # Add request tools
-        toolkit = RequestsToolkit(
-            requests_wrapper=TextRequestsWrapper(headers={}),
-            allow_dangerous_requests=ALLOW_DANGEROUS_REQUEST,
-        )   
-        # # Create knowledge base query tool
-        # query_kb_tool = Tool(
-        #     name="query_knowledge_base",
-        #     func=lambda query: knowledge_base.format_query_results(
-        #         knowledge_base.query_knowledge_base(query)
-        #     ),
-        #     description="Query the knowledge base for relevant tweets about crypto/AI/tech trends. Input should be a search query string."
-        # )
-
-        #         # Create podcast knowledge base query tool
-        # query_podcast_kb_tool = Tool(
-        #     name="
-        # podcast_knowledge_base",
-        #     func=lambda query: podcast_knowledge_base.format_query_results(
-        #         podcast_knowledge_base.query_knowledge_base(query)
-        #     ),
-        #     description="Query the podcast knowledge base for relevant podcast segments about crypto/Web3/gaming. Input should be a search query string."
-        # )
-        
-        memory = MemorySaver()
-
-        # Initialize with minimum required tools
-        tools = []
-
-        # Knowledge Base Tools
-        if os.getenv("USE_TWITTER_KNOWLEDGE_BASE", "true").lower() == "true" and knowledge_base is not None:
-            tools.append(Tool(
-                name="query_knowledge_base",
-                description="Query the knowledge base for relevant tweets about crypto/AI/tech trends.",
-                func=lambda query: knowledge_base.query_knowledge_base(query)
-            ))
-
-        if os.getenv("USE_PODCAST_KNOWLEDGE_BASE", "true").lower() == "true" and podcast_knowledge_base is not None:
-            tools.append(Tool(
-                name="query_podcast_knowledge_base",
-                func=lambda query: podcast_knowledge_base.format_query_results(
-                    podcast_knowledge_base.query_knowledge_base(query)
-                ),
-                description="Query the podcast knowledge base for relevant podcast segments about crypto/Web3/gaming. Input should be a search query string."
-            ))
-
-        if os.getenv("USE_PODCAST_KNOWLEDGE_BASE", "true").lower() == "true" and podcast_knowledge_base is not None:
-            tools.append(Tool(
-                name="query_podcast_knowledge_base",
-                func=lambda query: podcast_knowledge_base.format_query_results(
-                    podcast_knowledge_base.query_knowledge_base(query)
-                ),
-                description="Query the podcast knowledge base for relevant podcast segments about crypto/Web3/gaming. Input should be a search query string."
-            ))
-            
-
-        # CDP Toolkit Tools
-        if os.getenv("USE_CDP_TOOLS", "false").lower() == "true":
-            tools.extend(cdp_toolkit.get_tools())
-
-        # Hyperbolic Toolkit Tools
-        if os.getenv("USE_HYPERBOLIC_TOOLS", "false").lower() == "true":
-            tools.extend(hyperbolic_toolkit.get_tools())
-
-        # Twitter Core Tools
-        if os.getenv("USE_TWITTER_CORE", "true").lower() == "true":
-            tools.extend(twitter_toolkit.get_tools())
-
-        # Twitter Interaction Tools
-        if os.getenv("USE_TWEET_REPLY_TRACKING", "true").lower() == "true":
-            tools.extend([check_replied_tool, add_replied_tool])
-
-        if os.getenv("USE_TWEET_REPOST_TRACKING", "true").lower() == "true":
-            tools.extend([check_reposted_tool, add_reposted_tool])
-
-        if os.getenv("USE_TWEET_DELETE", "true").lower() == "true":
-            tools.append(delete_tweet_tool)
-
-        if os.getenv("USE_USER_ID_LOOKUP", "true").lower() == "true":
-            tools.append(get_user_id_tool)
-
-        if os.getenv("USE_USER_TWEETS_LOOKUP", "true").lower() == "true":
-            tools.append(user_tweets_tool)
-
-        if os.getenv("USE_RETWEET", "true").lower() == "true":
-            tools.append(retweet_tool)
-
-        # Multi-token Deployment Tool
-        if os.getenv("USE_DEPLOY_MULTITOKEN", "false").lower() == "true":
-            tools.append(deployMultiTokenTool)
-
-        # Web Search Tool
-        if os.getenv("USE_WEB_SEARCH", "false").lower() == "true":
-            tools.append(DuckDuckGoSearchRun(
-                name="web_search",
-                description="Search the internet for current information."
-            ))
-
-        # Request Tools
-        if os.getenv("USE_REQUEST_TOOLS", "false").lower() == "true":
-            tools.extend(toolkit.get_tools())
+        # Create tools using the helper function
+        tools = create_agent_tools(llm, twitter_api_wrapper, knowledge_base, podcast_knowledge_base, agentkit, config)
 
         # Add GitHub profile evaluation tool
         if os.getenv("USE_GITHUB_TOOLS", "true").lower() == "true":
@@ -902,6 +739,9 @@ async def initialize_agent():
         for tool in tools:
             print_system(tool.name)
 
+        # Initialize memory saver
+        memory = MemorySaver()
+
         return create_react_agent(
             llm,
             tools=tools,
@@ -912,7 +752,6 @@ async def initialize_agent():
     except Exception as e:
         print_error(f"Failed to initialize agent: {e}")
         raise
-
 
 def choose_mode():
     """Choose whether to run in autonomous or chat mode."""
@@ -1014,6 +853,8 @@ async def run_chat_mode(agent_executor, config, runnable_config):
             break
         except Exception as e:
             print_error(f"Error: {str(e)}")
+
+
 
 class AgentExecutionError(Exception):
     """Custom exception for agent execution errors."""
@@ -1316,6 +1157,7 @@ async def main():
                 knowledge_base=knowledge_base,
                 podcast_knowledge_base=podcast_knowledge_base
             )
+        
     except Exception as e:
         print_error(f"Failed to initialize agent: {e}")
         sys.exit(1)

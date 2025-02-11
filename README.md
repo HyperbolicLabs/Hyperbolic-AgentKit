@@ -1,6 +1,7 @@
 # Hyperbolic Agentkit x X (Twitter) Chatbot x CDP Agentkit
 
 This repository is inspired by and modified from Coinbase's [CDP Agentkit](https://github.com/coinbase/cdp-agentkit). We extend our gratitude to the Coinbase Developer Platform team for their original work.
+For the voice agent, we extend the work of [langchain-ai/react-voice-agent](https://github.com/langchain-ai/react-voice-agent).
 
 A template for running an AI agent with both blockchain and compute capabilities, plus X posting using:
 - [Hyperbolic Compute Platform](https://app.hyperbolic.xyz/)
@@ -85,16 +86,23 @@ Knowledge Base Integrations:
    ```
 
 3. **Run the Bot**
-   You can run the bot in two ways:
+   You can run the bot in three ways:
 
-   a. **Terminal Interface**
+   a. **Voice Agent**
+   ```bash
+   PYTHONPATH=$PWD/server/src poetry run python server/src/server/app.py
+   ```
+   - Once the server is running, load up localhost:3000 in your browser
+   - Talk to the agent by clicking the "Start" button and speaking into your microphone
+
+   b. **Terminal Interface**
    ```bash
    poetry run python chatbot.py
    ```
    - Choose between chat mode or autonomous mode
    - Start interacting with blockchain and compute resources!
 
-   b. **Web Interface (Gradio)**
+   c. **Web Interface (Gradio)**
    ```bash
    poetry run python gradio_ui.py
    ```
