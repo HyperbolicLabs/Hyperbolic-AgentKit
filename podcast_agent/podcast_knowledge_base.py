@@ -7,12 +7,12 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
 from typing import List, Dict
+import chromadb
 from datetime import datetime
 from pydantic import BaseModel
+from sentence_transformers import SentenceTransformer
 import json
 from utils import print_system, print_error
-from pymilvus import MilvusClient, model
-from sentence_transformers import SentenceTransformer
 
 class PodcastSegment(BaseModel):
     id: str  # We'll generate this
@@ -23,70 +23,51 @@ class PodcastSegment(BaseModel):
 
 class PodcastKnowledgeBase:
     def __init__(self, collection_name: str = "podcast_knowledge"):
-        # Initialize Milvus client
-        self.client = MilvusClient("podcast_kb.db")
-        self.collection_name = collection_name
+        # Initialize ChromaDB client with persistence
+        self.client = chromadb.PersistentClient(path="./chroma_db")
         
-        print_system("Loading sentence-transformer model...")
-        # Initialize sentence transformer model
-        self.model = SentenceTransformer('all-mpnet-base-v2')
-        print_system("Model loaded successfully")
+        # Use the same advanced embedding model as Twitter KB
+        self.embedding_model = SentenceTransformer('all-mpnet-base-v2')
+        
+        # Create embedding function
+        class EmbeddingFunction:
+            def __init__(self, model):
+                self.model = model
+            
+            def __call__(self, input: List[str]) -> List[List[float]]:
+                embeddings = self.model.encode(input)
+                return embeddings.tolist()
+        
+        embedding_func = EmbeddingFunction(self.embedding_model)
         
         # Create or get collection
         try:
-            if not self.client.has_collection(collection_name=self.collection_name):
-                self.client.create_collection(
-                    collection_name=self.collection_name,
-                    dimension=768,  # MPNet dimension
-                    metric_type="COSINE"  # Use COSINE similarity for better semantic matching
-                )
-                print_system(f"Created new collection: {self.collection_name}")
-            else:
-                print_system(f"Using existing collection: {self.collection_name}")
+            self.collection = self.client.get_or_create_collection(
+                name=collection_name,
+                embedding_function=embedding_func
+            )
         except Exception as e:
             print_error(f"Error initializing collection: {e}")
             raise
 
-    def _get_embeddings(self, texts: List[str]) -> List[List[float]]:
-        """Get embeddings using sentence-transformers."""
-        try:
-            # Process texts in batches to avoid memory issues
-            embeddings = self.model.encode(
-                texts,
-                batch_size=32,
-                show_progress_bar=True,
-                convert_to_numpy=True,
-                normalize_embeddings=True
-            )
-            return embeddings.tolist()
-        except Exception as e:
-            print_error(f"Error generating embeddings: {e}")
-            print_error(f"Full error details: {str(e)}")
-            raise
-
     def add_segments(self, segments: List[PodcastSegment]):
         """Add podcast segments to the knowledge base."""
+        documents = [segment.content for segment in segments]
+        ids = [segment.id for segment in segments]
+        metadata = [
+            {
+                "speaker": segment.speaker,
+                "source_file": segment.source_file,
+                "timestamp": segment.timestamp or datetime.now().isoformat(),
+            }
+            for segment in segments
+        ]
+        
         try:
-            # Get embeddings for all segments
-            texts = [segment.content for segment in segments]
-            vectors = self._get_embeddings(texts)
-            
-            data = [
-                {
-                    "id": i,
-                    "vector": vectors[i],
-                    "content": segment.content,
-                    "speaker": segment.speaker,
-                    "source_file": segment.source_file,
-                    "timestamp": segment.timestamp or datetime.now().isoformat()
-                }
-                for i, segment in enumerate(segments)
-            ]
-            
-            # Insert data into Milvus
-            self.client.insert(
-                collection_name=self.collection_name,
-                data=data
+            self.collection.add(
+                documents=documents,
+                ids=ids,
+                metadatas=metadata
             )
             print_system(f"Added {len(segments)} segments to knowledge base")
         except Exception as e:
@@ -121,65 +102,35 @@ class PodcastKnowledgeBase:
         try:
             print_system(f"Querying knowledge base with: {query}")
             
-            # Get query embedding
-            query_vector = self.model.encode(
-                query,
-                convert_to_numpy=True,
-                normalize_embeddings=True
-            ).tolist()
-            
-            print_system(f"Generated embedding of dimension: {len(query_vector)}")
-            
-            # Search in Milvus with optimized retrieval settings
-            print_system(f"Searching with limit={n_results}")
-            results = self.client.search(
-                collection_name=self.collection_name,
-                data=[query_vector],
-                limit=n_results,
-                output_fields=["content", "speaker", "source_file", "timestamp"],
-                search_params={
-                    "metric_type": "COSINE",
-                    "params": {"nprobe": 10}  # Increase search scope
-                }
+            results = self.collection.query(
+                query_texts=[query],
+                n_results=n_results
             )
             
-            # More detailed debug logging
-            if results and results[0]:
-                print_system(f"Raw results count: {len(results[0])}")
-                print_system(f"First result distance: {results[0][0]['distance'] if results[0] else 'N/A'}")
-                distances = [hit['distance'] for hit in results[0]]
-                print_system(f"All distances: {distances}")
-            
-            if not results or not results[0]:  # Check both results and first query results
+            if not results['documents'][0]:
                 print_system("No results found in knowledge base")
                 return []
-            
-            # Format results - results[0] contains hits for the first query
+                
             formatted_results = []
-            for i, hit in enumerate(results[0]):
-                try:
-                    formatted_results.append({
-                        "content": hit["entity"]["content"],
-                        "metadata": {
-                            "speaker": hit["entity"]["speaker"],
-                            "source_file": hit["entity"]["source_file"],
-                            "timestamp": hit["entity"]["timestamp"]
-                        },
-                        "relevance_score": hit["distance"]  # Use distance directly
-                    })
-                except Exception as e:
-                    print_error(f"Error processing hit {i}: {e}")
-                    continue
+            for doc, metadata, distance in zip(
+                results['documents'][0], 
+                results['metadatas'][0],
+                results['distances'][0]
+            ):
+                formatted_results.append({
+                    "content": doc,
+                    "metadata": metadata,
+                    "relevance_score": 1 - distance
+                })
             
-            # Sort by distance (lowest first since lower distance = more similar)
-            formatted_results.sort(key=lambda x: x['relevance_score'])
+            # Sort by relevance score
+            formatted_results.sort(key=lambda x: x['relevance_score'], reverse=True)
             
             print_system(f"Found {len(formatted_results)} relevant segments")
             return formatted_results
             
         except Exception as e:
             print_error(f"Error querying knowledge base: {e}")
-            print_error(f"Full error details: {str(e)}")
             return []
 
     def format_query_results(self, results: List[Dict]) -> str:
@@ -202,13 +153,9 @@ class PodcastKnowledgeBase:
         """Clear all segments from the knowledge base."""
         try:
             print_system("Clearing knowledge base collection...")
-            if self.client.has_collection(collection_name=self.collection_name):
-                self.client.drop_collection(collection_name=self.collection_name)
-                # Recreate the collection
-                self.client.create_collection(
-                    collection_name=self.collection_name,
-                    dimension=768
-                )
+            ids = self.collection.get()["ids"]
+            if ids:
+                self.collection.delete(ids=ids)
                 print_system("Knowledge base cleared successfully")
             else:
                 print_system("Knowledge base is already empty")
@@ -246,22 +193,17 @@ class PodcastKnowledgeBase:
     def get_collection_stats(self) -> Dict:
         """Get statistics about the knowledge base collection."""
         try:
-            count = self.client.query(
-                collection_name=self.collection_name,
-                filter="",
-                output_fields=["timestamp"],
-                limit=1
-            )
+            count = self.collection.count()
+            metadata = self.collection.get()
             last_update = None
-            if count:
-                timestamps = [datetime.fromisoformat(hit.get("timestamp").replace('Z', '+00:00')) 
-                            for hit in count if hit.get("timestamp")]
-                if timestamps:
-                    last_update = max(timestamps)
+            if metadata.get("metadatas"):
+                # Get most recent timestamp
+                last_update = max(m["timestamp"] for m in metadata["metadatas"])
+                last_update = datetime.fromisoformat(last_update.replace('Z', '+00:00'))
             
-            print_system(f"Podcast knowledge base contains {len(count)} segments")
+            print_system(f"Podcast knowledge base contains {count} segments")
             return {
-                "count": len(count),
+                "count": count,
                 "last_update": last_update or datetime.now()
             }
         except Exception as e:

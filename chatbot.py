@@ -2,12 +2,16 @@ import os
 import sys
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+import time
 import json
 from typing import List, Dict, Any, Optional
 import random
 import asyncio
 import warnings
 
+
+# Load environment variables from .env file
+load_dotenv(override=True)
 load_dotenv(override=True)
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -17,28 +21,45 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
 from langchain_core.messages import HumanMessage
+# from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+# from langchain_nomic.embeddings import NomicEmbeddings
+# from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+# from langchain_nomic.embeddings import NomicEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_community.agent_toolkits.openapi.toolkit import RequestsToolkit
 from langchain_community.utilities.requests import TextRequestsWrapper
-from langchain.tools import Tool
-from langchain_core.runnables import RunnableConfig
+# from langchain.text_splitter import RecursiveCharacterTextSplitter
+# from langchain_community.document_loaders import WebBaseLoader
+# from langchain_community.vectorstores import SKLearnVectorStore
 from langchain.tools import Tool
 from langchain_core.runnables import RunnableConfig
 
+# Import CDP related modules
+# from langchain.text_splitter import RecursiveCharacterTextSplitter
+# from langchain_community.document_loaders import WebBaseLoader
+# from langchain_community.vectorstores import SKLearnVectorStore
+from langchain.tools import Tool
+from langchain_core.runnables import RunnableConfig
+
+# Import CDP related modules
 from cdp_langchain.agent_toolkits import CdpToolkit
 from cdp_langchain.utils import CdpAgentkitWrapper
 from cdp_langchain.tools import CdpTool
 from pydantic import BaseModel, Field
 from cdp import Wallet
 
+# Import Hyperbolic related modules
+# Import Hyperbolic related modules
 from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
 from hyperbolic_langchain.utils import HyperbolicAgentkitWrapper
 from twitter_langchain import TwitterApiWrapper, TwitterToolkit
 from custom_twitter_actions import create_delete_tweet_tool, create_get_user_id_tool, create_get_user_tweets_tool, create_retweet_tool
+from github_agent.custom_github_actions import GitHubAPIWrapper, create_evaluate_profiles_tool
 
+# Import local modules
 from utils import (
     Colors, 
     print_ai, 
@@ -48,8 +69,8 @@ from utils import (
     run_with_progress, 
     format_ai_message_content
 )
-from twitter_state import TwitterState, MENTION_CHECK_INTERVAL
-from twitter_knowledge_base import TweetKnowledgeBase, update_knowledge_base
+from twitter_state import TwitterState, MENTION_CHECK_INTERVAL, MAX_MENTIONS_PER_INTERVAL
+from twitter_knowledge_base import TweetKnowledgeBase, Tweet, update_knowledge_base
 from langchain_core.runnables import RunnableConfig
 from podcast_agent.podcast_knowledge_base import PodcastKnowledgeBase
 
@@ -66,6 +87,7 @@ async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
     """
     llm = ChatAnthropic(model="claude-3-5-haiku-20241022")
     
+    # Define topic areas and aspects to consider
     topics = [
         # Scaling & Infrastructure
         "horizontal scaling challenges", "decentralization vs scalability tradeoffs",
@@ -110,6 +132,7 @@ async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
         "strategic positioning", "risk management"
     ]
     
+    # Create a dynamic prompt that encourages creative query generation
     prompt = f"""
     Generate ONE focused query about Web3 technology to search crypto podcast transcripts.
 
@@ -131,14 +154,16 @@ async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
 
     Generate exactly ONE query that meets these criteria. Return ONLY the query text, nothing else.
     """
-
+    # Get response from LLM
     response = await llm.ainvoke([HumanMessage(content=prompt)])
     query = response.content.strip()
     
+    # Clean up the query if needed
     query = query.replace('"', '').replace('Query:', '').strip()
     
     return query
 
+# Legacy function for fallback
 def generate_basic_podcast_query() -> str:
     """Legacy function that returns a basic template query as fallback."""
     query_templates = [
@@ -159,11 +184,14 @@ async def generate_podcast_query() -> str:
         str: A query string for the podcast knowledge base
     """
     try:
+        # Create LLM instance
         llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+        # Get LLM-generated query
         query = await generate_llm_podcast_query(llm)
         return query
     except Exception as e:
         print_error(f"Error generating LLM query: {e}")
+        # Fallback to basic template
         return generate_basic_podcast_query()
 
 async def enhance_result(initial_query: str, query_result: str, llm: ChatAnthropic = None) -> str:
@@ -222,9 +250,11 @@ async def enhance_result(initial_query: str, query_result: str, llm: ChatAnthrop
     """
     
     try:
+        # Get response from LLM
         response = await llm.ainvoke([HumanMessage(content=analysis_prompt)])
         enhanced_query = response.content.strip()
         
+        # Clean up the query
         enhanced_query = enhanced_query.replace('"', '').replace('Query:', '').strip()
         
         print_system(f"Enhanced query generated: {enhanced_query}")
@@ -232,13 +262,18 @@ async def enhance_result(initial_query: str, query_result: str, llm: ChatAnthrop
         
     except Exception as e:
         print_error(f"Error generating enhanced query: {e}")
+        # Return a modified version of the original query as fallback
         return f"Regarding {initial_query.split()[0:3].join(' ')}, what are the deeper technical implications?"
 
-ALLOW_DANGEROUS_REQUEST = True 
+# Constants
+ALLOW_DANGEROUS_REQUEST = True  # Set to False in production for security
 wallet_data_file = "wallet_data.txt"
 
+
+# Create TwitterState instance
 twitter_state = TwitterState()
 
+# Create tools for Twitter state management
 check_replied_tool = Tool(
     name="has_replied_to",
     func=twitter_state.has_replied_to,
@@ -274,6 +309,52 @@ add_reposted_tool = Tool(
     description="Add a tweet ID to the database of reposted tweets."
 )
 
+# # Knowledge base setup
+# urls = [
+#     "https://docs.prylabs.network/docs/monitoring/checking-status",
+# ]
+
+# # Load and process documents
+# docs = [WebBaseLoader(url).load() for url in urls]
+# docs_list = [item for sublist in docs for item in sublist]
+# # Load and process documents
+# docs = [WebBaseLoader(url).load() for url in urls]
+# docs_list = [item for sublist in docs for item in sublist]
+
+# text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+#     chunk_size=1000, chunk_overlap=200
+# )
+# doc_splits = text_splitter.split_documents(docs_list)
+# text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+#     chunk_size=1000, chunk_overlap=200
+# )
+# doc_splits = text_splitter.split_documents(docs_list)
+
+# vectorstore = SKLearnVectorStore.from_documents(
+#     documents=doc_splits,
+#     embedding=OpenAIEmbeddings(model="text-embedding-3-small"),
+# )
+# vectorstore = SKLearnVectorStore.from_documents(
+#     documents=doc_splits,
+#     embedding=OpenAIEmbeddings(model="text-embedding-3-small"),
+# )
+
+# retriever = vectorstore.as_retriever(k=3)
+# retriever = vectorstore.as_retriever(k=3)
+
+# retrieval_tool = Tool(
+#     name="retrieval_tool",
+#     description="Useful for retrieving information from the knowledge base about running Ethereum operations.",
+#     func=retriever.get_relevant_documents
+# )
+# retrieval_tool = Tool(
+#     name="retrieval_tool",
+#     description="Useful for retrieving information from the knowledge base about running Ethereum operations.",
+#     func=retriever.get_relevant_documents
+# )
+
+# Multi-token deployment setup
+# Multi-token deployment setup
 DEPLOY_MULTITOKEN_PROMPT = """
 This tool deploys a new multi-token contract with a specified base URI for token metadata.
 The base URI should be a template URL containing {id} which will be replaced with the token ID.
@@ -311,7 +392,7 @@ def loadCharacters(charactersArg: str) -> List[Dict[str, Any]]:
 
     for characterPath in characterPaths:
         try:
-
+            # Search in common locations
             searchPaths = [
                 characterPath,
                 os.path.join("characters", characterPath),
@@ -340,10 +421,17 @@ def process_character_config(character: Dict[str, Any]) -> str:
     bio = "\n".join([f"- {item}" for item in character.get('bio', [])])
     lore = "\n".join([f"- {item}" for item in character.get('lore', [])])
     knowledge = "\n".join([f"- {item}" for item in character.get('knowledge', [])])
+
     topics = "\n".join([f"- {item}" for item in character.get('topics', [])])
+
     kol_list = "\n".join([f"- {item}" for item in character.get('kol_list', [])])
+    
+    # Format style guidelines
     style_all = "\n".join([f"- {item}" for item in character.get('style', {}).get('all', [])])
+
     adjectives = "\n".join([f"- {item}" for item in character.get('adjectives', [])])
+    # style_chat = "\n".join([f"- {item}" for item in character.get('style', {}).get('chat', [])])
+    # style_post = "\n".join([f"- {item}" for item in character.get('style', {}).get('post', [])])
 
     # Select and format post examples
     all_posts = character.get('postExamples', [])
@@ -498,7 +586,7 @@ async def initialize_agent():
         print_system("Loading character configuration...")
         try:
             characters = loadCharacters(os.getenv("CHARACTER_FILE", "chainyoda.json"))
-            character = characters[0] 
+            character = characters[0]  # Use first character if multiple loaded
         except Exception as e:
             print_error(f"Error loading character: {e}")
             raise
@@ -506,6 +594,7 @@ async def initialize_agent():
         print_system("Processing character configuration...")
         personality = process_character_config(character)
 
+        # Create config first before using 
         config = {
             "configurable": {
                 "thread_id": f"{character['name']} Agent",
@@ -528,10 +617,13 @@ async def initialize_agent():
         print_system("Initializing Twitter API wrapper...")
         twitter_api_wrapper = TwitterApiWrapper(config=config)
         
+        
+        
         print_system("Initializing knowledge bases...")
         knowledge_base = None
         podcast_knowledge_base = None
 
+        # Twitter Knowledge Base initialization
         if os.getenv("USE_KNOWLEDGE_BASE", "true").lower() == "true":
             while True:
                 init_twitter_kb = input("\nDo you want to initialize the Twitter knowledge base? (y/n): ").lower().strip()
@@ -599,17 +691,22 @@ async def initialize_agent():
                 except Exception as e:
                     print_error(f"Error initializing Podcast knowledge base: {e}")
 
+        # Rest of initialization (tools, etc.)
+        # Reference to original code:
+
         wallet_data = None
         if os.path.exists(wallet_data_file):
             with open(wallet_data_file) as f:
                 wallet_data = f.read()
 
+        # Configure CDP Agentkit
         values = {}
         if wallet_data is not None:
             values = {"cdp_wallet_data": wallet_data}
         
         agentkit = CdpAgentkitWrapper(**values)
         
+        # Save wallet data
         wallet_data = agentkit.export_wallet()
         with open(wallet_data_file, "w") as f:
             f.write(wallet_data)
@@ -617,6 +714,26 @@ async def initialize_agent():
         # Create tools using the helper function
         tools = create_agent_tools(llm, twitter_api_wrapper, knowledge_base, podcast_knowledge_base, agentkit, config)
 
+        # Add GitHub profile evaluation tool
+        if os.getenv("USE_GITHUB_TOOLS", "true").lower() == "true":
+            try:
+                github_token = os.getenv("GITHUB_TOKEN")
+                if not github_token:
+                    raise ValueError("GitHub token not found. Please set the GITHUB_TOKEN environment variable.")
+                else:
+                    print_system("Initializing GitHub API wrapper...")
+                    github_wrapper = GitHubAPIWrapper(github_token)
+                    print_system("Creating GitHub profile evaluation tool...")
+                    github_tool = create_evaluate_profiles_tool(github_wrapper)
+                    tools.append(github_tool)
+                    print_system("Successfully added GitHub profile evaluation tool")
+            except Exception as e:
+                print_error(f"Error initializing GitHub tools: {str(e)}")
+                print_error("GitHub tools will not be available")
+
+
+
+        # Create the runnable config with increased recursion limit
         runnable_config = RunnableConfig(recursion_limit=200)
 
         for tool in tools:
@@ -637,7 +754,7 @@ async def initialize_agent():
         raise
 
 def choose_mode():
-    """Choose whether to run in autonomous, chat, or voice mode."""
+    """Choose whether to run in autonomous or chat mode."""
     while True:
         print("\nAvailable modes:")
         print("1. chat    - Interactive chat mode")
@@ -655,20 +772,33 @@ async def run_with_progress(func, *args, **kwargs):
     progress = ProgressIndicator()
     
     try:
-        # Get the generator from the function call
+        # Handle both async and sync generators
+        # Handle both async and sync generators
         generator = func(*args, **kwargs)
         
-        # Single loop to handle both async and sync generators
-        if hasattr(generator, '__aiter__'):  # Async generator
+        if hasattr(generator, '__aiter__'):  # Check if it's an async generator
             async for chunk in generator:
-                progress.stop()
-                yield chunk
-                progress.start()
-        else:  # Sync generator
+                progress.stop()  # Stop spinner before output
+                yield chunk     # Yield the chunk immediately
+                progress.start()  # Restart spinner while waiting for next chunk
+        else:  # Handle synchronous generators
             for chunk in generator:
                 progress.stop()
                 yield chunk
                 progress.start()
+            
+        
+        if hasattr(generator, '__aiter__'):  # Check if it's an async generator
+            async for chunk in generator:
+                progress.stop()  # Stop spinner before output
+                yield chunk     # Yield the chunk immediately
+                progress.start()  # Restart spinner while waiting for next chunk
+        else:  # Handle synchronous generators
+            for chunk in generator:
+                progress.stop()
+                yield chunk
+                progress.start()
+            
     finally:
         progress.stop()
 
@@ -980,7 +1110,7 @@ async def run_autonomous_mode(agent_executor, config, runnable_config, twitter_a
                                         print_system(result)
                                         
                                         # Update state after successful reply
-                                        twitter_state.last_mentigon_id = tweet_id
+                                        twitter_state.last_mentigiton_id = tweet_id
                                         twitter_state.last_check_time = datetime.now()
                                         twitter_state.save()
                                 
@@ -1035,3 +1165,295 @@ async def main():
 if __name__ == "__main__":
     print("Starting Agent...")
     asyncio.run(main())
+
+
+#   "kol_list": [
+#     {
+#       "username": "aixbt_agent",
+#       "user_id": "1852674305517342720"
+#     },
+#     {
+#       "username": "0xMert_",
+#       "user_id": "1309886201944473600"
+#     },
+#     {
+#       "username": "sassal0x",
+#       "user_id": "313724502"
+#     },
+#     {
+#       "username": "jessepollak",
+#       "user_id": "18876842"
+#     },
+#     {
+#       "username": "0xCygaar",
+#       "user_id": "1287576585353039872"
+#     },
+#     {
+#       "username": "iamDCinvestor",
+#       "user_id": "956670268596015105"
+#     },
+#     {
+#       "username": "blknoiz06",
+#       "user_id": "973261472"
+#     },
+#     {
+#       "username": "shawmakesmagic",
+#       "user_id": "1830340867737178112"
+#     },
+#     {
+#       "username": "mteamisloading",
+#       "user_id": "1461735251412193281"
+#     },
+#     {
+#       "username": "cryptopunk7213",
+#       "user_id": "1025381906173583361"
+#     },
+#     {
+#       "username": "stevenyuntcap",
+#       "user_id": "780884633252683780"
+#     },
+#     {
+#       "username": "dabit3",
+#       "user_id": "17189394"
+#     },
+#     {
+#       "username": "gammichan",
+#       "user_id": "905566160044920832"
+#     },
+#     {
+#       "username": "NateGeraci",
+#       "user_id": "522571568"
+#     },
+#     {
+#       "username": "Punk9277",
+#       "user_id": "950486928784228352"
+#     },
+#     {
+#       "username": "S4mmyEth",
+#       "user_id": "223921570"
+#     },
+#     {
+#       "username": "jon_charb",
+#       "user_id": "1484537340412452868"
+#     },
+#     {
+#       "username": "beast_ico",
+#       "user_id": "1499585375534206980"
+#     },
+#     {
+#       "username": "MaxResnick1",
+#       "user_id": "1275877058342682633"
+#     },
+#     {
+#       "username": "0xBreadguy",
+#       "user_id": "1453661470869360643"
+#     },
+#     {
+#       "username": "Austin_Federa",
+#       "user_id": "38055242"
+#     },
+#     {
+#       "username": "balajis",
+#       "user_id": "2178012643"
+#     },
+#     {
+#       "username": "RyanWatkins_",
+#       "user_id": "708805895258574849"
+#     },
+#     {
+#       "username": "JasonYanowitz",
+#       "user_id": "1107518478"
+#     },
+#     {
+#       "username": "HighCoinviction",
+#       "user_id": "1268013291944771584"
+#     },
+#     {
+#       "username": "divine_economy",
+#       "user_id": "1379448557711818759"
+#     },
+#     {
+#       "username": "udiWertheimer",
+#       "user_id": "14527699"
+#     },
+#     {
+#       "username": "0xngmi",
+#       "user_id": "1373304198448709632"
+#     },
+#     {
+#       "username": "OX_DAO",
+#       "user_id": "1471279207095406595"
+#     },
+#     {
+#       "username": "DefiIgnas",
+#       "user_id": "831767219071754240"
+#     },
+#     {
+#       "username": "DeFi_Dad",
+#       "user_id": "991745162274467840"
+#     },
+#     {
+#       "username": "llamaonthebrink",
+#       "user_id": "1276213805580681219"
+#     },
+#     {
+#       "username": "lex_node",
+#       "user_id": "954015928924057601"
+#     },
+#     {
+#       "username": "keoneHD",
+#       "user_id": "19569158"
+#     },
+#     {
+#       "username": "brian_armstrong",
+#       "user_id": "14379660"
+#     },
+#     {
+#       "username": "ryanberckmans",
+#       "user_id": "546460454"
+#     },
+#     {
+#       "username": "KevinWSHPod",
+#       "user_id": "1328652802344833024"
+#     },
+#     {
+#       "username": "DSBatten",
+#       "user_id": "73066647"
+#     },
+#     {
+#       "username": "jerallaire",
+#       "user_id": "2478756618"
+#     },
+#     {
+#       "username": "gakonst",
+#       "user_id": "804029200315334656"
+#     },
+#     {
+#       "username": "sreeramkannan",
+#       "user_id": "2166711024"
+#     },
+#     {
+#       "username": "Rewkang",
+#       "user_id": "1138033434"
+#     },
+#     {
+#       "username": "chainyoda",
+#       "user_id": "112509659"
+#     },
+#     {
+#       "username": "alpha_pls",
+#       "user_id": "1450882486372913152"
+#     },
+#     {
+#       "username": "TimBeiko",
+#       "user_id": "80722677"
+#     },
+#     {
+#       "username": "CampbellJAustin",
+#       "user_id": "1625681692848537603"
+#     },
+#     {
+#       "username": "WazzCrypto",
+#       "user_id": "869659857590288384"
+#     },
+#     {
+#       "username": "templecrash",
+#       "user_id": "2882819127"
+#     },
+#     {
+#       "username": "tarunchitra",
+#       "user_id": "53836928"
+#     },
+#     {
+#       "username": "Narodism",
+#       "user_id": "897198731975680001"
+#     },
+#     {
+#       "username": "SmallCapScience",
+#       "user_id": "1352089119334281216"
+#     },
+#     {
+#       "username": "defi_monk",
+#       "user_id": "1469182121013129223"
+#     },
+#     {
+#       "username": "ChainLinkGod",
+#       "user_id": "1035721495"
+#     },
+#     {
+#       "username": "trentdotsol",
+#       "user_id": "1562178659766751237"
+#     },
+#     {
+#       "username": "armaniferrante",
+#       "user_id": "276810355"
+#     },
+#     {
+#       "username": "Vivek4real_",
+#       "user_id": "851277718368829443"
+#     },
+#     {
+#       "username": "Zagabond",
+#       "user_id": "1423031747432783872"
+#     },
+#     {
+#       "username": "punk9059",
+#       "user_id": "1449164448321605632"
+#     },
+#     {
+#       "username": "dotkrueger",
+#       "user_id": "67469426"
+#     },
+#     {
+#       "username": "fede_intern",
+#       "user_id": "1634677972979310594"
+#     },
+#     {
+#       "username": "VaderResearch",
+#       "user_id": "1416874867086045192"
+#     },
+#     {
+#       "username": "DeeZe",
+#       "user_id": "127646057"
+#     },
+#     {
+#       "username": "LukeYoungblood",
+#       "user_id": "86364019"
+#     },
+#     {
+#       "username": "CryptoKaduna",
+#       "user_id": "1103404363861684236"
+#     },
+#     {
+#       "username": "Shaughnessy119",
+#       "user_id": "2215937899"
+#     },
+#     {
+#       "username": "LucaNetz",
+#       "user_id": "807982663000674305"
+#     },
+#     {
+#       "username": "0xstark",
+#       "user_id": "14053424"
+#     },
+#     {
+#       "username": "DavidFBailey",
+#       "user_id": "30597171"
+#     },
+#     {
+#       "username": "Defi0xJeff",
+#       "user_id": "1460252469745782790"
+#     },
+#     {
+#       "username": "Darrenlautf",
+#       "user_id": "987634087274823680"
+#     },
+#     {
+#       "username": "mdudas",
+#       "user_id": "7184612"
+#     },
+#     {
+#       "username": "dankrad",
+#       "user_id": "115069952"
+#     }
+# ],
