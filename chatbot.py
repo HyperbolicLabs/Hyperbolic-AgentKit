@@ -12,7 +12,6 @@ import warnings
 
 # Load environment variables from .env file
 load_dotenv(override=True)
-load_dotenv(override=True)
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 warnings.filterwarnings("ignore", message="FP16 is not supported on CPU; using FP32 instead")
@@ -21,26 +20,12 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
 
 from langchain_core.messages import HumanMessage
-# from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-# from langchain_nomic.embeddings import NomicEmbeddings
-# from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-# from langchain_nomic.embeddings import NomicEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_community.agent_toolkits.openapi.toolkit import RequestsToolkit
 from langchain_community.utilities.requests import TextRequestsWrapper
-# from langchain.text_splitter import RecursiveCharacterTextSplitter
-# from langchain_community.document_loaders import WebBaseLoader
-# from langchain_community.vectorstores import SKLearnVectorStore
-from langchain.tools import Tool
-from langchain_core.runnables import RunnableConfig
-
-# Import CDP related modules
-# from langchain.text_splitter import RecursiveCharacterTextSplitter
-# from langchain_community.document_loaders import WebBaseLoader
-# from langchain_community.vectorstores import SKLearnVectorStore
 from langchain.tools import Tool
 from langchain_core.runnables import RunnableConfig
 
@@ -51,7 +36,6 @@ from cdp_langchain.tools import CdpTool
 from pydantic import BaseModel, Field
 from cdp import Wallet
 
-# Import Hyperbolic related modules
 # Import Hyperbolic related modules
 from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
 from hyperbolic_langchain.utils import HyperbolicAgentkitWrapper
