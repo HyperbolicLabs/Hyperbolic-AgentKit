@@ -70,5 +70,5 @@ videofiles/
 
 jsonoutputs/
 
-finetune_example
+finetuned_model
 remote_file_sync.py
