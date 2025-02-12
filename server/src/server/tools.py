@@ -24,6 +24,7 @@ from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
 from hyperbolic_langchain.utils import HyperbolicAgentkitWrapper
 from podcast_agent.podcast_knowledge_base import PodcastKnowledgeBase
 from twitter_langchain import TwitterApiWrapper, TwitterToolkit
+from browser_agent import BrowserToolkit
 from custom_twitter_actions import (
     create_delete_tweet_tool,
     create_get_user_id_tool,
@@ -80,6 +81,11 @@ def create_tools(llm=None, twitter_api_wrapper=None, knowledge_base=None, podcas
     # Add basic tools
     tools.append(add)
     
+    # Add browser toolkit if enabled
+    if os.getenv("USE_BROWSER_TOOLS", "true").lower() == "true":
+        browser_toolkit = BrowserToolkit.from_llm(llm)
+        tools.extend(browser_toolkit.get_tools())
+    
     # Add enhance query tool
     tools.append(Tool(
         name="enhance_query",
@@ -131,11 +137,28 @@ def create_tools(llm=None, twitter_api_wrapper=None, knowledge_base=None, podcas
 
     # Add web search tools if enabled
     if os.getenv("USE_WEB_SEARCH", "true").lower() == "true":
-        tools.append(DuckDuckGoSearchRun(
-            name="web_search",
-            description="Search the internet for current information."
-        ))
-        tools.append(tavily_tool)
+        # try:
+        #     if not os.getenv("TAVILY_API_KEY"):
+        #         raise ValueError("TAVILY_API_KEY environment variable is not set")
+                
+        #     tavily_search = TavilySearchResults(
+        #         max_results=5,
+        #         include_answer=True,
+        #         api_key=os.getenv("TAVILY_API_KEY")
+        #     )
+            
+        #     tavily_tool = Tool(
+        #         name="web_search",
+        #         func=lambda x: tavily_search.run(str(x) if isinstance(x, dict) and 'query' in x else x),
+        #         description=(
+        #             "This is a search tool for accessing the internet. Input should be a simple string query.\n\n"
+        #             "Let the user know you're asking your friend Tavily for help before you call the tool."
+        #         ),
+        #     )
+        #     tools.append(tavily_tool)
+        # except Exception as e:
+        #     print(f"Failed to initialize Tavily search tool: {str(e)}")
+        pass  # Placeholder to maintain the if block structure
 
     # Add requests toolkit if enabled
     if os.getenv("USE_REQUEST_TOOLS", "true").lower() == "true":
@@ -154,15 +177,7 @@ def create_tools(llm=None, twitter_api_wrapper=None, knowledge_base=None, podcas
 
     return tools
 
-tavily_tool = TavilySearchResults(
-    max_results=5,
-    include_answer=True,
-    description=(
-        "This is a search tool for accessing the internet.\n\n"
-        "Let the user know you're asking your friend Tavily for help before you call the tool."
-    ),
 
-)
 
 # Initialize all tools with default wrappers
 TOOLS = create_tools(
