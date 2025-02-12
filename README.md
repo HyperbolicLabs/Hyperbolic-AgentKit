@@ -39,6 +39,13 @@ Twitter Operations:
 - Reply to tweet, and check if a tweet has been replied to
 - Retweet a tweet, and check if a tweet has been retweeted
 
+Browser Automation:
+- Autonomous web browsing and research
+- Price comparisons across different services
+- Web search and information gathering
+- Automated task completion
+- Visual history of agent actions
+
 Other Python Scripts that can be run directly:
 - podcast_agent/aiagenteditor.py: A tool for trimming videofiles using gemini and ffmpeg
 - podcast_agent/geminivideo.py: A tool for transcribing video files using gemini
@@ -65,27 +72,39 @@ Knowledge Base Integrations:
    - X Social API (Account Key and secret, Access Key and Secret)
    - Hyperbolic API Key from [Hyperbolic Portal](https://app.hyperbolic.xyz/settings)
 
-3. **Browser Automation**
-   - Install Playwright browsers after installing dependencies:
+3. **Browser Automation Setup**
+   - Install browser dependencies:
    ```bash
    poetry run playwright install
+   poetry run playwright install-deps
    ```
 
 ## Quick Start
 
-1. **Set Up Environment Variables**
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/Hyperbolic-AgentKit.git
+   cd Hyperbolic-AgentKit
+   ```
+
+2. **Set Up Environment Variables**
    ```bash
    # Copy the example environment file
    cp .env.example .env
    ```
    Then edit `.env` file and add your API keys
 
-2. **Install Dependencies**
+3. **Install Dependencies**
    ```bash
+   # Install Python dependencies
    poetry install
+   
+   # Install browser automation dependencies
+   poetry run playwright install
+   poetry run playwright install-deps
    ```
 
-3. **Run the Bot**
+4. **Run the Bot**
    You can run the bot in three ways:
 
    a. **Voice Agent**
@@ -118,3 +137,4 @@ Knowledge Base Integrations:
 - Persistent wallet management
 - X (Twitter) integration
 - Modern web interface powered by Gradio
+- Autonomous browser automation capabilities
