@@ -10,14 +10,15 @@ from datetime import datetime
 async def chat_with_agent(message, history):
     # Initialize agent if not already done
     if not hasattr(chat_with_agent, "agent"):
-        agent_executor, config, twitter_api_wrapper, knowledge_base = await initialize_agent()
+        agent_executor, config, runnable_config, twitter_api_wrapper, knowledge_base, podcast_knowledge_base = await initialize_agent()
         chat_with_agent.agent = agent_executor
         chat_with_agent.config = config
+        chat_with_agent.runnable_config = runnable_config  # Store runnable_config as well
 
     runnable_config = RunnableConfig(
-        recursion_limit=config["configurable"]["recursion_limit"],
+        recursion_limit=chat_with_agent.config["configurable"]["recursion_limit"],
         configurable={
-            "thread_id": config["configurable"]["thread_id"],
+            "thread_id": chat_with_agent.config["configurable"]["thread_id"],
             "checkpoint_ns": "chat_mode",
             "checkpoint_id": str(datetime.now().timestamp())
         }

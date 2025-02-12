@@ -51,6 +51,7 @@ id_rsa.pub
 
 # Project specific
 wallet_data.txt
+twitter_state_default.db
 .replit
 .python-version
 
@@ -69,3 +70,5 @@ videofiles/
 
 jsonoutputs/
 
+finetune_example
+remote_file_sync.py
