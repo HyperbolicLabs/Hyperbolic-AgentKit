@@ -69,18 +69,23 @@ class RunFinetuneAction(BaseTool):
                 return json.dumps({"status": "error", "message": sync_result.get("error", "Sync failed")})
 
             # Step 4: Execute setup and training commands in a single shell session
-            combined_command = " && ".join([
-                "python3 -m venv venv",
-                "source venv/bin/activate",
-                "pip install -r requirements.txt",
+            combined_command = (
+                "cd finetune_example && "
+                "bash -c '"
+                "python3 -m venv venv && "
+                "source venv/bin/activate && "
+                "pip install -r requirements.txt && "
                 f"FINE_TUNE_MODEL={model_name} python3 finetune.py"
-            ])
+                "'"
+            )
             
             shell_result = ssh_manager.execute(combined_command)
-            if isinstance(shell_result, str) and "error" in shell_result.lower():
+            # Check for the finetuned_model directory
+            verify_result = ssh_manager.execute("test -d /home/ubuntu/finetune_example/finetuned_model && echo 'exists'")
+            if "exists" not in str(verify_result):
                 return json.dumps({
-                    "status": "error", 
-                    "message": f"Command failed: {shell_result}"
+                    "status": "error",
+                    "message": f"Fine-tuning failed or directory not created. Output: {shell_result}"
                 })
 
             return json.dumps({
@@ -255,11 +260,18 @@ def sync_to_remote() -> Dict[str, bool]:
                     "error": f"Required file not found: {local_file}"
                 }
 
+        # Create base directory on remote
+        result = ssh_manager.execute("mkdir -p ~/finetune_example")
+        if isinstance(result, str) and "error" in result.lower():
+            return {
+                "success": False, 
+                "error": f"Failed to create base directory: {result}"
+            }
 
         
         # Sync each file with error handling
         for local_file in local_files:
-            remote_path = f"/home/ubuntu/{'/'.join(local_file.split('/')[2:])}"
+            remote_path = f"/home/ubuntu/finetune_example/{'/'.join(local_file.split('/')[2:])}"
             
             # Run rsync with output capture
             result = subprocess.run([
@@ -277,7 +289,7 @@ def sync_to_remote() -> Dict[str, bool]:
 
         # Verify files were synced correctly
         for local_file in local_files:
-            remote_path = f"/home/ubuntu/{'/'.join(local_file.split('/')[2:])}"
+            remote_path = f"/home/ubuntu/finetune_example/{'/'.join(local_file.split('/')[2:])}"
             check_result = ssh_manager.execute(f"test -f {remote_path} && echo 'exists'")
             
             if "exists" not in str(check_result):
