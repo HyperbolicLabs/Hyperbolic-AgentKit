@@ -60,8 +60,7 @@ class RunFinetuneAction(BaseTool):
             # Install required system packages
             shell_result = ssh_manager.execute(
                 "sudo apt-get update && "
-                "sudo apt-get install -y rsync python3-dev python3-pip build-essential libcurl4-openssl-dev"
-                "ninja-build git cmake pkg-config nano"
+                "sudo apt-get install -y rsync python3-dev python3-pip build-essential git cmake pkg-config nano"
             )
             # Only check for critical errors, ignore apt-utils warning
             if isinstance(shell_result, str) and ("E: Unable to locate package" in shell_result or 
