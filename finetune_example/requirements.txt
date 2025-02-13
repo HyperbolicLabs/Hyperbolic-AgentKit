@@ -1,12 +1,14 @@
-unsloth
-xformers
-torch --index-url https://download.pytorch.org/whl/cu118
-torchvision --index-url https://download.pytorch.org/whl/cu118
-transformers
+unsloth==2025.2.4
+unsloth-zoo==2025.2.3
+transformers==4.48.3
+trl==0.14.0
+xformers==0.0.28.post3
+torch==2.5.1 --index-url https://download.pytorch.org/whl/cu118
+torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu118
 accelerate
 bitsandbytes
-trl
 datasets
 peft
 ninja
 numpy<2.0
+vllm==0.7.2

@@ -57,10 +57,17 @@ class RunFinetuneAction(BaseTool):
                 return json.dumps({"status": "error", "message": f"Failed to connect to remote GPU: {ssh_result}"})
             
             # Step 2: Setup remote environment
-            # Install rsync
-            shell_result = ssh_manager.execute("sudo apt-get update && sudo apt-get install -y rsync")
-            if isinstance(shell_result, str) and "error" in shell_result.lower():
-                return json.dumps({"status": "error", "message": f"Failed to install rsync: {shell_result}"})
+            # Install required system packages
+            shell_result = ssh_manager.execute(
+                "sudo apt-get update && "
+                "sudo apt-get install -y rsync python3-dev python3-pip build-essential libcurl4-openssl-dev"
+                "ninja-build git cmake pkg-config nano"
+            )
+            # Only check for critical errors, ignore apt-utils warning
+            if isinstance(shell_result, str) and ("E: Unable to locate package" in shell_result or 
+                                                    "E: Failed to fetch" in shell_result or
+                                                    "E: Could not install" in shell_result):
+                return json.dumps({"status": "error", "message": f"Failed to install required packages: {shell_result}"})
             
 
             # Step 3: Sync files to remote GPU
@@ -76,7 +83,7 @@ class RunFinetuneAction(BaseTool):
                 "source venv/bin/activate && "
                 "pip install -r requirements.txt && "
                 f"FINE_TUNE_MODEL={model_name} python3 finetune.py && "
-                "python3 test_inference.py 'Which country has the highest population?'"
+                "python3 test_inference.py 'How old is Tiger Woods?'"
                 "'"
             )
             
