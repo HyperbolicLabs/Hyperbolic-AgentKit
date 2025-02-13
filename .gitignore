@@ -70,5 +70,7 @@ videofiles/
 
 jsonoutputs/
 
+# Finetuning
 finetuned_model
 remote_file_sync.py
+finetune_example/training_data2.jsonl

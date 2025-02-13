@@ -1,8 +1,12 @@
 unsloth
-torch>=2.0.0
-transformers>=4.37.0
-accelerate>=0.27.1
-bitsandbytes>=0.41.3
-trl>=0.7.11
+xformers
+torch --index-url https://download.pytorch.org/whl/cu118
+torchvision --index-url https://download.pytorch.org/whl/cu118
+transformers
+accelerate
+bitsandbytes
+trl
 datasets
-peft>=0.7.0 
+peft
+ninja
+numpy<2.0

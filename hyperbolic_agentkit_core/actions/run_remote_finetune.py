@@ -68,18 +68,20 @@ class RunFinetuneAction(BaseTool):
             if isinstance(sync_result, dict) and not sync_result.get("success", False):
                 return json.dumps({"status": "error", "message": sync_result.get("error", "Sync failed")})
 
-            # Step 4: Execute setup and training commands in a single shell session
+            # Step 4: Execute setup, training, and test inference in a single shell session
             combined_command = (
                 "cd finetune_example && "
                 "bash -c '"
                 "python3 -m venv venv && "
                 "source venv/bin/activate && "
                 "pip install -r requirements.txt && "
-                f"FINE_TUNE_MODEL={model_name} python3 finetune.py"
+                f"FINE_TUNE_MODEL={model_name} python3 finetune.py && "
+                "python3 test_inference.py 'Which country has the highest population?'"
                 "'"
             )
             
             shell_result = ssh_manager.execute(combined_command)
+            
             # Check for the finetuned_model directory
             verify_result = ssh_manager.execute("test -d /home/ubuntu/finetune_example/finetuned_model && echo 'exists'")
             if "exists" not in str(verify_result):
@@ -87,11 +89,19 @@ class RunFinetuneAction(BaseTool):
                     "status": "error",
                     "message": f"Fine-tuning failed or directory not created. Output: {shell_result}"
                 })
+            
+            # Get the inference output
+            inference_output = ssh_manager.execute("cat /home/ubuntu/finetune_example/inference_output.json")
+            try:
+                inference_result = json.loads(inference_output)
+            except:
+                inference_result = {"error": "Failed to parse inference output"}
 
             return json.dumps({
                 "status": "success",
                 "message": "Fine-tuning completed successfully",
-                "model_name": model_name
+                "model_name": model_name,
+                "test_inference_output": inference_result
             })
 
         except Exception as e:
@@ -249,6 +259,7 @@ def sync_to_remote() -> Dict[str, bool]:
             "./finetune_example/training_data.jsonl",
             "./finetune_example/requirements.txt",
             "./finetune_example/finetune.py",
+            "./finetune_example/test_inference.py"
         ]
         
 
