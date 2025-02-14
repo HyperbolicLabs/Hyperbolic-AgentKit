@@ -1,4 +1,4 @@
-# Hyperbolic Agentkit x X (Twitter) Chatbot x CDP Agentkit
+# Hyperbolic's Agent Framework
 
 This repository is inspired by and modified from Coinbase's [CDP Agentkit](https://github.com/coinbase/cdp-agentkit). We extend our gratitude to the Coinbase Developer Platform team for their original work.
 For the voice agent, we extend the work of [langchain-ai/react-voice-agent](https://github.com/langchain-ai/react-voice-agent).
