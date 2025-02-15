@@ -63,7 +63,6 @@ Knowledge Base Integrations:
    - If using Poetry, you can ensure the correct version with:
    ```bash
    poetry env use python3.12
-   poetry install
    ```
 
 2. **API Keys**
@@ -71,13 +70,6 @@ Knowledge Base Integrations:
    - CDP API credentials from [CDP Portal](https://portal.cdp.coinbase.com/access/api)
    - X Social API (Account Key and secret, Access Key and Secret)
    - Hyperbolic API Key from [Hyperbolic Portal](https://app.hyperbolic.xyz/settings)
-
-3. **Browser Automation Setup**
-   - Install browser dependencies:
-   ```bash
-   poetry run playwright install
-   poetry run playwright install-deps
-   ```
 
 ## Quick Start
 
