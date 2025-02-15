@@ -37,8 +37,8 @@ logger.add(sys.stderr, level="DEBUG")
 async def fetch_marketplace_data(
     function_name, tool_call_id, args, llm, context, result_callback
 ):
-    async with aiohttp.ClientSession() as session:
-        try:
+    try:
+        async with aiohttp.ClientSession() as session:
             url = "https://api.hyperbolic.xyz/v1/marketplace"
             headers = {"Content-Type": "application/json"}
             filters = {} if args["filter_type"] == "all" else {"available": True}
@@ -49,11 +49,30 @@ async def fetch_marketplace_data(
                     marketplace_data = await response.json()
                     available_instances = [
                         {
-                            "id": instance["id"],
-                            "gpu_model": instance["hardware"]["gpus"][0]["model"],
-                            "gpu_memory": instance["hardware"]["gpus"][0]["ram"],
-                            "price_per_hour": instance["pricing"]["price"]["amount"],
-                            "location": instance["location"]["region"],
+                            "quantity": f"{instance.get('gpus_total', 1)} X",
+                            "gpu_type": instance["hardware"]["gpus"][0]["model"],
+                            "gpu_ram": f"GPU RAM: {instance['hardware']['gpus'][0]['ram']}GB",
+                            "storage": (
+                                f"{instance['hardware']['storage'][0]['capacity']} TB"
+                                if instance["hardware"].get("storage")
+                                else "N/A"
+                            ),
+                            "system_ram": (
+                                f"RAM:\n{instance['hardware']['ram'][0]['capacity'] / 1024:.1f} TB"
+                                if instance["hardware"].get("ram")
+                                else "N/A"
+                            ),
+                            "price": (
+                                f"${float(instance['pricing']['price']['amount']):.2f}/hr"
+                                if float(instance["pricing"]["price"]["amount"]) >= 1.00
+                                else f"{int(float(instance['pricing']['price']['amount']) * 100)}¢/hr"
+                            ),
+                            "price_float": float(
+                                instance["pricing"]["price"]["amount"]
+                            ),  # For sorting
+                            "status": (
+                                "Reserved" if instance["reserved"] else "Buy Credits"
+                            ),
                             "available": not instance["reserved"]
                             and instance["gpus_reserved"] < instance["gpus_total"],
                         }
@@ -61,13 +80,88 @@ async def fetch_marketplace_data(
                         if "gpus" in instance["hardware"]
                         and instance["hardware"]["gpus"]
                     ]
-                    await result_callback({"instances": available_instances})
-                else:
-                    await result_callback(
-                        {"error": f"API request failed with status {response.status}"}
+
+                    # Sort by price if requested
+                    if args.get("sort_by") == "price_low_to_high":
+                        available_instances.sort(key=lambda x: x["price_float"])
+
+                    # Filter by price range if specified
+                    price_range = args.get("price_range")
+                    if price_range:
+                        if price_range == "budget":
+                            available_instances = [
+                                i for i in available_instances if i["price_float"] < 0.5
+                            ]
+                        elif price_range == "mid":
+                            available_instances = [
+                                i
+                                for i in available_instances
+                                if 0.5 <= i["price_float"] < 1.0
+                            ]
+                        elif price_range == "high":
+                            available_instances = [
+                                i
+                                for i in available_instances
+                                if i["price_float"] >= 1.0
+                            ]
+
+                    # Apply filters
+                    filtered_instances = available_instances
+
+                    # Quantity filter
+                    if args.get("quantity"):
+                        if args["quantity"] == "8X+":
+                            filtered_instances = [
+                                i
+                                for i in filtered_instances
+                                if int(i["quantity"].split(" ")[0]) >= 8
+                            ]
+                        else:
+                            target_quantity = int(args["quantity"].replace("X", ""))
+                            filtered_instances = [
+                                i
+                                for i in filtered_instances
+                                if int(i["quantity"].split(" ")[0]) == target_quantity
+                            ]
+
+                    # Storage filter
+                    if args.get("storage"):
+                        if args["storage"] == "0-500GB":
+                            filtered_instances = [
+                                i
+                                for i in filtered_instances
+                                if i["storage"] != "N/A"
+                                and float(i["storage"].split(" ")[0]) <= 500
+                            ]
+                        elif args["storage"] == "500GB-1TB":
+                            filtered_instances = [
+                                i
+                                for i in filtered_instances
+                                if i["storage"] != "N/A"
+                                and 500 < float(i["storage"].split(" ")[0]) <= 1000
+                            ]
+
+                    # Sort instances
+                    if args.get("sort_by"):
+                        if args["sort_by"] == "price_low_to_high":
+                            filtered_instances.sort(key=lambda x: x["price_float"])
+                        elif args["sort_by"] == "price_high_to_low":
+                            filtered_instances.sort(
+                                key=lambda x: x["price_float"], reverse=True
+                            )
+
+                    return await result_callback(
+                        {"tool_call_id": tool_call_id, "instances": filtered_instances}
                     )
-        except Exception as e:
-            await result_callback({"error": str(e)})
+                else:
+                    return await result_callback(
+                        {
+                            "tool_call_id": tool_call_id,
+                            "error": f"API request failed with status {response.status}",
+                        }
+                    )
+    except Exception as e:
+        return await result_callback({"tool_call_id": tool_call_id, "error": str(e)})
 
 
 tools = [
@@ -83,7 +177,38 @@ tools = [
                             "type": "string",
                             "enum": ["all", "available_only"],
                             "description": "Filter type for GPU instances",
-                        }
+                        },
+                        "sort_by": {
+                            "type": "string",
+                            "enum": ["price_low_to_high", "price_high_to_low"],
+                            "description": "Sort instances by price",
+                        },
+                        "quantity": {
+                            "type": "string",
+                            "enum": [
+                                "Any",
+                                "1X",
+                                "2X",
+                                "3X",
+                                "4X",
+                                "5X",
+                                "6X",
+                                "7X",
+                                "8X",
+                                "8X+",
+                            ],
+                            "description": "Filter by GPU quantity",
+                        },
+                        "storage": {
+                            "type": "string",
+                            "enum": ["Any", "0-500GB", "500GB-1TB"],
+                            "description": "Filter by storage capacity",
+                        },
+                        "location": {
+                            "type": "string",
+                            "enum": ["Any", "US, North America"],
+                            "description": "Filter by location",
+                        },
                     },
                     "required": ["filter_type"],
                 },
@@ -93,21 +218,30 @@ tools = [
 ]
 
 system_instruction = """
-You are a helpful assistant for Hyperbolic Labs' GPU Marketplace. You can help users find and understand available GPU instances for rent.
+You are a friendly GPU marketplace assistant. Keep responses concise and natural.
 
 After greeting, immediately call `get_available_gpus` to fetch the list of available GPUs.
 
-You have access to the marketplace data through the get_available_gpus tool. When users ask about available GPUs, pricing,
-or specifications, use this tool to get the most current information.
+Available sorting and filtering options:
+- Price: Low to High or High to Low
+- Quantity: 1X to 8X+ GPUs
+- Storage: 0-500GB or 500GB-1TB
+- Location: Currently all in US, North America
 
-Always be professional and helpful. When listing GPUs:
-1. Mention the GPU model, memory, and hourly price
-2. Indicate if the instance is currently available
-3. Include the location/region
-4. When mentioning prices, use the format "X per hour" (e.g., "10.00 per hour")
-4.1 Prices are not a HUNDRED dollars, they use dots not commas. Instead, one point fifty per hour, for example.
+Price formatting rules:
+- Under $1: Use cents (e.g., "13¢/hr")
+- $1 and above: Use dollars (e.g., "$2.(POINT)30/hr")
+- There are no GPUs for rent that are HUNDREDS of dollars per hour.
+- If you see a price like $100/hr, it's likely a bug. Read it again and check if you mistook the PERIOD for a COMMA.
+- If hundreds, divide by 100 so you revert it to cents.
+- If you say hundred dollars again, you will be punished.
 
-If users ask about specific GPU models or price ranges, filter and highlight the relevant options from the data.
+Start by greeting and showing available GPUs sorted by price (low to high). Help users filter using any combination of:
+- Quantity (e.g., "show me 8X GPUs")
+- Storage (e.g., "GPUs with 500GB+ storage")
+- Price sorting (e.g., "show highest price first")
+
+When filtering, still call `get_available_gpus` with the appropriate filters.
 """
 
 
