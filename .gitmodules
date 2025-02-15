@@ -1,15 +1,15 @@
 [submodule "cdp-langchain-fork"]
-	path = cdp-langchain-fork
-	url = file:///Users/amr/Hyperbolic-AgentKit/cdp-langchain-fork
+    path = cdp-langchain-fork
+    url = https://github.com/HyperbolicLabs/cdp-langchain-fork.git
 
 [submodule "cdp-agentkit-core-fork"]
-	path = cdp-agentkit-core-fork
-	url = file:///Users/amr/Hyperbolic-AgentKit/cdp-agentkit-core-fork
+    path = cdp-agentkit-core-fork
+    url = https://github.com/HyperbolicLabs/cdp-agentkit-core-fork.git
 
 [submodule "twitter-langchain-fork"]
-	path = twitter-langchain-fork
-	url = file:///Users/amr/Hyperbolic-AgentKit/twitter-langchain-fork
+    path = twitter-langchain-fork
+    url = https://github.com/HyperbolicLabs/twitter-langchain-fork.git
 
 [submodule "cdp-agentkit"]
-	path = cdp-agentkit
-	url = file:///Users/amr/Hyperbolic-AgentKit/cdp-agentkit
+    path = cdp-agentkit
+    url = https://github.com/HyperbolicLabs/cdp-agentkit.git
