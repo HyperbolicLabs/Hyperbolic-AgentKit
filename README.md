@@ -82,12 +82,21 @@ Knowledge Base Integrations:
 ## Quick Start
 
 1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/yourusername/Hyperbolic-AgentKit.git
-   cd Hyperbolic-AgentKit
-   ```
+```bash
+git clone https://github.com/yourusername/Hyperbolic-AgentKit.git
+cd Hyperbolic-AgentKit
+```
 
-2. **Set Up Environment Variables**
+2. **Initialize Submodules**
+The repository contains submodules that need to be initialized. Run the following commands:
+```bash
+git config --global protocol.file.allow always
+git submodule sync
+git submodule update --init --recursive
+git config --global protocol.file.allow never
+```
+
+3. **Set Up Environment Variables**
    ```bash
    # Copy the example environment file
    cp .env.example .env
