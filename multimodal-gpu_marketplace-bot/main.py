@@ -34,51 +34,76 @@ logger.remove(0)
 logger.add(sys.stderr, level="DEBUG")
 
 
-async def fetch_weather_from_api(
+async def fetch_marketplace_data(
     function_name, tool_call_id, args, llm, context, result_callback
 ):
-    temperature = 75 if args["format"] == "fahrenheit" else 24
-    await result_callback(
-        {
-            "conditions": "nice",
-            "temperature": temperature,
-            "format": args["format"],
-            "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
-        }
-    )
+    async with aiohttp.ClientSession() as session:
+        try:
+            url = "https://api.hyperbolic.xyz/v1/marketplace"
+            headers = {"Content-Type": "application/json"}
+            filters = {} if args["filter_type"] == "all" else {"available": True}
+            data = {"filters": filters}
+
+            async with session.post(url, json=data, headers=headers) as response:
+                if response.status == 200:
+                    marketplace_data = await response.json()
+                    available_instances = [
+                        {
+                            "id": instance["id"],
+                            "gpu_model": instance["hardware"]["gpus"][0]["model"],
+                            "gpu_memory": instance["hardware"]["gpus"][0]["ram"],
+                            "price_per_hour": instance["pricing"]["price"]["amount"],
+                            "location": instance["location"]["region"],
+                            "available": not instance["reserved"]
+                            and instance["gpus_reserved"] < instance["gpus_total"],
+                        }
+                        for instance in marketplace_data["instances"]
+                        if "gpus" in instance["hardware"]
+                        and instance["hardware"]["gpus"]
+                    ]
+                    await result_callback({"instances": available_instances})
+                else:
+                    await result_callback(
+                        {"error": f"API request failed with status {response.status}"}
+                    )
+        except Exception as e:
+            await result_callback({"error": str(e)})
 
 
 tools = [
     {
         "function_declarations": [
             {
-                "name": "get_current_weather",
-                "description": "Get the current weather",
+                "name": "get_available_gpus",
+                "description": "Get the list of available GPU instances in the marketplace",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "location": {
+                        "filter_type": {
                             "type": "string",
-                            "description": "The city and state, e.g. San Francisco, CA",
-                        },
-                        "format": {
-                            "type": "string",
-                            "enum": ["celsius", "fahrenheit"],
-                            "description": "The temperature unit to use. Infer this from the users location.",
-                        },
+                            "enum": ["all", "available_only"],
+                            "description": "Filter type for GPU instances",
+                        }
                     },
-                    "required": ["location", "format"],
+                    "required": ["filter_type"],
                 },
-            },
+            }
         ]
     }
 ]
 
 system_instruction = """
-You are a helpful assistant who can answer questions and use tools.
+You are a helpful assistant for Hyperbolic Labs' GPU Marketplace. You can help users find and understand available GPU instances for rent.
 
-You have a tool called "get_current_weather" that can be used to get the current weather. If the user asks
-for the weather, call this function.
+You have access to the marketplace data through the get_available_gpus tool. When users ask about available GPUs, pricing,
+or specifications, use this tool to get the most current information.
+
+Always be professional and helpful. When listing GPUs:
+1. Mention the GPU model, memory, and hourly price
+2. Indicate if the instance is currently available
+3. Include the location/region
+
+If users ask about specific GPU models or price ranges, filter and highlight the relevant options from the data.
 """
 
 
@@ -108,11 +133,15 @@ async def main():
             tools=tools,
         )
 
-        llm.register_function("get_current_weather", fetch_weather_from_api)
+        llm.register_function("get_available_gpus", fetch_marketplace_data)
 
         context = OpenAILLMContext(
-            [{"role": "user",
-              "content": "Start by greeting me warmly and introducing me to GPU Rentals by Hyperbolic Labs and mention that you can do everything verbally. Encourage me to start by asking available GPU."}],
+            [
+                {
+                    "role": "user",
+                    "content": "Start by greeting me warmly and introducing me to GPU Rentals by Hyperbolic Labs and mention that you can do everything verbally. Encourage me to start by asking available GPU.",
+                }
+            ],
         )
         context_aggregator = llm.create_context_aggregator(context)
 
