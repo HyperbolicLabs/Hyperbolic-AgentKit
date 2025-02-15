@@ -1,15 +1,15 @@
 [submodule "cdp-langchain-fork"]
 	path = cdp-langchain-fork
-	url = /cdp-langchain-fork
+	url = ./cdp-langchain-fork
 
 [submodule "cdp-agentkit-core-fork"]
 	path = cdp-agentkit-core-fork
-	url = /cdp-agentkit-core-fork
+	url = ./cdp-agentkit-core-fork
 
 [submodule "twitter-langchain-fork"]
 	path = twitter-langchain-fork
-	url = /twitter-langchain-fork
+	url = ./twitter-langchain-fork
 
 [submodule "cdp-agentkit"]
 	path = cdp-agentkit
-	url = /cdp-agentkit
+	url = ./cdp-agentkit
