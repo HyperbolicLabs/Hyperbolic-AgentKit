@@ -1,20 +1,32 @@
-# Multimodal Video Bot
+# GPU Marketplace Voice Assistant Bot
 
-A video conferencing bot that can analyze screen shares and camera feeds using Gemini's multimodal capabilities.
+An interactive voice assistant bot that helps users explore and find GPU instances on the Hyperbolic GPU Marketplace.
 
 ## Features
 
-- **Prioritized Screen Sharing**: Automatically attempts to capture screen sharing first, falling back to camera if unavailable
-- **Voice Activation Detection (VAD)**: Uses Silero VAD for precise audio detection
-- **Multimodal Analysis**: Processes both visual and audio inputs using Google's Gemini API
-- **Interactive Response**: Provides real-time responses to user queries about visual content
+- **Real-time GPU Availability**: Live access to Hyperbolic's GPU marketplace
+- **Voice Interaction**: Natural conversation about GPU options and pricing
+- **Smart Filtering**:
+  - Price ranges (budget to high-end)
+  - GPU quantities (1X to 8X+)
+  - Storage capacity
+  - Availability status
+- **Dynamic Price Display**:
+  - Under $1: Shows in cents (e.g., "13¢/hr")
+  - $1 and above: Shows in dollars (e.g., "$1.50/hr")
+
+## Available GPU Types
+
+- Consumer GPUs (RTX 3070, 3080, 4090)
+- Data Center GPUs (H100 SXM, NVIDIA H200)
+- Various configurations (1X to 8X+)
 
 ## Requirements
 
 - Python 3.12+
-- Google API key with access to Gemini API
+- Google API key (for Gemini)
 - Daily.co API key
-- See `requirements.txt` for complete dependencies
+- Access to Hyperbolic Marketplace API
 
 ## Environment Setup
 
@@ -34,27 +46,32 @@ pip install -r requirements.txt
 
 ## Usage
 
-Run the bot:
+Start the bot:
 
 ```bash
-python src/main.py
+python main.py
 ```
 
-Or with explicit room URL:
+Join the Daily.co room to interact with the bot. You can:
 
-```bash
-python src/main.py -u "https://your-domain.daily.co/room" -k "your-daily-api-key"
-```
+- Ask about available GPUs
+- Filter by price range
+- Sort by price (low to high or high to low)
+- Filter by GPU quantity
+- Check storage options
+- Get real-time availability updates
 
-## Voice Options
+## Example Queries
 
-The bot supports multiple voice options:
-- Aoede (default)
-- Puck
-- Charon
-- Kore
-- Fenrir
+- "What GPUs are available?"
+- "Show me budget options under 50 cents per hour"
+- "What are your high-end GPUs?"
+- "Do you have any 8X GPU configurations?"
+- "Show me GPUs with over 500GB storage"
+- "What's the price range for H100s?"
 
-## Rate Limiting
+## Notes
 
-The service implements automatic rate limiting and retry mechanisms when interacting with Google's APIs to prevent quota exhaustion.
+- All GPU instances are located in US, North America
+- Prices are always displayed per hour
+- The bot automatically refreshes data for the most current availability
