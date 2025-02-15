@@ -10,6 +10,7 @@
 import asyncio
 import os
 import sys
+from datetime import datetime
 
 import aiohttp
 from dotenv import load_dotenv
@@ -33,11 +34,55 @@ logger.remove(0)
 logger.add(sys.stderr, level="DEBUG")
 
 
-async def main():
-    google_api_key = os.getenv("GOOGLE_API_KEY")
-    if not google_api_key:
-        raise ValueError("GOOGLE_API_KEY environment variable is not set")
+async def fetch_weather_from_api(
+    function_name, tool_call_id, args, llm, context, result_callback
+):
+    temperature = 75 if args["format"] == "fahrenheit" else 24
+    await result_callback(
+        {
+            "conditions": "nice",
+            "temperature": temperature,
+            "format": args["format"],
+            "timestamp": datetime.now().strftime("%Y%m%d_%H%M%S"),
+        }
+    )
 
+
+tools = [
+    {
+        "function_declarations": [
+            {
+                "name": "get_current_weather",
+                "description": "Get the current weather",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "type": "string",
+                            "description": "The city and state, e.g. San Francisco, CA",
+                        },
+                        "format": {
+                            "type": "string",
+                            "enum": ["celsius", "fahrenheit"],
+                            "description": "The temperature unit to use. Infer this from the users location.",
+                        },
+                    },
+                    "required": ["location", "format"],
+                },
+            },
+        ]
+    }
+]
+
+system_instruction = """
+You are a helpful assistant who can answer questions and use tools.
+
+You have a tool called "get_current_weather" that can be used to get the current weather. If the user asks
+for the weather, call this function.
+"""
+
+
+async def main():
     async with aiohttp.ClientSession() as session:
         (room_url, token) = await configure(session)
 
@@ -49,26 +94,25 @@ async def main():
                 audio_out_enabled=True,
                 vad_enabled=True,
                 vad_audio_passthrough=True,
+                # set stop_secs to something roughly similar to the internal setting
+                # of the Multimodal Live api, just to align events. This doesn't really
+                # matter because we can only use the Multimodal Live API's phrase
+                # endpointing, for now.
                 vad_analyzer=SileroVADAnalyzer(params=VADParams(stop_secs=0.5)),
             ),
         )
 
         llm = GeminiMultimodalLiveLLMService(
-            api_key=google_api_key,  # Use validated key
-            voice_id="Aoede",  # Puck, Charon, Kore, Fenrir, Aoede
-            system_instruction="Refer directly to screen elements when the user asks for help.",
-            transcribe_user_audio=True,
-            transcribe_model_audio=True,
-            inference_on_context_initialization=False,
+            api_key=os.getenv("GOOGLE_API_KEY"),
+            system_instruction=system_instruction,
+            tools=tools,
         )
 
+        llm.register_function("get_current_weather", fetch_weather_from_api)
+
         context = OpenAILLMContext(
-            [
-                {
-                    "role": "user",
-                    "content": "Welcome me to Hyperbolic Labs first. Tell me that I can see your camera feed, but tell me I have to click 'Share Screen' below first so I can help with your screen. Then I can tell you what's on your camera or where to click things!"
-                },
-            ],
+            [{"role": "user",
+              "content": "Start by greeting me warmly and introducing me to GPU Rentals by Hyperbolic Labs and mention that you can do everything verbally. Encourage me to start by asking available GPU."}],
         )
         context_aggregator = llm.create_context_aggregator(context)
 
@@ -77,8 +121,8 @@ async def main():
                 transport.input(),
                 context_aggregator.user(),
                 llm,
-                transport.output(),
                 context_aggregator.assistant(),
+                transport.output(),
             ]
         )
 
@@ -93,19 +137,7 @@ async def main():
 
         @transport.event_handler("on_first_participant_joined")
         async def on_first_participant_joined(transport, participant):
-            # Enable both camera and screenshare. From the client side
-            # send just one.
-            await transport.capture_participant_video(
-                participant["id"], framerate=1, video_source="screenVideo"
-            )
-            await transport.capture_participant_video(
-                participant["id"], framerate=1, video_source="camera"
-            )
             await task.queue_frames([context_aggregator.user().get_context_frame()])
-            await asyncio.sleep(3)
-            logger.debug("Unpausing audio and video")
-            llm.set_audio_input_paused(False)
-            llm.set_video_input_paused(False)
 
         runner = PipelineRunner()
 
