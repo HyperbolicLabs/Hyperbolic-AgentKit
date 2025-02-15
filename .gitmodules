@@ -9,3 +9,7 @@
 [submodule "twitter-langchain-fork"]
 	path = twitter-langchain-fork
 	url = /twitter-langchain-fork
+
+[submodule "cdp-agentkit"]
+	path = cdp-agentkit
+	url = /cdp-agentkit
