@@ -1,5 +1,13 @@
+#
+# Copyright (c) 2024, Daily
+#
+# SPDX-License-Identifier: BSD 2-Clause License
+#
+
 import asyncio
 import os
+import sys
+from pathlib import Path
 
 import aiohttp
 from dotenv import load_dotenv
@@ -15,22 +23,36 @@ from pipecat.services.gemini_multimodal_live.gemini import (
 )
 from pipecat.transports.services.daily import DailyParams, DailyTransport
 
-from config.settings import SYSTEM_INSTRUCTION, TOOLS
-from services.daily import configure
-from utils.logger import setup_logger
-
+sys.path.append(str(Path(__file__).parent.parent))
+from runner import configure
 
 load_dotenv(override=True)
-setup_logger()
+
+logger.remove(0)
+logger.add(sys.stderr, level="DEBUG")
+
+# Function handlers for the LLM
+search_tool = {"google_search": {}}
+tools = [search_tool]
+
+system_instruction = """
+You are an expert at providing the most recent news from any place. Your responses will be converted to audio, so avoid using special characters or overly complex formatting.
+
+Always use the google search API to retrieve the latest news. You must also use it to check which day is today.
+
+You can:
+- Use the Google search API to check the current date.
+- Provide the most recent and relevant news from any place by using the google search API.
+- Answer any questions the user may have, ensuring your responses are accurate and concise.
+
+Start each interaction by asking the user about which place they would like to know the information.
+"""
 
 
 async def main():
-    """Main application entry point."""
     async with aiohttp.ClientSession() as session:
-        # Configure Daily room
-        room_url, token = await configure(session)
+        (room_url, token) = await configure(session)
 
-        # Set up Daily transport
         transport = DailyTransport(
             room_url,
             token,
@@ -43,52 +65,43 @@ async def main():
             ),
         )
 
-        # Initialize Gemini model
+        # Initialize the Gemini Multimodal Live model
         llm = GeminiMultimodalLiveLLMService(
-            api_key=os.getenv("GEMINI_API_KEY"),
-            voice_id="Puck",  # Available voices: Aoede, Charon, Fenrir, Kore, Puck
+            api_key=os.getenv("GOOGLE_API_KEY"),
+            voice_id="Puck",  # Aoede, Charon, Fenrir, Kore, Puck
             transcribe_user_audio=True,
             transcribe_model_audio=True,
-            system_instruction=SYSTEM_INSTRUCTION,
-            tools=TOOLS,
+            system_instruction=system_instruction,
+            tools=tools,
         )
 
-        # Set up conversation context
         context = OpenAILLMContext(
             [
                 {
                     "role": "user",
-                    "content": (
-                        "Start by greeting the user warmly, introducing yourself, "
-                        "and mentioning the current day. Be friendly and engaging "
-                        "to set a positive tone for the interaction."
-                    ),
+                    "content": "Start by greeting me warmly and introducing me to live search by Hyperbolic Labs and mention the current day. Tell me that I can ask you about any place in the world and you will provide me with the latest news. Then, ask me which place I would like to know about.",
                 }
             ],
         )
         context_aggregator = llm.create_context_aggregator(context)
 
-        # Create pipeline
         pipeline = Pipeline(
             [
                 transport.input(),  # Transport user input
                 context_aggregator.user(),  # User responses
-                llm,  # LLM processing
+                llm,  # LLM
                 transport.output(),  # Transport bot output
-                context_aggregator.assistant(),  # Assistant responses
+                context_aggregator.assistant(),  # Assistant spoken responses
             ]
         )
 
-        # Set up pipeline task
         task = PipelineTask(pipeline, PipelineParams(allow_interruptions=True))
 
         @transport.event_handler("on_first_participant_joined")
         async def on_first_participant_joined(transport, participant):
-            """Handle first participant joining the room."""
             await transport.capture_participant_transcription(participant["id"])
             await task.queue_frames([context_aggregator.user().get_context_frame()])
 
-        # Run the pipeline
         runner = PipelineRunner()
         await runner.run(task)
 
