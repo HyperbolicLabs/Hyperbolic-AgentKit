@@ -10,14 +10,14 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
-cdp-langchain = "^0.0.8"
-cdp-agentkit-core = "^0.0.6"
+cdp-langchain = { path = "cdp-langchain-fork" }
+cdp-agentkit-core = { path = "cdp-agentkit-core-fork" }
 langchain-core = "^0.3.15"
-langchain-openai = "^0.2.6"
+langchain-openai = "^0.3.1"
 langgraph = "^0.2.45"
 pydantic = "^2.9.2"
-cdp-sdk = "^0.12.0"
-twitter-langchain = "^0.0.6"
+cdp-sdk = "^0.15.0"
+twitter-langchain = { path = "twitter-langchain-fork" }
 python-dotenv = "^1.0.0"
 langchain-community = "^0.3.11"
 langchain-experimental = "^0.3.3"
@@ -40,6 +40,7 @@ pygithub = "^2.5.0"
 speechrecognition = "^3.14.1"
 starlette = "^0.45.3"
 uvicorn = "^0.34.0"
+browser-use = "^0.1.36"
 
 
 

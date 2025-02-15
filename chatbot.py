@@ -57,6 +57,7 @@ from twitter_state import TwitterState, MENTION_CHECK_INTERVAL, MAX_MENTIONS_PER
 from twitter_knowledge_base import TweetKnowledgeBase, Tweet, update_knowledge_base
 from langchain_core.runnables import RunnableConfig
 from podcast_agent.podcast_knowledge_base import PodcastKnowledgeBase
+from browser_agent import BrowserToolkit
 
 async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
     """
@@ -468,6 +469,11 @@ def process_character_config(character: Dict[str, Any]) -> str:
 def create_agent_tools(llm, twitter_api_wrapper, knowledge_base, podcast_knowledge_base, agentkit, config):
     """Create and return a list of tools for the agent to use."""
     tools = []
+
+    # Add browser toolkit if enabled
+    if os.getenv("USE_BROWSER_TOOLS", "true").lower() == "true":
+        browser_toolkit = BrowserToolkit.from_llm(llm)
+        tools.extend(browser_toolkit.get_tools())
 
     # Add enhance query tool
     tools.append(Tool(
