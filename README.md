@@ -79,16 +79,7 @@ git clone https://github.com/yourusername/Hyperbolic-AgentKit.git
 cd Hyperbolic-AgentKit
 ```
 
-2. **Initialize Submodules**
-The repository contains submodules that need to be initialized. Run the following commands:
-```bash
-git config --global protocol.file.allow always
-git submodule sync
-git submodule update --init --recursive
-git config --global protocol.file.allow never
-```
-
-3. **Set Up Environment Variables**
+2. **Set Up Environment Variables**
    ```bash
    # Copy the example environment file
    cp .env.example .env
@@ -102,7 +93,6 @@ git config --global protocol.file.allow never
    
    # Install browser automation dependencies
    poetry run playwright install
-   poetry run playwright install-deps
    ```
 
 4. **Run the Bot**
