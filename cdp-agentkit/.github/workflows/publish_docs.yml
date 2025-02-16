@@ -1,0 +1,123 @@
+name: Publish Docs to Github Pages
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install and Build JSDocs
+        run: |
+          npm i
+          npm run build
+          npm run docs
+
+      - name: Build AgentKit JSDocs
+        run: |
+          mkdir -p docs/agentkit/typescript
+          cp -r typescript/agentkit/docs/* docs/agentkit/typescript
+
+      - name: Build AgentKit LangChain JSDocs
+        run: |
+          mkdir -p docs/agentkit-langchain/typescript
+          cp -r typescript/framework-extensions/langchain/docs/* docs/agentkit-langchain/typescript
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached venv for CDP AgentKit Core Python
+        id: cached-poetry-dependencies-core
+        uses: actions/cache@v3
+        with:
+          path: ./python/cdp-agentkit-core/.venv
+          key: venv-agentkit-${{ runner.os }}-3.10-${{ hashFiles('python/cdp-agentkit-core/poetry.lock') }}
+
+      - name: Install dependencies for CDP AgentKit Core Python
+        if: steps.cached-poetry-dependencies-core.outputs.cache-hit != 'true'
+        run: |
+          cd python/cdp-agentkit-core
+          poetry install --with dev
+          cd ..
+
+      - name: Build Sphinx Documentation for CDP AgentKit Core Python
+        run: |
+          cd python/cdp-agentkit-core
+          poetry run make docs
+          cd docs
+          poetry run make html
+          cd ../../..
+          mkdir -p docs/cdp-agentkit-core/python
+          cp -r python/cdp-agentkit-core/docs/_build/html/* docs/cdp-agentkit-core/python
+
+      - name: Load cached venv for CDP LangChain Python
+        id: cached-poetry-dependencies-langchain
+        uses: actions/cache@v3
+        with:
+          path: ./python/cdp-langchain/.venv
+          key: venv-langchain-${{ runner.os }}-3.10-${{ hashFiles('python/cdp-langchain/poetry.lock') }}
+
+      - name: Install dependencies for CDP LangChain Python
+        if: steps.cached-poetry-dependencies-langchain.outputs.cache-hit != 'true'
+        run: |
+          cd python/cdp-langchain
+          poetry install --with dev
+          cd ..
+
+      - name: Build Sphinx Documentation for CDP LangChain Python
+        run: |
+          cd python/cdp-langchain
+          poetry run make docs
+          cd docs
+          poetry run make html
+          cd ../../..
+          mkdir -p docs/cdp-langchain/python
+          cp -r python/cdp-langchain/docs/_build/html/* docs/cdp-langchain/python
+
+      - name: Load cached venv for Twitter LangChain Python
+        id: cached-poetry-dependencies-twitter-langchain
+        uses: actions/cache@v3
+        with:
+          path: ./python/twitter-langchain/.venv
+          key: venv-twitter-langchain-${{ runner.os }}-3.10-${{ hashFiles('python/twitter-langchain/poetry.lock') }}
+
+      - name: Install dependencies for Twitter LangChain Python
+        if: steps.cached-poetry-dependencies-twitter-langchain.outputs.cache-hit != 'true'
+        run: |
+          cd python/twitter-langchain
+          poetry install --with dev
+          cd ..
+
+      - name: Build Sphinx Documentation for Twitter LangChain Python
+        run: |
+          cd python/twitter-langchain
+          poetry run make docs
+          cd docs
+          poetry run make html
+          cd ../../..
+          mkdir -p docs/twitter-langchain/python
+          cp -r python/twitter-langchain/docs/_build/html/* docs/twitter-langchain/python
+
+      - name: Deploy to Github Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          keep_files: false
