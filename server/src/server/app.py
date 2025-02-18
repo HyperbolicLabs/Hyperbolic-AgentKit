@@ -42,6 +42,10 @@ async def websocket_endpoint(websocket: WebSocket):
         topics=", ".join(character.get("topics", []))
     )
     print("Full instructions:", full_instructions)
+    for tool in TOOLS:
+        print(tool.name)
+
+    
     agent = OpenAIVoiceReactAgent(
         model="gpt-4o-realtime-preview",
         tools=TOOLS,
