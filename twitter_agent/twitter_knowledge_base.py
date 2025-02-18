@@ -27,7 +27,7 @@ class TweetKnowledgeBase:
         os.makedirs(data_dir, exist_ok=True)
         
         # Initialize ChromaDB client with persistence in data directory
-        self.client = chromadb.PersistentClient(path=data_dir)
+        self.client = chromadb.PersistentClient(path="./chroma_db")
         
         # Use a more advanced embedding model
         self.embedding_model = SentenceTransformer('all-mpnet-base-v2')
