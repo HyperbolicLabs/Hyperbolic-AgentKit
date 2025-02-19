@@ -18,7 +18,6 @@ from server.tools import TOOLS
 
 from chatbot import loadCharacters, process_character_config
 import os
-import json
 from server.prompt import BASE_INSTRUCTIONS
 from chatbot import loadCharacters, process_character_config
 import os
@@ -42,6 +41,10 @@ async def websocket_endpoint(websocket: WebSocket):
         topics=", ".join(character.get("topics", []))
     )
     print("Full instructions:", full_instructions)
+    for tool in TOOLS:
+        print(tool.name)
+
+    
     agent = OpenAIVoiceReactAgent(
         model="gpt-4o-realtime-preview",
         tools=TOOLS,
@@ -56,10 +59,6 @@ async def homepage(request):
     with open("server/src/server/static/index.html") as f:
         html = f.read()
         return HTMLResponse(html)
-
-
-# catchall route to load files from src/server/static
-
 
 routes = [Route("/", homepage), WebSocketRoute("/ws", websocket_endpoint)]
 

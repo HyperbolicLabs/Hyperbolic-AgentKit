@@ -16,20 +16,69 @@ from langchain_community.utilities.requests import TextRequestsWrapper
 from langchain_anthropic import ChatAnthropic
 from dotenv import load_dotenv
 
-from cdp_langchain.agent_toolkits import CdpToolkit
-from cdp_langchain.utils import CdpAgentkitWrapper
-from cdp_langchain.tools import CdpTool
+from coinbase_agentkit import (
+    AgentKit,
+    AgentKitConfig,
+    CdpWalletProvider,
+    CdpWalletProviderConfig,
+    cdp_api_action_provider,
+    cdp_wallet_action_provider,
+    erc20_action_provider,
+    pyth_action_provider,
+    wallet_action_provider,
+    weth_action_provider,
+    twitter_action_provider,
+)
+from coinbase_agentkit_langchain import get_langchain_tools
 
 from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
 from hyperbolic_langchain.utils import HyperbolicAgentkitWrapper
 from podcast_agent.podcast_knowledge_base import PodcastKnowledgeBase
-from twitter_langchain import TwitterApiWrapper, TwitterToolkit
-from custom_twitter_actions import (
+from twitter_agent.twitter_state import TwitterState
+from twitter_agent.custom_twitter_actions import (
     create_delete_tweet_tool,
     create_get_user_id_tool,
     create_get_user_tweets_tool,
     create_retweet_tool
 )
+wallet_data_file = "wallet_data.txt"
+
+wallet_data = None
+if os.path.exists(wallet_data_file):
+    with open(wallet_data_file) as f:
+        wallet_data = f.read()
+
+wallet_provider = CdpWalletProvider(CdpWalletProviderConfig(
+    api_key_name=os.getenv("CDP_API_KEY_NAME"),
+    api_key_private=os.getenv("CDP_API_KEY_PRIVATE"),
+    network_id=os.getenv("CDP_NETWORK_ID", "base-mainnet"),
+    wallet_data=wallet_data if wallet_data else None
+))
+
+
+agent_kit = AgentKit(AgentKitConfig(
+    wallet_provider=wallet_provider,
+    action_providers=[
+        cdp_api_action_provider(),
+        cdp_wallet_action_provider(),
+        erc20_action_provider(),
+        pyth_action_provider(),
+        wallet_action_provider(),
+        weth_action_provider(),
+        twitter_action_provider(),
+    ]
+))
+
+from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
+from hyperbolic_langchain.utils import HyperbolicAgentkitWrapper
+from podcast_agent.podcast_knowledge_base import PodcastKnowledgeBase
+from twitter_agent.custom_twitter_actions import (
+    create_delete_tweet_tool,
+    create_get_user_id_tool,
+    create_get_user_tweets_tool,
+    create_retweet_tool
+)
+
 
 # Load environment variables
 load_dotenv(override=True)
@@ -53,8 +102,6 @@ config = {
 }
 
 # Initialize wrappers
-twitter_api_wrapper = TwitterApiWrapper(config=config)
-agentkit = CdpAgentkitWrapper()
 hyperbolic_agentkit = HyperbolicAgentkitWrapper()
 
 podcast_kb = PodcastKnowledgeBase()
@@ -69,7 +116,7 @@ def enhance_result(initial_query: str, query_result: str, llm):
     """Analyze the initial query and its results to generate an enhanced follow-up query."""
     return llm.invoke(f"Based on the initial query '{initial_query}' and results '{query_result}', suggest an enhanced follow-up query.")
 
-def create_tools(llm=None, twitter_api_wrapper=None, knowledge_base=None, podcast_knowledge_base=None, agentkit=None):
+def create_tools(llm=None, knowledge_base=None, podcast_knowledge_base=None, agentkit=agent_kit):
     """Create and return a list of tools."""
     tools = []
 
@@ -87,39 +134,64 @@ def create_tools(llm=None, twitter_api_wrapper=None, knowledge_base=None, podcas
         description="Analyze the initial query and its results to generate an enhanced follow-up query. Takes two parameters: initial_query (the original query string) and query_result (the results obtained from that query)."
     ))
 
-    # Initialize toolkits if wrappers are provided
-    if twitter_api_wrapper:
-        twitter_toolkit = TwitterToolkit.from_twitter_api_wrapper(twitter_api_wrapper)
-        if os.getenv("USE_TWITTER_CORE", "true").lower() == "true":
-            tools.extend(twitter_toolkit.get_tools())
-        
-        # Add Twitter-specific tools based on environment variables
-        if os.getenv("USE_TWEET_DELETE", "true").lower() == "true":
-            tools.append(create_delete_tweet_tool(twitter_api_wrapper))
-        if os.getenv("USE_USER_ID_LOOKUP", "true").lower() == "true":
-            tools.append(create_get_user_id_tool(twitter_api_wrapper))
-        if os.getenv("USE_USER_TWEETS_LOOKUP", "true").lower() == "true":
-            tools.append(create_get_user_tweets_tool(twitter_api_wrapper))
-        if os.getenv("USE_RETWEET", "true").lower() == "true":
-            tools.append(create_retweet_tool(twitter_api_wrapper))
+    # Add Twitter State Management Tools
+    twitter_state = TwitterState()
+    
+    tools.extend([
+        Tool(
+            name="has_replied_to",
+            func=twitter_state.has_replied_to,
+            description="""Check if we have already replied to a tweet. MUST be used before replying to any tweet.
+            Input: tweet ID string.
+            Rules:
+            1. Always check this before replying to any tweet
+            2. If returns True, do NOT reply and select a different tweet
+            3. If returns False, proceed with reply_to_tweet then add_replied_to"""
+        ),
+        Tool(
+            name="add_replied_to",
+            func=twitter_state.add_replied_tweet,
+            description="""Add a tweet ID to the database of replied tweets. 
+            MUST be used after successfully replying to a tweet.
+            Input: tweet ID string.
+            Rules:
+            1. Only use after successful reply_to_tweet
+            2. Must verify with has_replied_to first
+            3. Stores tweet ID permanently to prevent duplicate replies"""
+        ),
+        Tool(
+            name="has_reposted",
+            func=twitter_state.has_reposted,
+            description="Check if we have already reposted a tweet. Input should be a tweet ID string."
+        ),
+        Tool(
+            name="add_reposted",
+            func=twitter_state.add_reposted_tweet,
+            description="Add a tweet ID to the database of reposted tweets."
+        )
+    ])
 
-    if agentkit and os.getenv("USE_CDP_TOOLS", "true").lower() == "true":
-        cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(agentkit)
-        tools.extend(cdp_toolkit.get_tools())
+    # Add Custom Twitter Tools
+    tools.extend([
+        create_delete_tweet_tool(),
+        create_get_user_id_tool(),
+        create_get_user_tweets_tool(),
+        create_retweet_tool()
+    ])
 
-    # Initialize Hyperbolic tools if enabled
-    if os.getenv("USE_HYPERBOLIC_TOOLS", "true").lower() == "true":
-        hyperbolic_toolkit = HyperbolicToolkit.from_hyperbolic_agentkit_wrapper(hyperbolic_agentkit)
-        tools.extend(hyperbolic_toolkit.get_tools())
-
-    # Add Knowledge Base Tools if provided and enabled
+    # Add Twitter Knowledge Base Tool if enabled
     if os.getenv("USE_TWITTER_KNOWLEDGE_BASE", "true").lower() == "true" and knowledge_base:
         tools.append(Tool(
-            name="query_knowledge_base",
-            description="Query the knowledge base for relevant tweets about crypto/AI/tech trends.",
-            func=lambda query: knowledge_base.query_knowledge_base(query)
+            name="query_twitter_knowledge_base",
+            func=lambda query: knowledge_base.format_query_results(
+                knowledge_base.query_knowledge_base(query)
+            ),
+            description="""Query the Twitter knowledge base for relevant tweets about crypto/AI/tech trends.
+            Input should be a search query string.
+            Example: query_twitter_knowledge_base("latest developments in AI")"""
         ))
 
+    # Add Podcast Knowledge Base Tools if enabled
     if os.getenv("USE_PODCAST_KNOWLEDGE_BASE", "true").lower() == "true" and podcast_knowledge_base:
         tools.append(Tool(
             name="query_podcast_knowledge_base",
@@ -129,12 +201,18 @@ def create_tools(llm=None, twitter_api_wrapper=None, knowledge_base=None, podcas
             description="Query the podcast knowledge base for relevant podcast segments about crypto/Web3/gaming. Input should be a search query string."
         ))
 
+    # Add Coinbase AgentKit tools (blockchain/wallet/twitter operations)
+    if os.getenv("USE_COINBASE_TOOLS", "true").lower() == "true":
+        coinbase_tools = get_langchain_tools(agentkit)
+        tools.extend(coinbase_tools)
+
+    # Add Hyperbolic tools if enabled
+    if os.getenv("USE_HYPERBOLIC_TOOLS", "true").lower() == "true":
+        hyperbolic_toolkit = HyperbolicToolkit.from_hyperbolic_agentkit_wrapper(hyperbolic_agentkit)
+        tools.extend(hyperbolic_toolkit.get_tools())
+
     # Add web search tools if enabled
     if os.getenv("USE_WEB_SEARCH", "true").lower() == "true":
-        tools.append(DuckDuckGoSearchRun(
-            name="web_search",
-            description="Search the internet for current information."
-        ))
         tools.append(tavily_tool)
 
     # Add requests toolkit if enabled
@@ -167,6 +245,4 @@ tavily_tool = TavilySearchResults(
 # Initialize all tools with default wrappers
 TOOLS = create_tools(
     llm=llm,
-    twitter_api_wrapper=twitter_api_wrapper,
-    agentkit=agentkit
 )  # Initialize with all available tools
