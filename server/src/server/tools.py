@@ -15,6 +15,7 @@ from langchain_community.agent_toolkits.openapi.toolkit import RequestsToolkit
 from langchain_community.utilities.requests import TextRequestsWrapper
 from langchain_anthropic import ChatAnthropic
 from dotenv import load_dotenv
+from browser_agent import BrowserToolkit
 
 from coinbase_agentkit import (
     AgentKit,
@@ -133,6 +134,12 @@ def create_tools(llm=None, knowledge_base=None, podcast_knowledge_base=None, age
         func=lambda initial_query, query_result: enhance_result(initial_query, query_result, llm),
         description="Analyze the initial query and its results to generate an enhanced follow-up query. Takes two parameters: initial_query (the original query string) and query_result (the results obtained from that query)."
     ))
+
+        # Add browser toolkit if enabled
+    if os.getenv("USE_BROWSER_TOOLS", "true").lower() == "true":
+        browser_toolkit = BrowserToolkit.from_llm(llm)
+        tools.extend(browser_toolkit.get_tools())
+    
 
     # Add Twitter State Management Tools
     twitter_state = TwitterState()

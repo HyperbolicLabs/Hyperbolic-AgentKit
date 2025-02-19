@@ -27,6 +27,7 @@ from langchain_community.agent_toolkits.openapi.toolkit import RequestsToolkit
 from langchain_community.utilities.requests import TextRequestsWrapper
 from langchain.tools import Tool
 from langchain_core.runnables import RunnableConfig
+from browser_agent import BrowserToolkit
 
 # Import Coinbase AgentKit related modules
 from coinbase_agentkit import (
@@ -413,6 +414,11 @@ def process_character_config(character: Dict[str, Any]) -> str:
 def create_agent_tools(llm, knowledge_base, podcast_knowledge_base, agent_kit, config):
     """Create and return a list of tools for the agent to use."""
     tools = []
+
+        # Add browser toolkit if enabled
+    if os.getenv("USE_BROWSER_TOOLS", "true").lower() == "true":
+        browser_toolkit = BrowserToolkit.from_llm(llm)
+        tools.extend(browser_toolkit.get_tools())
 
     # Add enhance query tool
     tools.append(Tool(
