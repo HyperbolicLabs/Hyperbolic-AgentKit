@@ -61,10 +61,6 @@ async def homepage(request):
         html = f.read()
         return HTMLResponse(html)
 
-
-# catchall route to load files from src/server/static
-
-
 routes = [Route("/", homepage), WebSocketRoute("/ws", websocket_endpoint)]
 
 app = Starlette(debug=True, routes=routes)
