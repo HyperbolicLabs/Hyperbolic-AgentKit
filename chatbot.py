@@ -317,7 +317,7 @@ def loadCharacters(charactersArg: str) -> List[Dict[str, Any]]:
 
     if not characterPaths:
         # Load default chainyoda character
-        default_path = os.path.join(os.path.dirname(__file__), "characters/chainyoda.json")
+        default_path = os.path.join(os.path.dirname(__file__), "characters/default.json")
         characterPaths.append(default_path)
 
     for characterPath in characterPaths:
@@ -547,7 +547,7 @@ async def initialize_agent():
 
         print_system("Loading character configuration...")
         try:
-            characters = loadCharacters(os.getenv("CHARACTER_FILE", "chainyoda.json"))
+            characters = loadCharacters(os.getenv("CHARACTER_FILE"))
             character = characters[0]  # Use first character if multiple loaded
         except Exception as e:
             print_error(f"Error loading character: {e}")
