@@ -9,7 +9,7 @@ A template for running an AI agent with both blockchain and compute capabilities
 
 ## Features
 
-This template demonstrates a chatbot that can:
+This template demonstrates a chatbot with the following capabilities:
 
 ### Compute Operations (via Hyperbolic):
 - Connect ethereum wallet address to Hyperbolic account 
