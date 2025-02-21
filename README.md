@@ -98,7 +98,6 @@ cd Hyperbolic-AgentKit
 ```
 
 ### 2. Python Environment Setup
-Choose one method:
 
 **Using Poetry (Recommended)**:
 ```bash
