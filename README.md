@@ -7,9 +7,11 @@ A template for running an AI agent with both blockchain and compute capabilities
 - [Hyperbolic Compute Platform](https://app.hyperbolic.xyz/)
 - [Coinbase Developer Platform (CDP) Agentkit](https://github.com/coinbase/cdp-agentkit/)
 
+## Features
+
 This template demonstrates a chatbot that can:
 
-Compute Operations (via Hyperbolic):
+### Compute Operations (via Hyperbolic):
 - Connect ethereum wallet address to Hyperbolic account 
 - Rent GPU compute resources
 - Terminate GPU instances
@@ -19,45 +21,94 @@ Compute Operations (via Hyperbolic):
 - ssh access to GPU machines
 - Run command lines on remote GPU machines
 
-How to pay for compute using crypto:
-- Prompt the agent to connect your ethereum wallet address to hyperbolic (ex. "connect my wallet 0x7C9CB45454545A6222a29843A603b6e56ee93 to hyperbolic")
-- From your wallet, send desired amount of USDC, USDT, or DAI on Base network to Hyperbolic address: 0xd3cB24E0Ba20865C530831C85Bd6EbC25f6f3B60
-- The funds will now be available in your Hyperbolic account and can be used to pay for compute
-
-Blockchain Operations (via CDP):
+### Blockchain Operations (via CDP):
 - Deploy tokens (ERC-20 & NFTs)
 - Manage wallets
 - Execute transactions
 - Interact with smart contracts
 
-Twitter Operations:
+### Twitter Operations:
 - Get X account info
 - Get User ID from username
-- Get an accounts's recent tweets, given their username/user ID
+- Get an accounts's recent tweets
 - Post tweet
 - Delete tweet
-- Reply to tweet, and check if a tweet has been replied to
-- Retweet a tweet, and check if a tweet has been retweeted
+- Reply to tweet and check reply status
+- Retweet a tweet and check retweet status
 
-Other Python Scripts that can be run directly:
-- podcast_agent/aiagenteditor.py: A tool for trimming videofiles using gemini and ffmpeg
-- podcast_agent/geminivideo.py: A tool for transcribing video files using gemini
+### Additional Tools:
+- **Podcast Agent**: Tools for video processing and transcription
+  - `podcast_agent/aiagenteditor.py`: Trim video files using Gemini and ffmpeg
+  - `podcast_agent/geminivideo.py`: Transcribe video files using Gemini
 
-To access Gemini, you should create a servicekey using google cloud and add it as eaccservicekey.json in the root directory
-
-Knowledge Base Integrations:
-- Twitter Knowledge Base: scrapes tweets from specified list of KOLs and uses them as a knowledge base for the agent to create relevant X posts
-- Podcast Knowledge Base: uses podcast transcripts as a knowledge base for the agent to accurately answer questions about a podcast
+### Knowledge Base Integrations:
+- Twitter Knowledge Base: Scrapes tweets from KOLs for informed X posting
+- Podcast Knowledge Base: Uses podcast transcripts for accurate Q&A
 
 ## Prerequisites
 
-1. **Python Version**
-   - This project requires Python 3.12
-   - If using Poetry, you can ensure the correct version with:
-   ```bash
-   poetry env use python3.12
-   poetry install
+### 1. System Requirements
+- Operating System: macOS, Linux, or Windows
+- Python 3.12 (required)
+- Node.js 18+ (for web interface)
+- Git
+
+### 2. API Keys and Configuration
+- **Core API Keys (Required)**
+  - **Anthropic**
+    - Get API key from [Anthropic Portal](https://console.anthropic.com/dashboard)
+  - **OpenAI** (Required only for voice agent)
+    - Get API key from [OpenAI Portal](https://platform.openai.com/api-keys)
+  - **CDP**
+    - Sign up at [CDP Portal](https://portal.cdp.coinbase.com/access/api)
+    - Generate API key name and private key
+  - **Hyperbolic** (Required for compute tools)
+    - Sign up at [Hyperbolic Portal](https://app.hyperbolic.xyz)
+    - Navigate to Settings to generate API key
+
+- **Optional Integrations**
+  - **X (Twitter) API Access**
+    - Create a developer account at [Twitter Developer Portal](https://developer.twitter.com)
+    - Required credentials: API Key/Secret, Access Token/Secret, Bearer Token, Client ID/Secret
+  - **Web Search**: Tavily API key
+  - **Google Cloud** (for Podcast Agent/Gemini)
+    - Create a service account and download key as `eaccservicekey.json`
+  - **LangChain**: Endpoint, API key, and project name
+
+### 3. Crypto Setup for GPU Compute
+To pay for Hyperbolic's GPU compute using crypto:
+1. Have an Ethereum wallet with funds on Base network
+2. Connect your wallet:
    ```
+   Prompt the agent: "connect my wallet 0xYOUR_WALLET_ADDRESS to hyperbolic"
+   ```
+3. Send funds:
+   - Supported tokens: USDC, USDT, or DAI on Base network
+   - Send to: `0xd3cB24E0Ba20865C530831C85Bd6EbC25f6f3B60`
+4. Start computing:
+   - Funds will be available immediately
+   - Use the agent to rent and manage GPU resources
+
+## Installation Steps
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/yourusername/Hyperbolic-AgentKit.git
+cd Hyperbolic-AgentKit
+```
+
+### 2. Python Environment Setup
+Choose one method:
+
+**Using Poetry (Recommended)**:
+```bash
+# Install Poetry if you haven't
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Set up the environment
+poetry env use python3.12
+poetry install
+```
 
 2. **API Keys**
    - OpenAI API key from the [OpenAI Portal](https://platform.openai.com/api-keys) or Anthropic API key from the [Anthropic Portal](https://console.anthropic.com/dashboard)
@@ -71,50 +122,99 @@ Knowledge Base Integrations:
    poetry run playwright install
    ```
 
-## Quick Start
+### 3. Environment Configuration
+```bash
+# Copy and edit the environment file
+cp .env.example .env
+nano .env  # or use any text editor
+```
 
-1. **Set Up Environment Variables**
+The `.env.example` file contains all possible configurations. Required fields depend on which features you want to use and are specified in the file.
+
+### 4. Additional Setup
+- **Browser Automation** (if using browser tools):
+  ```bash
+  poetry run playwright install  # or: playwright install
+  ```
+- **SSH Key** (for GPU compute):
+  - Ensure you have an RSA key at `~/.ssh/id_rsa` or configure `SSH_PRIVATE_KEY_PATH`
+
+## Running the Application
+
+### 1. Voice Agent (Web Interface)
+```bash
+# Start the server
+PYTHONPATH=$PWD/server/src poetry run python server/src/server/app.py
+
+# Access the interface at http://localhost:3000
+```
+
+### 2. Terminal Interface
+```bash
+poetry run python chatbot.py
+```
+
+### 3. Gradio Web Interface
+```bash
+poetry run python gradio_ui.py
+# Access the interface at http://localhost:7860
+```
+
+## Troubleshooting
+
+### Common Issues:
+
+1. **API Key Errors**
+   - Verify all API keys are correctly set in `.env`
+   - Check API key permissions and quotas
+
+2. **Python Version Issues**
    ```bash
-   # Copy the example environment file
-   cp .env.example .env
+   # Check Python version
+   python --version
+   
+   # If needed, install Python 3.12
+   # On macOS:
+   brew install python@3.12
+   # On Ubuntu:
+   sudo add-apt-repository ppa:deadsnakes/ppa
+   sudo apt update
+   sudo apt install python3.12
    ```
-   Then edit `.env` file and add your API keys
 
-2. **Install Dependencies**
+3. **Dependencies Issues**
    ```bash
-   poetry install
+   # Clean Poetry environment
+   poetry env remove python3.12
+   poetry env use python3.12
+   poetry install --no-cache
    ```
 
-3. **Run the Bot**
-   You can run the bot in three ways:
-
-   a. **Voice Agent**
+4. **Browser Automation Issues**
    ```bash
-   PYTHONPATH=$PWD/server/src poetry run python server/src/server/app.py
+   # Reinstall Playwright browsers
+   poetry run playwright install --force
    ```
-   - Once the server is running, load up localhost:3000 in your browser
-   - Talk to the agent by clicking the "Start" button and speaking into your microphone
 
-   b. **Terminal Interface**
-   ```bash
-   poetry run python chatbot.py
-   ```
-   - Choose between chat mode or autonomous mode
-   - Start interacting with blockchain and compute resources!
+## Support and Resources
 
-   c. **Web Interface (Gradio)**
-   ```bash
-   poetry run python gradio_ui.py
-   ```
-   - Access the user-friendly web interface
-   - Chat with the agent through your browser
-   - View responses in a modern chat interface
+- [Hyperbolic Documentation](https://app.hyperbolic.xyz/docs)
+- [CDP Documentation](https://docs.cloud.coinbase.com/cdp/docs)
+- [X API Documentation](https://developer.twitter.com/en/docs)
+- [Report Issues](https://github.com/yourusername/Hyperbolic-AgentKit/issues)
 
-## Features
-- Interactive chat mode for guided interactions
-- Autonomous mode for self-directed operations
-- Full CDP Agentkit integration for blockchain operations
-- Hyperbolic integration for compute operations
-- Persistent wallet management
-- X (Twitter) integration
-- Modern web interface powered by Gradio
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+This project incorporates work from:
+- [CDP Agentkit](https://github.com/coinbase/cdp-agentkit) (Apache License 2.0)
+- [langchain-ai/react-voice-agent](https://github.com/langchain-ai/react-voice-agent) (MIT License)
