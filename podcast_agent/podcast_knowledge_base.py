@@ -164,8 +164,19 @@ class PodcastKnowledgeBase:
             print_error(f"Error clearing knowledge base: {str(e)}")
             return False
 
+    def get_processed_files(self) -> set:
+        """Get a set of already processed file names from the metadata."""
+        try:
+            metadata = self.collection.get()
+            if not metadata.get("metadatas"):
+                return set()
+            return {os.path.basename(m["source_file"]) for m in metadata["metadatas"]}
+        except Exception as e:
+            print_error(f"Error getting processed files: {e}")
+            return set()
+
     def process_all_json_files(self, directory: str = "jsonoutputs"):
-        """Process all JSON files in the specified directory."""
+        """Process all JSON files in the specified directory, skipping already processed ones."""
         try:
             # Convert to absolute path relative to the project root
             abs_directory = os.path.join(parent_dir, directory)
@@ -174,18 +185,24 @@ class PodcastKnowledgeBase:
                 print_error(f"Directory not found: {abs_directory}")
                 return
             
+            # Get list of all JSON files and already processed files
             json_files = [f for f in os.listdir(abs_directory) if f.endswith('.json')]
-            if not json_files:
-                print_system(f"No JSON files found in {abs_directory}")
+            processed_files = self.get_processed_files()
+            
+            # Filter out already processed files
+            new_files = [f for f in json_files if f not in processed_files]
+            
+            if not new_files:
+                print_system("No new JSON files to process")
                 return
             
-            print_system(f"Found {len(json_files)} JSON files to process")
+            print_system(f"Found {len(new_files)} new JSON files to process")
             
-            for json_file in json_files:
+            for json_file in new_files:
                 file_path = os.path.join(abs_directory, json_file)
                 self.process_json_file(file_path)
                 
-            print_system("Finished processing all JSON files")
+            print_system("Finished processing all new JSON files")
             
         except Exception as e:
             print_error(f"Error processing JSON files: {e}")
