@@ -122,14 +122,26 @@ nano .env  # or use any text editor
 ```
 
 **API Keys**
-The `.env.example` file contains all possible configurations. Required fields depend on which features you want to use and are specified in the file.
-
+The `.env.example` file contains all possible configurations. Required fields depend on which features you want to use and are specified in the file:
  - OpenAI API key from the [OpenAI Portal](https://platform.openai.com/api-keys) or Anthropic API key from the [Anthropic Portal](https://console.anthropic.com/dashboard)
  - CDP API credentials from [CDP Portal](https://portal.cdp.coinbase.com/access/api)
  - X Social API (Account Key and secret, Access Key and Secret)
  - Hyperbolic API Key from [Hyperbolic Portal](https://app.hyperbolic.xyz/settings)
 
-### 4. Additional Setup
+### 4. Character Configuration
+
+The `template.json` file allows you to customize your AI agent's personality and communication style. Duplicate the file and edit the fields to define:
+- Agent's name, twitter account info, and description
+- Personality traits
+- Communication style, tone, and examples
+- Background lore and expertise
+- KOL list for automated interaction
+
+### 5. Additional Setup
+- **Browser Automation** (if using browser tools):
+  ```bash
+  poetry run playwright install  # or: playwright install
+  ```
 - **SSH Key** (for GPU compute):
   - Ensure you have an RSA key at `~/.ssh/id_rsa` or configure `SSH_PRIVATE_KEY_PATH`
 
