@@ -61,10 +61,9 @@ This template demonstrates a chatbot with the following capabilities:
     - Get API key from [OpenAI Portal](https://platform.openai.com/api-keys)
   - **CDP**
     - Sign up at [CDP Portal](https://portal.cdp.coinbase.com/access/api)
-    - Generate API key name and private key
   - **Hyperbolic** (Required for compute tools)
     - Sign up at [Hyperbolic Portal](https://app.hyperbolic.xyz)
-    - Navigate to Settings to generate API key
+    - Navigate to Settings to generate API key, this is also where you configure ssh access with your RSA public key
 
 - **Optional Integrations**
   - **X (Twitter) API Access**
