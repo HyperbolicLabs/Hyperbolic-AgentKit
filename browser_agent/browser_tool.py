@@ -20,8 +20,6 @@ class BrowserTool(BaseTool):
     - "Compare prices of flight tickets from NYC to London for next month"
     - "Sign up for a gym membership at Planet Fitness"
     - "Schedule a grocery delivery from Whole Foods"
-
-    If you open google chrome and are prompted to select a user or profile, just select any profile and continue.
     """
     llm: ChatAnthropic = Field(default_factory=lambda: ChatAnthropic(model="claude-3-5-sonnet-latest"))
     browser: Browser = Field(default_factory=lambda: Browser(
