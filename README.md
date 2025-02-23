@@ -387,7 +387,7 @@ When adding a new capability, examine similar implementations in existing agent 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
 
 This project incorporates work from:
 
