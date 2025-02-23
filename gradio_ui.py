@@ -7,48 +7,64 @@ from langchain_core.runnables import RunnableConfig
 from utils import format_ai_message_content
 from datetime import datetime
 
-async def chat_with_agent(message, history):
-    # Initialize agent if not already done
-    if not hasattr(chat_with_agent, "agent"):
-        agent_executor, config, twitter_api_wrapper, knowledge_base = await initialize_agent()
-        chat_with_agent.agent = agent_executor
-        chat_with_agent.config = config
+# Global variables to store initialized agent and config
+agent = None
+agent_config = None
 
+async def chat_with_agent(message, history):
+    global agent, agent_config
+    
+    # Convert history into messages format that the agent expects
+    messages = []
+    if history:
+        print("History:", history)  # Debug print
+        for msg in history:
+            if isinstance(msg, dict):
+                if msg.get("role") == "user":
+                    messages.append(HumanMessage(content=msg["content"]))
+                elif msg.get("role") == "assistant":
+                    messages.append({"role": "assistant", "content": msg["content"]})
+    
+    # Add the current message
+    messages.append(HumanMessage(content=message))
+    
+    print("Final messages:", messages)  # Debug print
+    
     runnable_config = RunnableConfig(
-        recursion_limit=config["configurable"]["recursion_limit"],
+        recursion_limit=agent_config["configurable"]["recursion_limit"],
         configurable={
-            "thread_id": config["configurable"]["thread_id"],
+            "thread_id": agent_config["configurable"]["thread_id"],
             "checkpoint_ns": "chat_mode",
             "checkpoint_id": str(datetime.now().timestamp())
         }
     )
     
-    messages = []
-    yield messages
+    response_messages = []
+    yield response_messages
     # Process message with agent
-    async for chunk in chat_with_agent.agent.astream(
-        {"messages": [HumanMessage(content=message)]},
+    async for chunk in agent.astream(
+        {"messages": messages},  # Pass the full message history
         runnable_config
     ):
         if "agent" in chunk:
             print("agent in chunk")
             response = chunk["agent"]["messages"][0].content
-            messages.append(dict(
+            response_messages.append(dict(
                 role="assistant",
                 content=format_ai_message_content(response, format_mode="markdown")
             ))
-            print(messages)
-            yield messages
+            print(response_messages)
+            yield response_messages
         elif "tools" in chunk:
             print("tools in chunk")
             tool_message = str(chunk["tools"]["messages"][0].content)
-            messages.append(dict(
+            response_messages.append(dict(
                 role="assistant",
                 content=tool_message,
                 metadata={"title": "🛠️ Tool Call"}
             ))
-            print(messages)
-            yield messages
+            print(response_messages)
+            yield response_messages
 
 def create_ui():
     # Create the Gradio interface
@@ -95,8 +111,20 @@ def create_ui():
 
     return demo
 
-if __name__ == "__main__":
+async def main():
+    global agent, agent_config
+    # Initialize agent before creating UI
+    print("Initializing agent...")
+    agent_executor, config, runnable_config = await initialize_agent()
+    agent = agent_executor
+    agent_config = config
+    
     # Create and launch the UI
+    print("Starting Gradio UI...")
     demo = create_ui()
     demo.queue()
-    demo.launch(share=True) 
+    demo.launch(share=True)
+
+if __name__ == "__main__":
+    # Run the async main function
+    asyncio.run(main()) 
