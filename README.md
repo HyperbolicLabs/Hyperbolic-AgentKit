@@ -197,6 +197,126 @@ poetry run python gradio_ui.py
    poetry run playwright install --force
    ```
 
+## Adding New Tools
+
+The agent framework supports two main interfaces, each with its own tool registration point:
+
+### 1. Project Structure
+New agentic capabilities should be organized in dedicated folders at the root level. For example:
+- `twitter_agent/` - Twitter API integration and knowledge base
+- `browser_agent/` - Browser automation capabilities
+- `podcast_agent/` - Podcast processing and transcription
+
+Each agent folder typically contains:
+- `__init__.py` - Exports and initialization
+- Core functionality modules (e.g., `twitter_state.py`, `browser_tool.py`)
+- Knowledge base implementations if applicable
+
+### 2. Repository Organization
+```
+Hyperbolic-AgentKit/
+├── characters/              # Character configurations
+│   └── default.json        # Default character profile
+├── *_agent/                # Agent-specific capabilities
+│   ├── __init__.py
+│   └── core modules
+├── server/                 # Voice agent interface
+│   └── src/
+│       └── server/
+│           └── tools.py   # Voice agent tools
+└── chatbot.py             # Main agent initialization
+```
+
+### 3. Agent Initialization Flow
+The agent is initialized through several key functions in `chatbot.py`:
+
+1. `loadCharacters()`:
+   - Loads character configurations from JSON files
+   - Supports multiple characters with fallback to default
+   - Handles character file path resolution
+
+2. `process_character_config()`:
+   - Transforms character JSON into agent personality
+   - Processes bio, lore, knowledge, style guidelines
+   - Formats examples and KOL lists
+
+3. `create_agent_tools()`:
+   - Registers tools based on environment configuration
+   - Supports multiple tool categories (browser, Twitter, podcast, etc.)
+   - Handles tool dependencies and state management
+
+4. `initialize_agent()`:
+   - Orchestrates the entire setup process
+   - Initializes LLM, character, and knowledge bases
+   - Configures tools and agent state
+
+### 4. Voice Agent Structure
+The voice agent is implemented in `server/src/server/app.py` using WebSocket communication:
+
+```
+server/src/server/
+├── app.py              # Main server implementation
+├── tools.py            # Voice agent tools
+├── prompt.py           # Voice agent instructions
+└── static/             # Web interface files
+    └── index.html
+```
+
+Key components:
+
+1. Server Setup:
+   ```python
+   app = Starlette(
+       routes=[
+           Route("/", homepage),
+           WebSocketRoute("/ws", websocket_endpoint)
+       ]
+   )
+   ```
+
+2. WebSocket Communication:
+   - Browser ↔️ Server real-time communication
+   - Handles voice input/output streams
+   - Maintains persistent connection for conversation
+
+3. Agent Configuration:
+   ```python
+   agent = OpenAIVoiceReactAgent(
+       model="gpt-4o-realtime-preview",
+       tools=TOOLS,
+       instructions=full_instructions,
+       voice="verse"  # Available: alloy, ash, ballad, coral, echo, sage, shimmer, verse
+   )
+   ```
+
+4. Character Integration:
+   - Reuses `loadCharacters()` and `process_character_config()`
+   - Combines base instructions with character personality
+   - Maintains consistent persona across interfaces
+
+### 5. Tool Registration
+Tools are registered in two places:
+
+1. Main chatbot interface (`chatbot.py`) via `create_agent_tools()`
+2. Voice agent interface (`server/src/server/tools.py`) via `create_tools()`
+
+Look at the existing implementations for examples of:
+- Adding individual tools and toolkits
+- Configuring via environment variables
+- Managing dependencies and state
+
+### 6. Tool Categories
+The framework includes several categories of pre-built tools you can reference:
+- Browser automation tools
+- Knowledge base tools
+- Social media tools (Twitter/X)
+- Blockchain tools (CDP)
+- Compute tools (Hyperbolic)
+- Web search tools
+- HTTP request tools
+
+When adding a new capability, examine similar implementations in existing agent folders for patterns and best practices.
+
 ## Support and Resources
 
 - [Hyperbolic Documentation](https://app.hyperbolic.xyz/docs)
