@@ -216,6 +216,7 @@ poetry run python gradio_ui.py
    ```
 
 4. **Browser Automation Issues**
+
    ```bash
    # Reinstall Playwright browsers
    poetry run playwright install --force
