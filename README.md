@@ -372,9 +372,9 @@ When adding a new capability, examine similar implementations in existing agent 
 
 ## Support and Resources
 
-- [Hyperbolic Documentation](https://app.hyperbolic.xyz/docs)
-- [CDP Documentation](https://docs.cloud.coinbase.com/cdp/docs)
-- [X API Documentation](https://developer.twitter.com/en/docs)
+- [Hyperbolic Documentation](https://docs.hyperbolic.xyz/docs/getting-started) 
+- [CDP Documentation](https://docs.cdp.coinbase.com/agentkit/docs/welcome)
+- [X API Documentation](https://docs.x.com/x-api/introduction)
 - [Report Issues](https://github.com/yourusername/Hyperbolic-AgentKit/issues)
 
 ## Contributing
