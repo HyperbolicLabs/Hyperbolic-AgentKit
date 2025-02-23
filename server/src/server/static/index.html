@@ -30,7 +30,7 @@
     </style>
 </head>
 <body>
-    <button id="toggleAudio">Start Audio</button>
+    <button id="toggleAudio">Start Agent</button>
 
     <script>
         // Create audio context
@@ -74,6 +74,7 @@
                 this.mediaStream = null;
                 this.mediaStreamSource = null;
                 this.workletNode = null;
+                this.isMuted = false;
             }
 
             async start(stream) {
@@ -94,7 +95,9 @@
 
                     this.workletNode = new AudioWorkletNode(this.audioContext, "audio-processor-worklet");
                     this.workletNode.port.onmessage = event => {
-                        this.onDataAvailable(event.data.buffer);
+                        if (!this.isMuted) {
+                            this.onDataAvailable(event.data.buffer);
+                        }
                     };
 
                     this.mediaStreamSource.connect(this.workletNode);
@@ -104,6 +107,24 @@
                     console.log('error', error)
                     this.stop();
                 }
+            }
+
+            mute() {
+                if (this.mediaStream) {
+                    this.mediaStream.getAudioTracks().forEach(track => {
+                        track.enabled = false;
+                    });
+                }
+                this.isMuted = true;
+            }
+
+            unmute() {
+                if (this.mediaStream) {
+                    this.mediaStream.getAudioTracks().forEach(track => {
+                        track.enabled = true;
+                    });
+                }
+                this.isMuted = false;
             }
 
             async stop() {
@@ -122,20 +143,45 @@
             }
         }
 
+        let currentRecorder = null;
+        let currentWebSocket = null;
+        let audioPlayer = null;
+        let buffer = new Uint8Array();
 
+        const appendToBuffer = (newData) => {
+            const newBuffer = new Uint8Array(buffer.length + newData.length);
+            newBuffer.set(buffer);
+            newBuffer.set(newData, buffer.length);
+            buffer = newBuffer;
+        };
 
+        const handleAudioData = (data) => {
+            if (!currentWebSocket) return;
+            
+            const uint8Array = new Uint8Array(data);
+            appendToBuffer(uint8Array);
+
+            if (buffer.length >= BUFFER_SIZE) {
+                const toSend = new Uint8Array(buffer.slice(0, BUFFER_SIZE));
+                buffer = new Uint8Array(buffer.slice(BUFFER_SIZE));
+
+                const regularArray = String.fromCharCode(...toSend);
+                const base64 = btoa(regularArray);
+
+                currentWebSocket.send(JSON.stringify({type: 'input_audio_buffer.append', audio: base64}));
+            }
+        };
 
         // Function to get microphone input and send it to WebSocket
         async function startAudio() {
             try {
-
                 // handle output -> speaker stuff
-                const ws = new WebSocket("ws://localhost:3000/ws");
+                currentWebSocket = new WebSocket("ws://localhost:3000/ws");
 
-                const audioPlayer = new Player();
-                audioPlayer.init(24000);
+                audioPlayer = new Player();
+                await audioPlayer.init(24000);
 
-                ws.onmessage = event => {
+                currentWebSocket.onmessage = event => {
                     const data = JSON.parse(event.data);
                     
                     // Handle audio clear command
@@ -153,40 +199,27 @@
                     audioPlayer.play(pcmData);
                 };
 
-                let buffer = new Uint8Array();
-
-                const appendToBuffer = (newData) => {
-                    const newBuffer = new Uint8Array(buffer.length + newData.length);
-                    newBuffer.set(buffer);
-                    newBuffer.set(newData, buffer.length);
-                    buffer = newBuffer;
-                };
-
-                const handleAudioData = (data) => {
-                    const uint8Array = new Uint8Array(data);
-                    appendToBuffer(uint8Array);
-
-                    if (buffer.length >= BUFFER_SIZE) {
-                        const toSend = new Uint8Array(buffer.slice(0, BUFFER_SIZE));
-                        buffer = new Uint8Array(buffer.slice(BUFFER_SIZE));
-
-                        const regularArray = String.fromCharCode(...toSend);
-                        const base64 = btoa(regularArray);
-
-                        ws.send(JSON.stringify({type: 'input_audio_buffer.append', audio: base64}));
-                    }
-                };
-
                 // handle microphone -> input websocket
-                const audioRecorder = new Recorder(handleAudioData);
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-                await audioRecorder.start(stream);
-                
+                await currentRecorder.start(stream);
 
             } catch (error) {
                 console.error('Error accessing the microphone', error);
                 alert('Error accessing the microphone. Please check your settings and try again.');
+                // Clean up on error
+                if (currentRecorder) {
+                    await currentRecorder.stop();
+                    currentRecorder = null;
+                }
+                if (currentWebSocket) {
+                    currentWebSocket.close();
+                    currentWebSocket = null;
+                }
+                if (audioPlayer) {
+                    audioPlayer.stop();
+                    audioPlayer = null;
+                }
+                toggleButton.textContent = 'Start Agent';
             }
         }
 
@@ -195,13 +228,37 @@
         let isAudioOn = false;
 
         toggleButton.addEventListener('click', async () => {
-            if (!isAudioOn) {
-                await startAudio();
-                toggleButton.textContent = 'Stop Audio';
-                isAudioOn = true;
-            } else {
-                // audioContext.suspend();
-                toggleButton.textContent = 'Start Audio';
+            try {
+                if (!currentRecorder) {
+                    currentRecorder = new Recorder(handleAudioData);
+                    await startAudio();
+                    toggleButton.textContent = 'Mute Microphone';
+                    isAudioOn = true;
+                } else {
+                    if (!currentRecorder.isMuted) {
+                        currentRecorder.mute();
+                        toggleButton.textContent = 'Unmute Microphone';
+                    } else {
+                        currentRecorder.unmute();
+                        toggleButton.textContent = 'Mute Microphone';
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling audio:', error);
+                // Reset state on error
+                if (currentRecorder) {
+                    await currentRecorder.stop();
+                    currentRecorder = null;
+                }
+                if (currentWebSocket) {
+                    currentWebSocket.close();
+                    currentWebSocket = null;
+                }
+                if (audioPlayer) {
+                    audioPlayer.stop();
+                    audioPlayer = null;
+                }
+                toggleButton.textContent = 'Start Agent';
                 isAudioOn = false;
             }
         });
