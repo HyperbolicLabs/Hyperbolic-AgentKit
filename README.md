@@ -216,10 +216,23 @@ poetry run python gradio_ui.py
    ```
 
 4. **Browser Automation Issues**
+
    ```bash
    # Reinstall Playwright browsers
    poetry run playwright install --force
    ```
+
+5. **Chrome Browser Setup Issues**
+   - Ensure Google Chrome is installed on your system
+   - Configure a default Chrome profile:
+     1. Open Chrome
+     2. Make sure a profile is already selected/active
+     3. Remove all pinned tabs from the active profile (they can cause browser automation issues)
+     4. Ensure Chrome doesn't show a profile selector on startup
+   - If using browser automation tools, the agent assumes:
+     - Chrome is your default browser
+     - A default profile exists and is automatically selected
+     - No pinned tabs are present in the active profile
 
 ## Adding New Tools
 
