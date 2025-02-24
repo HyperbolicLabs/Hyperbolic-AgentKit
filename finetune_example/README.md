@@ -1,7 +1,7 @@
 # Quickstart
 Demo video: https://www.loom.com/share/13dfa667db9f496188df284cb15c392b?sid=397e07f7-fb69-472e-8f93-29abea759ce8
 
-* It is recommended to rent a GPU from the Hyperbolic web app first to simplify to agent flow, but this is optional.
+* It is recommended to rent a GPU from the Hyperbolic web app first to simplify the agent flow, but this is optional.
 
 ## Setup
 0. Make sure all the installation steps in the main README are completed.
