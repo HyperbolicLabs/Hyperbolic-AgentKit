@@ -894,6 +894,8 @@ async def initialize_agent():
                 print_error(f"Error initializing GitHub tools: {str(e)}")
                 print_error("GitHub tools will not be available")
 
+            
+
         # Create the runnable config with increased recursion limit
         runnable_config = RunnableConfig(recursion_limit=200)
 

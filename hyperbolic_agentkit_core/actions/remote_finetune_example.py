@@ -73,7 +73,7 @@ def run_finetune(model_name: str) -> str:
             "source venv/bin/activate && "
             "pip install -r requirements.txt && "
             f"FINE_TUNE_MODEL={model_name} python3 finetune.py && "
-            "python3 test_inference.py 'How old is Tiger Woods?'"
+            "python3 test_inference.py 'What can you tell me about LLMs?'"
             "'"
         )
         
