@@ -21,10 +21,6 @@ LANGCHAIN_API_KEY=
 LANGCHAIN_PROJECT=
 ```
 
-Make sure to also set the following to "true" in your .env file:
-```
-USE_FINETUNE_TOOLS=true
-```
 2. Boot up the chatbot gradio interface:
 ```
 poetry run python gradio_ui.py
