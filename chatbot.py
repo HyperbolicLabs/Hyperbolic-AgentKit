@@ -8,6 +8,22 @@ import random
 import asyncio
 import warnings
 
+# Import prompts
+from prompts import (
+    PODCAST_QUERY_PROMPT,
+    PODCAST_TOPICS,
+    PODCAST_ASPECTS,
+    BASIC_QUERY_TEMPLATES
+)
+from tooldescriptions import (
+    TWITTER_REPLY_CHECK_DESCRIPTION,
+    TWITTER_ADD_REPLIED_DESCRIPTION,
+    TWITTER_REPOST_CHECK_DESCRIPTION,
+    TWITTER_ADD_REPOSTED_DESCRIPTION,
+    TWITTER_KNOWLEDGE_BASE_DESCRIPTION,
+    PODCAST_KNOWLEDGE_BASE_DESCRIPTION,
+    WEB_SEARCH_DESCRIPTION
+)
 
 # Load environment variables from .env file
 load_dotenv(override=True)
@@ -27,6 +43,7 @@ from langchain_community.agent_toolkits.openapi.toolkit import RequestsToolkit
 from langchain_community.utilities.requests import TextRequestsWrapper
 from langchain.tools import Tool
 from langchain_core.runnables import RunnableConfig
+from browser_agent import BrowserToolkit
 
 # Import Coinbase AgentKit related modules
 from coinbase_agentkit import (
@@ -43,7 +60,6 @@ from coinbase_agentkit import (
     twitter_action_provider,
 )
 from coinbase_agentkit_langchain import get_langchain_tools
-from pydantic import BaseModel, Field
 
 # Import Hyperbolic related modules
 from hyperbolic_langchain.agent_toolkits import HyperbolicToolkit
@@ -87,73 +103,12 @@ async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
     """
     llm = ChatAnthropic(model="claude-3-5-haiku-20241022")
     
-    # Define topic areas and aspects to consider
-    topics = [
-        # Scaling & Infrastructure
-        "horizontal scaling challenges", "decentralization vs scalability tradeoffs",
-        "infrastructure evolution", "restaking models and implementation",
-        
-        # Technical Architecture  
-        "layer 2 solutions and rollups", "node operations", "geographic distribution",
-        "decentralized service deployment",
-        
-        # Ecosystem Development
-        "market coordination mechanisms", "operator and staker dynamics", 
-        "blockchain platform evolution", "community bootstrapping",
-        
-        # Future Trends
-        "ecosystem maturation", "market maker emergence",
-        "strategy optimization", "service coordination",
-        
-        # Web3 Infrastructure
-        "decentralized vs centralized solutions", "cloud provider comparisons",
-        "resilience and reliability", "infrastructure distribution",
-        
-        # Market Dynamics
-        "marketplace design", "coordination mechanisms",
-        "efficient frontier development", "ecosystem player roles"
-    ]
+    # Format the prompt with random selections
+    prompt = PODCAST_QUERY_PROMPT.format(
+        topics=random.sample(PODCAST_TOPICS, 3),
+        aspects=random.sample(PODCAST_ASPECTS, 2)
+    )
     
-    aspects = [
-        # Technical
-        "infrastructure scalability", "technical implementation challenges",
-        "architectural tradeoffs", "system reliability",
-        
-        # Market & Economics
-        "market efficiency", "economic incentives",
-        "stakeholder dynamics", "value capture mechanisms",
-        
-        # Development
-        "platform evolution", "ecosystem growth",
-        "adoption patterns", "integration challenges",
-        
-        # Strategy
-        "optimization approaches", "competitive dynamics",
-        "strategic positioning", "risk management"
-    ]
-    
-    
-    prompt = f"""
-    Generate ONE focused query about Web3 technology to search crypto podcast transcripts.
-
-    Consider these elements (but focus on just ONE):
-    - Core Topics: {random.sample(topics, 3)}
-    - Key Aspects: {random.sample(aspects, 2)}
-
-    Requirements for the query:
-    1. Focus on just ONE specific technical aspect or challenge from the above
-    2. Keep the scope narrow and focused
-    3. Use simple, clear language
-    4. Aim for 10-15 words
-    5. Ask about concrete technical details rather than abstract concepts
-    
-    Example good queries:
-    - "What are the main challenges operators face when running rollup nodes?"
-    - "How do layer 2 solutions handle data availability?"
-    - "What infrastructure requirements do validators need for running nodes?"
-
-    Generate exactly ONE query that meets these criteria. Return ONLY the query text, nothing else.
-    """
     # Get response from LLM
     response = await llm.ainvoke([HumanMessage(content=prompt)])
     query = response.content.strip()
@@ -166,14 +121,7 @@ async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
 # Legacy function for fallback
 def generate_basic_podcast_query() -> str:
     """Legacy function that returns a basic template query as fallback."""
-    query_templates = [
-        "What are the key insights from recent podcast discussions?",
-        "What emerging trends were highlighted in recent episodes?",
-        "What expert predictions were made about the crypto market?",
-        "What innovative blockchain use cases were discussed recently?",
-        "What regulatory developments were analyzed in recent episodes?"
-    ]
-    return random.choice(query_templates)
+    return random.choice(BASIC_QUERY_TEMPLATES)
 
 async def generate_podcast_query() -> str:
     """
@@ -194,77 +142,6 @@ async def generate_podcast_query() -> str:
         # Fallback to basic template
         return generate_basic_podcast_query()
 
-async def enhance_result(initial_query: str, query_result: str, llm: ChatAnthropic = None) -> str:
-    """
-    Analyzes the initial query and its results to generate an enhanced follow-up query.
-    
-    Args:
-        initial_query: The original query used to get podcast insights
-        query_result: The result/response obtained from the knowledge base
-        llm: ChatAnthropic instance. If None, creates a new one.
-        
-    Returns:
-        str: An enhanced follow-up query
-    """
-    if llm is None:
-        llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
-    
-    analysis_prompt = f"""
-    As an AI specializing in podcast content analysis, analyze this query and its results to generate a more focused follow-up query.
-
-    <initial_query>
-    {initial_query}
-    </initial_query>
-
-    <query_result>
-    {query_result}
-    </query_result>
-
-    Your task:
-    1. Analyze the relationship between the query and its results
-    2. Identify any:
-       - Unexplored angles
-       - Interesting tangents
-       - Deeper technical aspects
-       - Missing context
-       - Potential contradictions
-       - Novel connections
-    3. Generate a follow-up query that:
-       - Builds upon the most interesting insights
-       - Explores identified gaps
-       - Dives deeper into promising areas
-       - Connects different concepts
-       - Challenges assumptions
-       - Seeks practical applications
-
-    Requirements for the enhanced query:
-    1. Must be more specific than the initial query
-    2. Should target unexplored aspects revealed in the results
-    3. Must maintain relevance to blockchain/crypto
-    4. Should encourage detailed technical or analytical responses
-    5. Must be a single, clear question
-    6. Should lead to actionable insights
-
-    Return ONLY the enhanced follow-up query, nothing else.
-    Make it unique and substantially different from the initial query.
-    """
-    
-    try:
-        # Get response from LLM
-        response = await llm.ainvoke([HumanMessage(content=analysis_prompt)])
-        enhanced_query = response.content.strip()
-        
-        # Clean up the query
-        enhanced_query = enhanced_query.replace('"', '').replace('Query:', '').strip()
-        
-        print_system(f"Enhanced query generated: {enhanced_query}")
-        return enhanced_query
-        
-    except Exception as e:
-        print_error(f"Error generating enhanced query: {e}")
-        # Return a modified version of the original query as fallback
-        return f"Regarding {initial_query.split()[0:3].join(' ')}, what are the deeper technical implications?"
-
 # Constants
 ALLOW_DANGEROUS_REQUEST = True  # Set to False in production for security
 wallet_data_file = "wallet_data.txt"
@@ -277,36 +154,25 @@ twitter_state = TwitterState()
 check_replied_tool = Tool(
     name="has_replied_to",
     func=twitter_state.has_replied_to,
-    description="""Check if we have already replied to a tweet. MUST be used before replying to any tweet.
-    Input: tweet ID string.
-    Rules:
-    1. Always check this before replying to any tweet
-    2. If returns True, do NOT reply and select a different tweet
-    3. If returns False, proceed with reply_to_tweet then add_replied_to"""
+    description=TWITTER_REPLY_CHECK_DESCRIPTION
 )
 
 add_replied_tool = Tool(
     name="add_replied_to",
     func=twitter_state.add_replied_tweet,
-    description="""Add a tweet ID to the database of replied tweets. 
-    MUST be used after successfully replying to a tweet.
-    Input: tweet ID string.
-    Rules:
-    1. Only use after successful reply_to_tweet
-    2. Must verify with has_replied_to first
-    3. Stores tweet ID permanently to prevent duplicate replies"""
+    description=TWITTER_ADD_REPLIED_DESCRIPTION
 )
 
 check_reposted_tool = Tool(
     name="has_reposted",
     func=twitter_state.has_reposted,
-    description="Check if we have already reposted a tweet. Input should be a tweet ID string."
+    description=TWITTER_REPOST_CHECK_DESCRIPTION
 )
 
 add_reposted_tool = Tool(
     name="add_reposted",
     func=twitter_state.add_reposted_tweet,
-    description="Add a tweet ID to the database of reposted tweets."
+    description=TWITTER_ADD_REPOSTED_DESCRIPTION
 )
 
 def loadCharacters(charactersArg: str) -> List[Dict[str, Any]]:
@@ -316,7 +182,7 @@ def loadCharacters(charactersArg: str) -> List[Dict[str, Any]]:
 
     if not characterPaths:
         # Load default chainyoda character
-        default_path = os.path.join(os.path.dirname(__file__), "characters/chainyoda.json")
+        default_path = os.path.join(os.path.dirname(__file__), "characters/default.json")
         characterPaths.append(default_path)
 
     for characterPath in characterPaths:
@@ -414,84 +280,69 @@ def create_agent_tools(llm, knowledge_base, podcast_knowledge_base, agent_kit, c
     """Create and return a list of tools for the agent to use."""
     tools = []
 
-    # Add enhance query tool
-    tools.append(Tool(
-        name="enhance_query",
-        func=lambda initial_query, query_result: enhance_result(initial_query, query_result, llm),
-        description="Analyze the initial query and its results to generate an enhanced follow-up query. Takes two parameters: initial_query (the original query string) and query_result (the results obtained from that query)."
-    ))
+    # Add browser toolkit if enabled
+    if os.getenv("USE_BROWSER_TOOLS", "true").lower() == "true":
+        browser_toolkit = BrowserToolkit.from_llm(llm)
+        tools.extend(browser_toolkit.get_tools())
 
     # Add Twitter Knowledge Base Tools if enabled
     if os.getenv("USE_TWITTER_KNOWLEDGE_BASE", "true").lower() == "true" and knowledge_base is not None:
         tools.append(Tool(
             name="query_twitter_knowledge_base",
-            description="Query the Twitter knowledge base for relevant tweets about crypto/AI/tech trends.",
+            description=TWITTER_KNOWLEDGE_BASE_DESCRIPTION,
             func=lambda query: knowledge_base.query_knowledge_base(query)
         ))
 
-    # Add Twitter State Management Tools
-    twitter_state = TwitterState()
-    
-    tools.extend([
-        Tool(
-            name="has_replied_to",
-            func=twitter_state.has_replied_to,
-            description="""Check if we have already replied to a tweet. MUST be used before replying to any tweet.
-            Input: tweet ID string.
-            Rules:
-            1. Always check this before replying to any tweet
-            2. If returns True, do NOT reply and select a different tweet
-            3. If returns False, proceed with reply_to_tweet then add_replied_to"""
-        ),
-        Tool(
-            name="add_replied_to",
-            func=twitter_state.add_replied_tweet,
-            description="""Add a tweet ID to the database of replied tweets. 
-            MUST be used after successfully replying to a tweet.
-            Input: tweet ID string.
-            Rules:
-            1. Only use after successful reply_to_tweet
-            2. Must verify with has_replied_to first
-            3. Stores tweet ID permanently to prevent duplicate replies"""
-        ),
-        Tool(
-            name="has_reposted",
-            func=twitter_state.has_reposted,
-            description="Check if we have already reposted a tweet. Input should be a tweet ID string."
-        ),
-        Tool(
-            name="add_reposted",
-            func=twitter_state.add_reposted_tweet,
-            description="Add a tweet ID to the database of reposted tweets."
-        )
-    ])
-
-    # Initialize Twitter client
-    twitter_client = TwitterClient()
-
-    # Add Custom Twitter Tools
-    print_system("Adding custom Twitter tools...")
-    tools.extend([
-        create_delete_tweet_tool(),
-        create_get_user_id_tool(),
-        create_get_user_tweets_tool(),
-        create_retweet_tool()
-    ])
-    print_system("Added custom Twitter tools")
-
-    # Add Twitter Knowledge Base Tool if enabled
-    if os.getenv("USE_TWITTER_KNOWLEDGE_BASE", "true").lower() == "true" and knowledge_base is not None:
-        print_system("Adding Twitter knowledge base tool...")
-        tools.append(Tool(
-            name="query_twitter_knowledge_base",
-            func=lambda query: knowledge_base.format_query_results(
-                knowledge_base.query_knowledge_base(query)
+    # Add Twitter State Management Tools if enabled
+    if os.getenv("USE_TWEET_REPLY_TRACKING", "true").lower() == "true":
+        twitter_state = TwitterState()
+        tools.extend([
+            Tool(
+                name="has_replied_to",
+                func=twitter_state.has_replied_to,
+                description=TWITTER_REPLY_CHECK_DESCRIPTION
             ),
-            description="""Query the Twitter knowledge base for relevant tweets about crypto/AI/tech trends.
-            Input should be a search query string.
-            Example: query_twitter_knowledge_base("latest developments in AI")"""
-        ))
-        print_system("Added Twitter knowledge base tool")
+            Tool(
+                name="add_replied_to",
+                func=twitter_state.add_replied_tweet,
+                description=TWITTER_ADD_REPLIED_DESCRIPTION
+            )
+        ])
+
+    if os.getenv("USE_TWEET_REPOST_TRACKING", "true").lower() == "true":
+        if not 'twitter_state' in locals():
+            twitter_state = TwitterState()
+        tools.extend([
+            Tool(
+                name="has_reposted",
+                func=twitter_state.has_reposted,
+                description=TWITTER_REPOST_CHECK_DESCRIPTION
+            ),
+            Tool(
+                name="add_reposted",
+                func=twitter_state.add_reposted_tweet,
+                description=TWITTER_ADD_REPOSTED_DESCRIPTION
+            )
+        ])
+
+    # Initialize Twitter client and add custom Twitter Tools if enabled
+    if os.getenv("USE_TWITTER_CORE", "true").lower() == "true":
+        print_system("Adding custom Twitter tools...")
+        twitter_client = TwitterClient()
+        
+        if os.getenv("USE_TWEET_DELETE", "true").lower() == "true":
+            tools.append(create_delete_tweet_tool())
+            
+        if os.getenv("USE_USER_ID_LOOKUP", "true").lower() == "true":
+            tools.append(create_get_user_id_tool())
+            
+        if os.getenv("USE_USER_TWEETS_LOOKUP", "true").lower() == "true":
+            tools.append(create_get_user_tweets_tool())
+            
+        if os.getenv("USE_RETWEET", "true").lower() == "true":
+            tools.append(create_retweet_tool())
+            
+        print_system("Added custom Twitter tools")
 
     # Add Podcast Knowledge Base Tools if enabled
     if os.getenv("USE_PODCAST_KNOWLEDGE_BASE", "true").lower() == "true" and podcast_knowledge_base is not None:
@@ -500,7 +351,7 @@ def create_agent_tools(llm, knowledge_base, podcast_knowledge_base, agent_kit, c
             func=lambda query: podcast_knowledge_base.format_query_results(
                 podcast_knowledge_base.query_knowledge_base(query)
             ),
-            description="Query the podcast knowledge base for relevant podcast segments about crypto/Web3/gaming. Input should be a search query string."
+            description=PODCAST_KNOWLEDGE_BASE_DESCRIPTION
         ))
     
 
@@ -517,11 +368,11 @@ def create_agent_tools(llm, knowledge_base, podcast_knowledge_base, agent_kit, c
         hyperbolic_toolkit = HyperbolicToolkit.from_hyperbolic_agentkit_wrapper(hyperbolic_agentkit)
         tools.extend(hyperbolic_toolkit.get_tools())
 
-    # Add additional tools
+    # Add web search if enabled
     if os.getenv("USE_WEB_SEARCH", "false").lower() == "true":
         tools.append(DuckDuckGoSearchRun(
             name="web_search",
-            description="Search the internet for current information."
+            description=WEB_SEARCH_DESCRIPTION
         ))
 
     if os.getenv("USE_REQUEST_TOOLS", "false").lower() == "true":
@@ -541,7 +392,7 @@ async def initialize_agent():
 
         print_system("Loading character configuration...")
         try:
-            characters = loadCharacters(os.getenv("CHARACTER_FILE", "chainyoda.json"))
+            characters = loadCharacters(os.getenv("CHARACTER_FILE"))
             character = characters[0]  # Use first character if multiple loaded
         except Exception as e:
             print_error(f"Error loading character: {e}")
@@ -703,20 +554,22 @@ async def initialize_agent():
                 podcast_knowledge_base = PodcastKnowledgeBase()
                 print_system("Podcast knowledge base initialized successfully")
                 
-                while True:
-                    clear_choice = input("\nDo you want to clear the existing podcast knowledge base? (y/n): ").lower().strip()
-                    if clear_choice in ['y', 'n']:
-                        break
-                    print("Invalid choice. Please enter 'y' or 'n'.")
-
-                if clear_choice == 'y':
-                    podcast_knowledge_base.clear_collection()
-                    print_system("Podcast knowledge base cleared")
-
-                print_system("Processing podcast transcripts...")
-                podcast_knowledge_base.process_all_json_files()
+                # Get current stats before processing
                 stats = podcast_knowledge_base.get_collection_stats()
-                print_system(f"Podcast knowledge base stats: {stats}")
+                print_system(f"Current podcast knowledge base stats: {stats}")
+                
+                print_system("Checking for new podcast transcripts...")
+                podcast_knowledge_base.process_all_json_files()
+                
+                # Get updated stats
+                new_stats = podcast_knowledge_base.get_collection_stats()
+                print_system(f"Updated podcast knowledge base stats: {new_stats}")
+                
+                if new_stats["count"] > stats["count"]:
+                    print_system(f"Added {new_stats['count'] - stats['count']} new segments to the knowledge base")
+                else:
+                    print_system("No new segments were added to the knowledge base")
+                    
             except Exception as e:
                 print_error(f"Error initializing Podcast knowledge base: {e}")
 
@@ -749,34 +602,14 @@ async def initialize_agent():
         # Initialize memory saver
         memory = MemorySaver()
 
-        # Combine personality with Coinbase AgentKit capabilities
-        combined_personality = f"""
-        {personality}
-
-        You are also empowered with Coinbase AgentKit capabilities to interact onchain and on Twitter. You can:
-        1. Execute blockchain transactions and interact with smart contracts
-        2. Request funds from the faucet if on base-sepolia network
-        3. Manage wallet operations and token interactions
-        4. Access price feeds and other blockchain data
-        5. Post tweets, reply to tweets, and manage Twitter interactions
-        6. Follow/unfollow users and manage Twitter engagement
-
-        Before executing blockchain or Twitter actions:
-        1. Check wallet details and network for blockchain operations
-        2. Verify sufficient funds for transactions
-        3. Handle errors gracefully (retry on 5XX errors)
-        4. Use available tools appropriately
-        5. Follow Twitter's usage guidelines and best practices
-
-        If asked about unavailable functionality, recommend checking docs.cdp.coinbase.com.
-        """
+       
 
         return create_react_agent(
             llm,
             tools=tools,
             checkpointer=memory,
-            state_modifier=combined_personality,
-        ), config, runnable_config, knowledge_base, podcast_knowledge_base
+            state_modifier=personality,
+        ), config, runnable_config
 
     except Exception as e:
         print_error(f"Failed to initialize agent: {e}")
@@ -786,14 +619,14 @@ def choose_mode():
     """Choose whether to run in autonomous or chat mode."""
     while True:
         print("\nAvailable modes:")
-        print("1. chat    - Interactive chat mode")
-        print("2. auto    - Autonomous action mode")
+        print("1. Interactive chat mode")
+        print("2. Character Twitter Automation")
 
-        choice = input("\nChoose a mode (enter number or name): ").lower().strip()
-        if choice in ["1", "chat"]:
+        choice = input("\nChoose a mode (enter number): ").lower().strip()
+        if choice in ["1"]:
             return "chat"
-        elif choice in ["2", "auto"]:
-            return "auto"
+        elif choice in ["2"]:
+            return "twitter_automation"
         print("Invalid choice. Please try again.")
 
 async def run_with_progress(func, *args, **kwargs):
@@ -818,7 +651,7 @@ async def run_with_progress(func, *args, **kwargs):
     finally:
         progress.stop()
 
-async def run_chat_mode(agent_executor, config, runnable_config, knowledge_base=None, podcast_knowledge_base=None):
+async def run_chat_mode(agent_executor, config, runnable_config):
     """Run the agent interactively based on user input."""
     print_system("Starting chat mode... Type 'exit' to end.")
     print_system("Commands:")
@@ -869,9 +702,14 @@ async def run_chat_mode(agent_executor, config, runnable_config, knowledge_base=
         except Exception as e:
             print_error(f"Error: {str(e)}")
 
-async def run_autonomous_mode(agent_executor, config, runnable_config, knowledge_base=None, podcast_knowledge_base=None):
+async def run_twitter_automation(agent_executor, config, runnable_config):
     """Run the agent autonomously with specified intervals."""
-    print_system("Starting autonomous mode...")
+    print_system(f"Starting autonomous mode as {config['character']['name']}...")
+    twitter_state.load()
+    
+    # Reset last_check_time on startup to ensure immediate first run
+    twitter_state.last_check_time = None
+    twitter_state.save()
     
     # Create the runnable config with required keys
     runnable_config = RunnableConfig(
@@ -885,36 +723,266 @@ async def run_autonomous_mode(agent_executor, config, runnable_config, knowledge
     
     while True:
         try:
-            thought = (
-                "Be creative and do something interesting on the blockchain. "
-                "Choose an action or set of actions and execute it that highlights your abilities."
-            )
+            # Check mention timing - only wait if we've checked too recently
+            if not twitter_state.can_check_mentions():
+                wait_time = MENTION_CHECK_INTERVAL - (datetime.now() - twitter_state.last_check_time).total_seconds()
+                if wait_time > 0:
+                    print_system(f"Waiting {int(wait_time)} seconds before next mention check...")
+                    await asyncio.sleep(wait_time)
+                    continue
 
-            async for chunk in run_with_progress(
-                agent_executor.astream,
+            # Update last_check_time at the start of each check
+            twitter_state.last_check_time = datetime.now()
+            twitter_state.save()
+
+            # Select unique KOLs for interaction using random.sample
+            NUM_KOLS = 1  # Define constant for number of KOLs to interact with
+            selected_kols = random.sample(config['character']['kol_list'], NUM_KOLS)
+
+            # Log selected KOLs
+            for i, kol in enumerate(selected_kols, 1):
+                print_system(f"Selected KOL {i}: {kol['username']}")
+            
+            # Create KOL XML structure for the prompt
+            kol_xml = "\n".join([
+                f"""<kol_{i+1}>
+                <username>{kol['username']}</username>
+                <user_id>{kol['user_id']}</user_id>
+                </kol_{i+1}>""" 
+                for i, kol in enumerate(selected_kols)
+            ])
+            
+            thought = f"""
+            You are an AI-powered Twitter bot acting as a marketer for The Rollup Podcast (@therollupco). Your primary functions are to create engaging original tweets, respond to mentions, and interact with key opinion leaders (KOLs) in the blockchain and cryptocurrency industry. 
+            Your goal is to promote the podcast and drive engagement while maintaining a consistent, friendly, and knowledgeable persona.
+
+            Here's the essential information for your operation:
+
+            <kol_list>
+            {kol_xml}
+            </kol_list>
+
+            <account_info>
+            {config['character']['accountid']}
+            </account_info>
+
+            <twitter_settings>
+            <mention_check_interval>{MENTION_CHECK_INTERVAL}</mention_check_interval>
+            <last_mention_id>{twitter_state.last_mention_id}</last_mention_id>
+            <current_time>{datetime.now().strftime('%H:%M:%S')}</current_time>
+            </twitter_settings>
+
+            For each task, read the entire task instructions before taking action. Wrap your reasoning inside <reasoning> tags before taking action.
+
+            Task 1: Query podcast knowledge base and recent tweets
+
+            First, gather context from recent tweets using the get_user_tweets() for each ofthese accounts:
+            Account 1: 1172866088222244866
+            Account 2: 1046811588752285699  
+            Account 3: 2680433033
+
+            Then query the podcast knowledge base:
+
+            <podcast_query>
+            {await generate_podcast_query()}
+            </podcast_query>
+
+            <reasoning>
+            1. Analyze all available context:
+            - Review all recent tweets retrieved from the accounts
+            - Analyze the podcast knowledge base query results
+            - Identify common themes and topics across both sources
+            - Note key insights that could inform an engaging tweet
+
+            2. Synthesize information:
+            - Find connections between recent tweets and podcast content
+            - Identify trending topics or discussions
+            - Look for opportunities to add unique value or insights
+            - Consider how to build on existing conversations
+
+            3. Brainstorm tweet ideas:
+            Tweet Guidelines:
+            - Ideal length: Less than 70 characters
+            - Maximum length: 280 characters
+            - Emoji usage: Do not use emojis
+            - Content references: Use evergreen language when referencing podcast content
+                - DO: "We explored this topic in our podcast"
+                - DO: "Check out our podcast episode about [topic]"
+                - DO: "We discussed this in depth on @therollupco"
+                - DON'T: "In our latest episode..."
+                - DON'T: "Just released..."
+                - DON'T: "Our newest episode..."
+            - Generate at least three distinct tweet ideas that combine insights from both sources, and follow the tweet guidelines
+            - For each idea, write out the full tweet text
+            - Count the characters in each tweet to ensure they meet length requirements
+            - Use evergreen references to podcast content while staying relevant to current discussions
+
+            4. Evaluate and refine tweets:
+            - Assess each tweet for engagement potential, relevance, and clarity
+            - Refine the tweets to improve their impact and adhere to guidelines
+            - Ensure references to podcast content are accurate and timeless
+            - Verify the tweet adds value to ongoing conversations
+
+            5. Select the best tweet:
+            - Choose the most effective tweet based on your evaluation
+            - Explain why this tweet best combines recent context with podcast insights
+            - Verify it aligns with The Rollup's messaging and style
+            </reasoning>
+
+            After your reasoning, create and post your tweet using the create_tweet() function.
+
+
+            Task 2: Check for and reply to new Twitter mentions
+
+            Use the get_mentions() function to retrieve new mentions. For each mention newer than the last_mention_id:
+
+            <reasoning>
+            1. Analyze the mention:
+            - Summarize the content of the mention
+            - Identify any specific questions or topics related to blockchain and cryptocurrency
+            - Determine the sentiment (positive, neutral, negative) of the mention
+
+            2. Determine reply appropriateness:
+            - Check if you've already responded using has_replied_to()
+            - Assess if the mention requires a response based on its content and relevance
+            - Explain your decision to reply or not
+
+            3. Craft a response (if needed):
+            - Outline key points to address in your reply
+            - Consider how to add value or insights to the conversation
+            - Draft a response that is engaging, informative, and aligned with your persona
+
+            4. Review and refine:
+            - Ensure the response adheres to character limits and style guidelines
+            - Check that the reply is relevant to blockchain and cryptocurrency
+            - Verify that the tone is friendly and encouraging further discussion
+            </reasoning>
+
+            If you decide to reply:
+            1. Create a response using the reply_to_tweet() function
+            2. Mark the tweet as replied using the add_replied_tweet() function
+
+            Task 3: Interact with KOLs
+
+            For each KOL in the provided list:
+
+            <reasoning>
+            1. Retrieve and analyze recent tweets:
+            - Use get_user_tweets() to fetch recent tweets
+            - Summarize the main topics and themes in the KOL's recent tweets
+            - Identify tweets specifically related to blockchain and cryptocurrency
+
+            2. Select a tweet to reply to:
+            - List the top 3 most relevant tweets for potential interaction
+            - For each tweet, explain its relevance to blockchain/cryptocurrency and potential for engagement
+            - Choose the best tweet for reply, justifying your selection
+
+            3. Formulate a reply:
+            - Identify unique insights or perspectives you can add to the conversation
+            - Draft 2-3 potential replies, each offering a different angle or value-add
+            - Evaluate each draft for engagement potential, relevance, and alignment with your persona
+
+            4. Finalize the reply:
+            - Select the best reply from your drafts
+            - Ensure the chosen reply meets all guidelines (character limit, style, etc.)
+            - Explain why this reply is the most effective for interacting with the KOL and promoting The Rollup Podcast
+            </reasoning>
+
+            After your reasoning:
+            1. Select the most relevant and recent tweet to reply to
+            2. Create a reply for the selected tweet using the reply_to_tweet() function
+
+            General Guidelines:
+            1. Stay in character with consistent personality traits
+            2. Ensure all interactions are relevant to blockchain and cryptocurrency
+            3. Be friendly, witty, and engaging
+            4. Share interesting insights or thought-provoking perspectives when relevant
+            5. Ask follow-up questions to encourage discussion when appropriate
+            6. Adhere to the character limits and style guidelines
+
+            Output your actions in the following format:
+
+            <knowledge_base_query>
+            [Your knowledge base query results and insights used]
+            </knowledge_base_query>
+
+            <recent_tweets_analysis>
+            [Your analysis of the 9 recent tweets from The Rollup accounts]
+            </recent_tweets_analysis>
+
+            <original_tweets>
+            <tweet_1>[Content for new tweet]</tweet_1>
+            </original_tweets>
+
+            <mention_replies>
+            [Your replies to any new mentions, if applicable]
+            </mention_replies>
+
+            <kol_interactions>
+            [For each of the KOLs in the provided list:]
+            <kol_name>[KOL's name]</kol_name>
+            <reply_to>
+                <tweet_id>[ID of the tweet you're replying to]</tweet_id>
+                <reply_content>[Your reply content]</reply_content>
+            </reply_to>
+            </kol_interactions>
+
+            Remember to use the provided functions as needed and adhere to all guidelines and rules throughout your interactions.
+            """
+
+            # Process chunks as they arrive using async for
+            async for chunk in agent_executor.astream(
                 {"messages": [HumanMessage(content=thought)]},
                 runnable_config
             ):
+                print_system(chunk)
                 if "agent" in chunk:
-                    print_ai(format_ai_message_content(chunk["agent"]["messages"][0].content))
+                    response = chunk["agent"]["messages"][0].content
+                    print_ai(format_ai_message_content(response))
+                    
+                    # Handle tool responses
+                    if isinstance(response, list):
+                        for item in response:
+                            if item.get('type') == 'tool_use':
+                                if item.get('name') == 'add_replied_to':
+                                    tweet_id = item['input'].get('__arg1')
+                                    if tweet_id:
+                                        print_system(f"Adding tweet {tweet_id} to replied database...")
+                                        result = twitter_state.add_replied_tweet(tweet_id)
+                                        print_system(result)
+                                        
+                                        # Update state after successful reply
+                                        twitter_state.last_mentigiton_id = tweet_id
+                                        twitter_state.last_check_time = datetime.now()
+                                        twitter_state.save()
+                                
                 elif "tools" in chunk:
                     print_system(chunk["tools"]["messages"][0].content)
                 print_system("-------------------")
 
-            print_system("Waiting 10 seconds before next action...")
-            await asyncio.sleep(10)
+            print_system(f"Completed cycle. Waiting {MENTION_CHECK_INTERVAL/60} minutes before next check...")
+            await asyncio.sleep(MENTION_CHECK_INTERVAL)
 
         except KeyboardInterrupt:
-            print_system("\nExiting autonomous mode...")
-            break
+            print_system("\nSaving state and exiting...")
+            twitter_state.save()
+            sys.exit(0)
+            
         except Exception as e:
-            print_error(f"Error: {str(e)}")
-            await asyncio.sleep(10)
+            print_error(f"Unexpected error: {str(e)}")
+            print_error(f"Error type: {type(e).__name__}")
+            if hasattr(e, '__traceback__'):
+                import traceback
+                traceback.print_tb(e.__traceback__)
+            
+            print_system("Continuing after error...")
+            await asyncio.sleep(MENTION_CHECK_INTERVAL)
+
 
 async def main():
     """Start the chatbot agent."""
     try:
-        agent_executor, config, runnable_config, knowledge_base, podcast_knowledge_base = await initialize_agent()
+        agent_executor, config, runnable_config = await initialize_agent()
         mode = choose_mode()
         
         if mode == "chat":
@@ -922,16 +990,12 @@ async def main():
                 agent_executor=agent_executor,
                 config=config,
                 runnable_config=runnable_config,
-                knowledge_base=knowledge_base,
-                podcast_knowledge_base=podcast_knowledge_base
             )
-        elif mode == "auto":
-            await run_autonomous_mode(
+        elif mode == "twitter_automation":     
+            await run_twitter_automation(
                 agent_executor=agent_executor,
                 config=config,
                 runnable_config=runnable_config,
-                knowledge_base=knowledge_base,
-                podcast_knowledge_base=podcast_knowledge_base
             )
         
     except Exception as e:
