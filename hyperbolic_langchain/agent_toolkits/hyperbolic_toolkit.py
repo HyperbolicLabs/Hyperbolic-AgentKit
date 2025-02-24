@@ -57,6 +57,7 @@ class HyperbolicToolkit(BaseToolkit):
             get_current_balance
             ssh_access
             link_wallet_address
+            run_remote_finetune
     Use within an agent:
         .. code-block:: python
 

@@ -72,8 +72,6 @@ from twitter_knowledge_base import TweetKnowledgeBase, Tweet, update_knowledge_b
 from langchain_core.runnables import RunnableConfig
 from podcast_agent.podcast_knowledge_base import PodcastKnowledgeBase
 
-from hyperbolic_agentkit_core.actions.run_remote_finetune import RunFinetuneAction
-
 async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
     """
     Generates a dynamic, contextually-aware query for the podcast knowledge base using an LLM.
@@ -895,10 +893,6 @@ async def initialize_agent():
             except Exception as e:
                 print_error(f"Error initializing GitHub tools: {str(e)}")
                 print_error("GitHub tools will not be available")
-
-        # Add fine-tuning tool
-        if os.getenv("USE_FINETUNE_TOOLS", "false").lower() == "true":
-            tools.append(RunFinetuneAction())
 
         # Create the runnable config with increased recursion limit
         runnable_config = RunnableConfig(recursion_limit=200)
