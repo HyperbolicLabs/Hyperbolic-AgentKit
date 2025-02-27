@@ -36,8 +36,6 @@ sys.path.append(current_dir)
 
 from langchain_core.messages import HumanMessage
 from langchain_anthropic import ChatAnthropic
-from langchain_community.chat_models import ChatTongyi
-
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from langchain_community.tools import DuckDuckGoSearchRun
@@ -390,8 +388,7 @@ async def initialize_agent():
     """Initialize the agent with tools and configuration."""
     try:
         print_system("Initializing LLM...")
-        #llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
-        llm = ChatTongyi(model="qwen-max")
+        llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
 
         print_system("Loading character configuration...")
         try:
