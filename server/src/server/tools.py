@@ -15,6 +15,7 @@ from langchain_community.agent_toolkits.openapi.toolkit import RequestsToolkit
 from langchain_community.utilities.requests import TextRequestsWrapper
 from langchain_anthropic import ChatAnthropic
 from dotenv import load_dotenv
+from browser_agent import BrowserToolkit
 
 from coinbase_agentkit import (
     AgentKit,
@@ -111,73 +112,73 @@ def add(a: int, b: int):
     """Add two numbers. Please let the user know that you're adding the numbers BEFORE you call the tool"""
     return a + b
 
-@tool
-def enhance_result(initial_query: str, query_result: str, llm):
-    """Analyze the initial query and its results to generate an enhanced follow-up query."""
-    return llm.invoke(f"Based on the initial query '{initial_query}' and results '{query_result}', suggest an enhanced follow-up query.")
-
-def create_tools(llm=None, knowledge_base=None, podcast_knowledge_base=None, agentkit=agent_kit):
+def create_tools(knowledge_base=None, podcast_knowledge_base=None, agentkit=agent_kit):
     """Create and return a list of tools."""
     tools = []
-
-    # Use default LLM if none provided
-    if llm is None:
-        llm = ChatAnthropic(model="claude-3-sonnet-20240229")
-
     # Add basic tools
     tools.append(add)
-    
-    # Add enhance query tool
-    tools.append(Tool(
-        name="enhance_query",
-        func=lambda initial_query, query_result: enhance_result(initial_query, query_result, llm),
-        description="Analyze the initial query and its results to generate an enhanced follow-up query. Takes two parameters: initial_query (the original query string) and query_result (the results obtained from that query)."
-    ))
 
-    # Add Twitter State Management Tools
-    twitter_state = TwitterState()
+    # Add browser toolkit if enabled
+    if os.getenv("USE_BROWSER_TOOLS", "true").lower() == "true":
+        browser_toolkit = BrowserToolkit()
+        tools.extend(browser_toolkit.get_tools())
     
-    tools.extend([
-        Tool(
-            name="has_replied_to",
-            func=twitter_state.has_replied_to,
-            description="""Check if we have already replied to a tweet. MUST be used before replying to any tweet.
-            Input: tweet ID string.
-            Rules:
-            1. Always check this before replying to any tweet
-            2. If returns True, do NOT reply and select a different tweet
-            3. If returns False, proceed with reply_to_tweet then add_replied_to"""
-        ),
-        Tool(
-            name="add_replied_to",
-            func=twitter_state.add_replied_tweet,
-            description="""Add a tweet ID to the database of replied tweets. 
-            MUST be used after successfully replying to a tweet.
-            Input: tweet ID string.
-            Rules:
-            1. Only use after successful reply_to_tweet
-            2. Must verify with has_replied_to first
-            3. Stores tweet ID permanently to prevent duplicate replies"""
-        ),
-        Tool(
-            name="has_reposted",
-            func=twitter_state.has_reposted,
-            description="Check if we have already reposted a tweet. Input should be a tweet ID string."
-        ),
-        Tool(
-            name="add_reposted",
-            func=twitter_state.add_reposted_tweet,
-            description="Add a tweet ID to the database of reposted tweets."
-        )
-    ])
+    # Add Twitter State Management Tools if enabled
+    if os.getenv("USE_TWEET_REPLY_TRACKING", "true").lower() == "true":
+        twitter_state = TwitterState()
+        tools.extend([
+            Tool(
+                name="has_replied_to",
+                func=twitter_state.has_replied_to,
+                description="""Check if we have already replied to a tweet. MUST be used before replying to any tweet.
+                Input: tweet ID string.
+                Rules:
+                1. Always check this before replying to any tweet
+                2. If returns True, do NOT reply and select a different tweet
+                3. If returns False, proceed with reply_to_tweet then add_replied_to"""
+            ),
+            Tool(
+                name="add_replied_to",
+                func=twitter_state.add_replied_tweet,
+                description="""Add a tweet ID to the database of replied tweets. 
+                MUST be used after successfully replying to a tweet.
+                Input: tweet ID string.
+                Rules:
+                1. Only use after successful reply_to_tweet
+                2. Must verify with has_replied_to first
+                3. Stores tweet ID permanently to prevent duplicate replies"""
+            )
+        ])
 
-    # Add Custom Twitter Tools
-    tools.extend([
-        create_delete_tweet_tool(),
-        create_get_user_id_tool(),
-        create_get_user_tweets_tool(),
-        create_retweet_tool()
-    ])
+    if os.getenv("USE_TWEET_REPOST_TRACKING", "true").lower() == "true":
+        if not 'twitter_state' in locals():
+            twitter_state = TwitterState()
+        tools.extend([
+            Tool(
+                name="has_reposted",
+                func=twitter_state.has_reposted,
+                description="Check if we have already reposted a tweet. Input should be a tweet ID string."
+            ),
+            Tool(
+                name="add_reposted",
+                func=twitter_state.add_reposted_tweet,
+                description="Add a tweet ID to the database of reposted tweets."
+            )
+        ])
+
+    # Add Custom Twitter Tools if enabled
+    if os.getenv("USE_TWITTER_CORE", "true").lower() == "true":
+        if os.getenv("USE_TWEET_DELETE", "true").lower() == "true":
+            tools.append(create_delete_tweet_tool())
+            
+        if os.getenv("USE_USER_ID_LOOKUP", "true").lower() == "true":
+            tools.append(create_get_user_id_tool())
+            
+        if os.getenv("USE_USER_TWEETS_LOOKUP", "true").lower() == "true":
+            tools.append(create_get_user_tweets_tool())
+            
+        if os.getenv("USE_RETWEET", "true").lower() == "true":
+            tools.append(create_retweet_tool())
 
     # Add Twitter Knowledge Base Tool if enabled
     if os.getenv("USE_TWITTER_KNOWLEDGE_BASE", "true").lower() == "true" and knowledge_base:
@@ -201,7 +202,7 @@ def create_tools(llm=None, knowledge_base=None, podcast_knowledge_base=None, age
             description="Query the podcast knowledge base for relevant podcast segments about crypto/Web3/gaming. Input should be a search query string."
         ))
 
-    # Add Coinbase AgentKit tools (blockchain/wallet/twitter operations)
+    # Add Coinbase AgentKit tools if enabled
     if os.getenv("USE_COINBASE_TOOLS", "true").lower() == "true":
         coinbase_tools = get_langchain_tools(agentkit)
         tools.extend(coinbase_tools)
@@ -223,12 +224,14 @@ def create_tools(llm=None, knowledge_base=None, podcast_knowledge_base=None, age
         )
         tools.extend(toolkit.get_tools())
 
-    podcast_query_tool = Tool(
-        name="query_podcast_knowledge",
-        description="Query the podcast knowledge base for relevant information about crypto, gaming, and Web3 topics",
-        func=lambda query: podcast_kb.format_query_results(podcast_kb.query_knowledge_base(query))
-    )
-    tools.append(podcast_query_tool)
+    # Add podcast query tool if enabled
+    if os.getenv("USE_PODCAST_KNOWLEDGE_BASE", "true").lower() == "true":
+        podcast_query_tool = Tool(
+            name="query_podcast_knowledge",
+            description="Query the podcast knowledge base for relevant information about crypto, gaming, and Web3 topics",
+            func=lambda query: podcast_kb.format_query_results(podcast_kb.query_knowledge_base(query))
+        )
+        tools.append(podcast_query_tool)
 
     return tools
 
@@ -243,6 +246,4 @@ tavily_tool = TavilySearchResults(
 )
 
 # Initialize all tools with default wrappers
-TOOLS = create_tools(
-    llm=llm,
-)  # Initialize with all available tools
+TOOLS = create_tools(knowledge_base=None, podcast_knowledge_base=podcast_kb, agentkit=agent_kit)

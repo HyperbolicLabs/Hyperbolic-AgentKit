@@ -512,9 +512,10 @@ def process_video(videopath: str, custom_instructions: str = "") -> str:
 
 # Execute the workflow
 if __name__ == "__main__":
-    input_files = [
-        "/Users/amr/Hyperbolic-AgentKit/videofiles/HPC.mp4"
-    ]
+    
+    # This will be the array of video files to process
+    # Example: input_files = ["/User/Videos/HPC.mp4", "/User/Videos/HPC2.mp4", "/User/Videos/HPC3.mp4"]
+    input_files = []
     
     for video_path in input_files:
         try:
