@@ -1003,5 +1003,18 @@ async def main():
         sys.exit(1)
 
 if __name__ == "__main__":
+    import atexit
+    import os
+    import readline
+
+    histfile = os.path.join(os.path.expanduser("~"), ".python_history")
+    try:
+        readline.read_history_file(histfile)
+        readline.set_history_length(1000)
+    except FileNotFoundError:
+        pass
+
+    atexit.register(readline.write_history_file, histfile)
+
     print("Starting Agent...")
     asyncio.run(main())
