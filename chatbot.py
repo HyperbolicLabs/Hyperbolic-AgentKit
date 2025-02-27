@@ -8,7 +8,6 @@ import random
 import asyncio
 import warnings
 
-
 # Load environment variables from .env file
 load_dotenv(override=True)
 
@@ -20,6 +19,8 @@ sys.path.append(current_dir)
 
 from langchain_core.messages import HumanMessage
 from langchain_anthropic import ChatAnthropic
+from langchain_community.chat_models import ChatTongyi
+
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 from langchain_community.tools import DuckDuckGoSearchRun
@@ -537,7 +538,8 @@ async def initialize_agent():
     """Initialize the agent with tools and configuration."""
     try:
         print_system("Initializing LLM...")
-        llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+        #llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+        llm = ChatTongyi(model="qwen-max")
 
         print_system("Loading character configuration...")
         try:
@@ -939,5 +941,18 @@ async def main():
         sys.exit(1)
 
 if __name__ == "__main__":
+    import atexit
+    import os
+    import readline
+
+    histfile = os.path.join(os.path.expanduser("~"), ".python_history")
+    try:
+        readline.read_history_file(histfile)
+        readline.set_history_length(1000)
+    except FileNotFoundError:
+        pass
+
+    atexit.register(readline.write_history_file, histfile)
+
     print("Starting Agent...")
     asyncio.run(main())
