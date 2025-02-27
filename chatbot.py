@@ -363,6 +363,7 @@ def process_character_config(character: Dict[str, Any]) -> str:
         - Vary your tweet length and style based on the context and importance of the message.
         - Use emojis naturally and sparingly, not in every tweet.
         - Double-check the word count of your response and adjust if necessary to meet the character limit.
+        - The remote_shell tool will only show the complete results once the command is finished and you won't be able to see the intermediate results.
         """
 
     # print_system(personality)
