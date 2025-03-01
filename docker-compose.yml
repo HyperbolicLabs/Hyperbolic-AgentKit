@@ -1,0 +1,11 @@
+services:
+  db:
+    image: postgres:15.6-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/dumps:/app-db-dumps
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: hyperbolic_agent_db
+      POSTGRES_PASSWORD: postgres

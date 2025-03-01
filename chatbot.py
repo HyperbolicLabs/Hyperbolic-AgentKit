@@ -38,6 +38,7 @@ sys.path.append(current_dir)
 from langchain_core.messages import HumanMessage
 from langchain_anthropic import ChatAnthropic
 from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.prebuilt import create_react_agent
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_community.agent_toolkits.openapi.toolkit import RequestsToolkit
@@ -45,6 +46,7 @@ from langchain_community.utilities.requests import TextRequestsWrapper
 from langchain.tools import Tool
 from langchain_core.runnables import RunnableConfig
 from browser_agent import BrowserToolkit
+from psycopg import Connection
 
 # Import Coinbase AgentKit related modules
 from coinbase_agentkit import (
@@ -611,16 +613,31 @@ async def initialize_agent():
         for tool in tools:
             print_system(tool.name)
 
-        # Initialize memory saver
-        memory = MemorySaver()
+        db_uri = os.getenv("POSTGRES_DB_URI")
+        
+        if db_uri:
+            conn = Connection.connect(db_uri, autocommit=True)
+            checkpointer = PostgresSaver(conn)
+            checkpointer.setup()
 
-        return create_react_agent(
-            llm,
-            tools=tools,
-            checkpointer=memory,
-            state_modifier=personality,
-        ), config, runnable_config
-
+            agent = create_react_agent(
+                llm,
+                tools=tools,
+                checkpointer=checkpointer,
+                state_modifier=personality,
+            )
+            return agent, config, runnable_config
+            
+        else:
+            memory = MemorySaver()
+            agent = create_react_agent(
+                llm,
+                tools=tools,
+                checkpointer=memory,
+                state_modifier=personality,
+            )
+            return agent, config, runnable_config
+    
     except Exception as e:
         print_error(f"Failed to initialize agent: {e}")
         raise
@@ -710,6 +727,8 @@ async def run_chat_mode(agent_executor, config, runnable_config):
             print_system("\nExiting chat mode...")
             break
         except Exception as e:
+            print("@@@@@HERE")
+            print(e)
             print_error(f"Error: {str(e)}")
 
 async def run_twitter_automation(agent_executor, config, runnable_config):

@@ -38,6 +38,9 @@ starlette = "^0.45.3"
 uvicorn = "^0.34.0"
 browser-use = "^0.1.37"
 tweepy = "^4.15.0"
+psycopg = {extras = ["binary"], version = "^3.2.5"}
+psycopg-pool = "^3.2.6"
+langgraph-checkpoint-postgres = "^2.0.15"
 
 
 
