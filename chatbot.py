@@ -1,5 +1,6 @@
 import os
 import sys
+import uuid
 from dotenv import load_dotenv
 from datetime import datetime
 import json
@@ -37,6 +38,7 @@ sys.path.append(current_dir)
 from langchain_core.messages import HumanMessage
 from langchain_anthropic import ChatAnthropic
 from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from langgraph.prebuilt import create_react_agent
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_community.agent_toolkits.openapi.toolkit import RequestsToolkit
@@ -44,6 +46,7 @@ from langchain_community.utilities.requests import TextRequestsWrapper
 from langchain.tools import Tool
 from langchain_core.runnables import RunnableConfig
 from browser_agent import BrowserToolkit
+from psycopg import AsyncConnection
 
 # Import Coinbase AgentKit related modules
 from coinbase_agentkit import (
@@ -402,11 +405,14 @@ async def initialize_agent():
         personality = process_character_config(character)
 
         # Create config first before using 
+        checkpoint_id = str(uuid.uuid4())
         config = {
             "configurable": {
                 "thread_id": f"{character['name']} Agent",
                 "character": character["name"],
                 "recursion_limit": 100,
+                "checkpoint_id": checkpoint_id,
+                "langgraph_checkpoint_id": checkpoint_id,
             },
             "character": {
                 "name": character["name"],
@@ -594,23 +600,52 @@ async def initialize_agent():
                 print_error("GitHub tools will not be available")
 
         # Create the runnable config with increased recursion limit
-        runnable_config = RunnableConfig(recursion_limit=200)
+        runnable_config = RunnableConfig(
+        recursion_limit=200,
+            configurable={
+                "thread_id": f"{character['name']} Agent",
+                "character": character["name"],
+                "recursion_limit": 100,
+                "langgraph_checkpoint_id": config["configurable"]["langgraph_checkpoint_id"],
+            }
+    )
 
         for tool in tools:
             print_system(tool.name)
 
-        # Initialize memory saver
-        memory = MemorySaver()
+        postgres_enable = os.getenv("USE_POSTGRES")
+        
+        if postgres_enable:
+            db_uri = os.getenv("POSTGRES_DB_URI")
 
-       
+            if not db_uri:
+                raise ValueError("Postgres URI not found. Please set the POSTGRES_URI environment variable.")
 
-        return create_react_agent(
-            llm,
-            tools=tools,
-            checkpointer=memory,
-            state_modifier=personality,
-        ), config, runnable_config
+            conn = await AsyncConnection.connect(db_uri)
+            await conn.set_autocommit(True)
 
+            checkpointer = AsyncPostgresSaver(conn)
+
+            await checkpointer.setup()
+
+            agent = create_react_agent(
+                llm,
+                tools=tools,
+                checkpointer=checkpointer,
+                state_modifier=personality,
+            )
+            return agent, config, runnable_config
+            
+        else:
+            memory = MemorySaver()
+            agent = create_react_agent(
+                llm,
+                tools=tools,
+                checkpointer=memory,
+                state_modifier=personality,
+            )
+            return agent, config, runnable_config
+    
     except Exception as e:
         print_error(f"Failed to initialize agent: {e}")
         raise
@@ -663,8 +698,8 @@ async def run_chat_mode(agent_executor, config, runnable_config):
         recursion_limit=200,
         configurable={
             "thread_id": config["configurable"]["thread_id"],
-            "checkpoint_ns": "chat_mode",
-            "checkpoint_id": str(datetime.now().timestamp())
+            "langgraph_checkpoint_ns": "chat_mode",
+            "langgraph_checkpoint_id": config["configurable"]["langgraph_checkpoint_id"]
         }
     )
     
@@ -716,8 +751,8 @@ async def run_twitter_automation(agent_executor, config, runnable_config):
         recursion_limit=200,
         configurable={
             "thread_id": config["configurable"]["thread_id"],
-            "checkpoint_ns": "autonomous_mode",
-            "checkpoint_id": str(datetime.now().timestamp())
+            "langgraph_checkpoint_ns": "chat_mode",
+            "langgraph_checkpoint_id": config["configurable"]["langgraph_checkpoint_id"]
         }
     )
     
