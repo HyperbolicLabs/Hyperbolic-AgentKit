@@ -1,5 +1,6 @@
 import os
 import sys
+import uuid
 from dotenv import load_dotenv
 from datetime import datetime
 import json
@@ -402,11 +403,14 @@ async def initialize_agent():
         personality = process_character_config(character)
 
         # Create config first before using 
+        checkpoint_id = str(uuid.uuid4())
         config = {
             "configurable": {
                 "thread_id": f"{character['name']} Agent",
                 "character": character["name"],
                 "recursion_limit": 100,
+                "checkpoint_id": checkpoint_id,
+                "langgraph_checkpoint_id": checkpoint_id,
             },
             "character": {
                 "name": character["name"],
@@ -594,15 +598,21 @@ async def initialize_agent():
                 print_error("GitHub tools will not be available")
 
         # Create the runnable config with increased recursion limit
-        runnable_config = RunnableConfig(recursion_limit=200)
+        runnable_config = RunnableConfig(
+        recursion_limit=200,
+            configurable={
+                "thread_id": f"{character['name']} Agent",
+                "character": character["name"],
+                "recursion_limit": 100,
+                "langgraph_checkpoint_id": config["configurable"]["langgraph_checkpoint_id"],
+            }
+    )
 
         for tool in tools:
             print_system(tool.name)
 
         # Initialize memory saver
         memory = MemorySaver()
-
-       
 
         return create_react_agent(
             llm,
@@ -663,8 +673,8 @@ async def run_chat_mode(agent_executor, config, runnable_config):
         recursion_limit=200,
         configurable={
             "thread_id": config["configurable"]["thread_id"],
-            "checkpoint_ns": "chat_mode",
-            "checkpoint_id": str(datetime.now().timestamp())
+            "langgraph_checkpoint_ns": "chat_mode",
+            "langgraph_checkpoint_id": config["configurable"]["langgraph_checkpoint_id"]
         }
     )
     
@@ -716,8 +726,8 @@ async def run_twitter_automation(agent_executor, config, runnable_config):
         recursion_limit=200,
         configurable={
             "thread_id": config["configurable"]["thread_id"],
-            "checkpoint_ns": "autonomous_mode",
-            "checkpoint_id": str(datetime.now().timestamp())
+            "langgraph_checkpoint_ns": "chat_mode",
+            "langgraph_checkpoint_id": config["configurable"]["langgraph_checkpoint_id"]
         }
     )
     
