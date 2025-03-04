@@ -1,9 +1,4 @@
-# fly.toml app configuration file generated for hyperbolic-agentkit-late-feather-7146 on 2025-02-28T09:54:33-05:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
-app = 'hyperbolic-agentkit-late-feather-7146'
+app = 'hyperbolic-agentkit-voice'
 primary_region = 'iad'
 
 [build]
