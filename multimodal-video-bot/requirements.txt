@@ -1,0 +1,90 @@
+# Core Dependencies
+aiohttp>=3.8.0
+fastapi>=0.68.0
+loguru>=0.6.0
+pydantic>=2.0.0
+python-dotenv>=0.19.0
+websockets>=10.0
+
+# AI and Machine Learning
+anthropic>=0.3.0
+google-generativeai>=0.2.0
+langchain>=0.0.200
+openai>=1.0.0
+openpipe>=0.1.0
+pipecat-ai[google]>=0.1.0
+together>=0.1.0
+transformers>=4.30.0
+
+# Audio Processing
+azure-cognitiveservices-speech>=1.25.0
+deepgram-sdk>=2.3.0
+faster-whisper>=0.5.0
+google-cloud-texttospeech>=2.12.0
+lmnt>=0.1.0
+pyaudio>=0.2.11
+pyloudnorm>=0.1.0
+pyht>=0.1.0
+silero-vad>=0.3.0
+soxr>=0.3.0
+
+# Video/Image Processing
+Pillow>=9.0.0
+
+# Communication Services
+daily>=0.7.0
+daily-python>=0.5.0
+fal-client>=0.5.0
+livekit>=0.8.0
+
+# Utils
+boto3>=1.26.0
+numpy>=1.21.0
+python-dateutil>=2.8.2
+
+
+# # If buggy, remove versions and try again (Carl - 2025 Feb 10)
+
+# # Core Dependencies
+# aiohttp
+# fastapi
+# loguru
+# pydantic
+# python-dotenv
+# websockets
+
+# # AI and Machine Learning
+# anthropic
+# google-generativeai
+# langchain
+# openai
+# openpipe
+# pipecat-ai[google]
+# together
+# transformers
+
+# # Audio Processing
+# azure-cognitiveservices-speech
+# deepgram-sdk
+# faster-whisper
+# google-cloud-texttospeech
+# lmnt
+# pyaudio
+# pyloudnorm
+# pyht
+# silero-vad
+# soxr
+
+# # Video/Image Processing
+# Pillow
+
+# # Communication Services
+# daily
+# daily-python
+# fal-client
+# livekit
+
+# # Utils
+# boto3
+# numpy
+# python-dateutil
