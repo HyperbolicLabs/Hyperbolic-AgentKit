@@ -72,3 +72,7 @@ videofiles/
 
 jsonoutputs/
 
+youtube_scraper/downloaded_videos/
+youtube_scraper/split_videos/
+youtube_scraper/processed_videos.db
+

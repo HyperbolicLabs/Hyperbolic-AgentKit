@@ -58,11 +58,26 @@ from vertexai.generative_models import (
 MODEL_ID = "gemini-1.5-pro"
 model = GenerativeModel(MODEL_ID)
 
+def get_mime_type(file_path):
+    """Determine the MIME type based on file extension."""
+    ext = os.path.splitext(file_path)[1].lower()
+    mime_types = {
+        '.mov': 'video/mov',
+        '.mp4': 'video/mp4',
+        '.avi': 'video/avi',
+        '.mkv': 'video/x-matroska',
+        '.webm': 'video/webm'
+    }
+    return mime_types.get(ext, 'video/mp4')  # Default to mp4 if unknown extension
+
 @retry_with_exponential_backoff(max_retries=3, initial_delay=1)
 def process_video(video_path):
     print(f"Processing video: {video_path}")
     video_bytes = pathlib.Path(video_path).read_bytes()
-    video_file = Part.from_data(video_bytes, mime_type="video/mov")
+    
+    # Determine the MIME type based on the file extension
+    mime_type = get_mime_type(video_path)
+    video_file = Part.from_data(video_bytes, mime_type=mime_type)
 
     prompt = f"""
     The name of this podcast is The Rollup. There are two hosts in this interview:
@@ -123,10 +138,10 @@ def process_video(video_path):
 
 def main():
     # Define the directory containing the video files
-    video_dir = "/Volumes/hyperdrive/splitvids"
+    video_dir = "split_videos"  # Use local directory instead of external drive
     
     # Get all video files in the directory
-    supported_extensions = ('.mov', '.mp4', '.avi', '.mkv')  # Add more video extensions if needed
+    supported_extensions = ('.mov', '.mp4', '.avi', '.mkv', '.webm')  # Add more video extensions if needed
     video_files = [
         os.path.join(video_dir, f) 
         for f in os.listdir(video_dir) 

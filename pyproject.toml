@@ -37,6 +37,7 @@ uvicorn = "^0.34.0"
 browser-use = "^0.1.37"
 tweepy = "^4.15.0"
 psutil = "^7.0.0"
+yt-dlp = "^2025.2.19"
 
 [tool.poetry.group.dev.dependencies]
 pytest-playwright = "^0.6.2"
