@@ -1,3 +1,14 @@
+---
+title: Hyperbolic-AgentKit
+emoji: 🤖
+colorFrom: blue
+colorTo: green
+sdk: gradio
+sdk_version: 5.23.2
+python_version: 3.12
+app_file: gradio_ui.py
+pinned: false
+---
 # Hyperbolic's Agent Framework
 
 This repository is inspired by and modified from Coinbase's [CDP Agentkit](https://github.com/coinbase/cdp-agentkit). We extend our gratitude to the Coinbase Developer Platform team for their original work.
