@@ -2,7 +2,7 @@ import os
 import gradio as gr
 import asyncio
 from chatbot import initialize_agent
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_core.runnables import RunnableConfig
 from base_utils.utils import format_ai_message_content
 from datetime import datetime
@@ -14,57 +14,65 @@ agent_config = None
 async def chat_with_agent(message, history):
     global agent, agent_config
     
-    # Convert history into messages format that the agent expects
     messages = []
     if history:
-        print("History:", history)  # Debug print
-        for msg in history:
-            if isinstance(msg, dict):
-                if msg.get("role") == "user":
-                    messages.append(HumanMessage(content=msg["content"]))
-                elif msg.get("role") == "assistant":
-                    messages.append({"role": "assistant", "content": msg["content"]})
-    
-    # Add the current message
+        print("History:", history)
+        # Iterate through the flat list of message dictionaries
+        for msg_dict in history: 
+            if isinstance(msg_dict, dict) and 'role' in msg_dict and 'content' in msg_dict:
+                role = msg_dict['role']
+                content = msg_dict['content']
+                if role == "user":
+                    messages.append(HumanMessage(content=content))
+                elif role == "assistant":
+                    # Pass the content as is; Langchain can handle AIMessage content
+                    messages.append(AIMessage(content=content)) 
+            elif isinstance(msg_dict, (list, tuple)) and len(msg_dict) == 2:
+                 # Fallback for older Gradio history format (just in case)
+                 user_msg, ai_msg = msg_dict
+                 if user_msg:
+                     messages.append(HumanMessage(content=user_msg))
+                 if ai_msg:
+                     messages.append(AIMessage(content=ai_msg))
+            else:
+                print(f"Skipping unexpected history item: {msg_dict}")
+
+
+    # Add the current user message
     messages.append(HumanMessage(content=message))
     
-    print("Final messages:", messages)  # Debug print
+    print("Final messages being sent to agent:", messages) 
     
     runnable_config = RunnableConfig(
         recursion_limit=agent_config["configurable"]["recursion_limit"],
         configurable={
             "thread_id": agent_config["configurable"]["thread_id"],
             "checkpoint_ns": "chat_mode",
-            "checkpoint_id": str(datetime.now().timestamp())
+            "checkpoint_id": str(datetime.now().timestamp()) # Keep checkpointing per interaction
         }
     )
     
-    response_messages = []
-    yield response_messages
-    # Process message with agent
+    current_turn_messages = [] 
+    
     async for chunk in agent.astream(
-        {"messages": messages},  # Pass the full message history
+        {"messages": messages}, 
         runnable_config
     ):
         if "agent" in chunk:
             print("agent in chunk")
-            response = chunk["agent"]["messages"][0].content
-            response_messages.append(dict(
-                role="assistant",
-                content=format_ai_message_content(response, format_mode="markdown")
-            ))
-            print(response_messages)
-            yield response_messages
+            response_content = chunk["agent"]["messages"][0].content
+            formatted_content = format_ai_message_content(response_content, format_mode="markdown")
+            current_turn_messages.append(formatted_content) 
+            print("Yielding agent response:", current_turn_messages)
+            yield "\n\n".join(current_turn_messages) # Join with double newline for better separation
+
         elif "tools" in chunk:
             print("tools in chunk")
             tool_message = str(chunk["tools"]["messages"][0].content)
-            response_messages.append(dict(
-                role="assistant",
-                content=tool_message,
-                metadata={"title": "🛠️ Tool Call"}
-            ))
-            print(response_messages)
-            yield response_messages
+            formatted_content = f"**🛠️ Tool Call:**\n```\n{tool_message}\n```" 
+            current_turn_messages.append(formatted_content)
+            print("Yielding tool response:", current_turn_messages)
+            yield "\n\n".join(current_turn_messages) # Join with double newline
 
 def create_ui():
     # Create the Gradio interface

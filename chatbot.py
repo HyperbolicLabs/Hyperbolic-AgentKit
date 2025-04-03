@@ -186,7 +186,7 @@ def loadCharacters(charactersArg: str) -> List[Dict[str, Any]]:
 
     if not characterPaths:
         # Load default chainyoda character
-        default_path = os.path.join(os.path.dirname(__file__), "characters/default.json")
+        default_path = os.path.join(os.path.dirname(__file__), "characters/hyperbolic.json")
         characterPaths.append(default_path)
 
     for characterPath in characterPaths:
@@ -377,7 +377,7 @@ def create_agent_tools(llm, knowledge_base, podcast_knowledge_base, agent_kit, c
         print_system(f"Added {len(coinbase_tools)} Coinbase tools")
 
     # Add Hyperbolic tools
-    if os.getenv("USE_HYPERBOLIC_TOOLS", "false").lower() == "true":
+    if os.getenv("USE_HYPERBOLIC_TOOLS", "true").lower() == "true":
         hyperbolic_agentkit = HyperbolicAgentkitWrapper()
         hyperbolic_toolkit = HyperbolicToolkit.from_hyperbolic_agentkit_wrapper(hyperbolic_agentkit)
         tools.extend(hyperbolic_toolkit.get_tools())
@@ -478,38 +478,28 @@ async def initialize_agent():
                 f.write(wallet_data)
 
         # Twitter Knowledge Base initialization
-        while True:
-            init_twitter_kb = input("\nDo you want to initialize the Twitter knowledge base? (y/n): ").lower().strip()
-            if init_twitter_kb in ['y', 'n']:
-                break
-            print("Invalid choice. Please enter 'y' or 'n'.")
+        # Remove the interactive prompt and always attempt initialization
+        init_twitter_kb = 'n'  # Always initialize
 
         if init_twitter_kb == 'y':
             try:
                 knowledge_base = TweetKnowledgeBase()
                 stats = knowledge_base.get_collection_stats()
                 print_system(f"Initial Twitter knowledge base stats: {stats}")
-                
+
                 # Initialize Twitter client here, before we need it
                 print_system("\n=== Initializing Twitter Client ===")
                 twitter_client = TwitterClient()
                 print_system("Twitter client initialized successfully")
-                
-                while True:
-                    clear_choice = input("\nDo you want to clear the existing Twitter knowledge base? (y/n): ").lower().strip()
-                    if clear_choice in ['y', 'n']:
-                        break
-                    print("Invalid choice. Please enter 'y' or 'n'.")
+
+                # Keep the logic for clearing and updating, controlled by environment vars or future config
+                clear_choice = os.getenv("CLEAR_TWITTER_KB_ON_START", "n").lower() # Example using env var
 
                 if clear_choice == 'y':
                     knowledge_base.clear_collection()
-                    print_system("Knowledge base cleared")
+                    print_system("Knowledge base cleared based on CLEAR_TWITTER_KB_ON_START setting.")
 
-                while True:
-                    update_choice = input("\nDo you want to update the Twitter knowledge base with KOL tweets? (y/n): ").lower().strip()
-                    if update_choice in ['y', 'n']:
-                        break
-                    print("Invalid choice. Please enter 'y' or 'n'.")
+                update_choice = os.getenv("UPDATE_TWITTER_KB_ON_START", "y").lower() # Example using env var
 
                 if update_choice == 'y':
                     print_system("\n=== Starting Twitter Knowledge Base Update ===")
@@ -560,11 +550,8 @@ async def initialize_agent():
                 print_error(f"Error initializing Twitter knowledge base: {e}")
 
         # Podcast Knowledge Base initialization
-        while True:
-            init_podcast_kb = input("\nDo you want to initialize the Podcast knowledge base? (y/n): ").lower().strip()
-            if init_podcast_kb in ['y', 'n']:
-                break
-            print("Invalid choice. Please enter 'y' or 'n'.")
+        # Remove the interactive prompt and always attempt initialization
+        init_podcast_kb = 'y' # Always initialize
 
         if init_podcast_kb == 'y':
             try:
