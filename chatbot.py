@@ -45,6 +45,7 @@ from langchain_community.utilities.requests import TextRequestsWrapper
 from langchain.tools import Tool
 from langchain_core.runnables import RunnableConfig
 from browser_agent import BrowserToolkit
+from llm_provider import get_llm
 
 # Import Coinbase AgentKit related modules
 from coinbase_agentkit import (
@@ -94,18 +95,19 @@ from podcast_agent.podcast_knowledge_base import PodcastKnowledgeBase
 # Add the import for WritingTool near the other imports at the top of the file
 from writing_agent.writing_tool import WritingTool
 
-async def generate_llm_podcast_query(llm: ChatAnthropic = None) -> str:
+async def generate_llm_podcast_query(llm = None) -> str:
     """
     Generates a dynamic, contextually-aware query for the podcast knowledge base using an LLM.
     Uses various prompting techniques to create unique and insightful queries.
     
     Args:
-        llm: ChatAnthropic instance. If None, creates a new one.
+        llm: LLM instance. If None, creates a new one.
         
     Returns:
         str: A generated query string
     """
-    llm = ChatAnthropic(model="claude-3-5-haiku-20241022")
+    if llm is None:
+        llm = get_llm(model="claude-3-5-haiku-20241022")
     
     # Format the prompt with random selections
     prompt = PODCAST_QUERY_PROMPT.format(
@@ -137,7 +139,7 @@ async def generate_podcast_query() -> str:
     """
     try:
         # Create LLM instance
-        llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+        llm = get_llm(model="claude-3-5-sonnet-20241022")
         # Get LLM-generated query
         query = await generate_llm_podcast_query(llm)
         return query
@@ -402,7 +404,7 @@ async def initialize_agent():
     """Initialize the agent with tools and configuration."""
     try:
         print_system("Initializing LLM...")
-        llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+        llm = get_llm(model="claude-3-5-sonnet-20241022") # Model parameter only used if falling back to Anthropic
 
         print_system("Loading character configuration...")
         try:

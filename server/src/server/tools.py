@@ -16,6 +16,7 @@ from langchain_community.utilities.requests import TextRequestsWrapper
 from langchain_anthropic import ChatAnthropic
 from dotenv import load_dotenv
 from browser_agent import BrowserToolkit
+from llm_provider import get_llm
 
 # from coinbase_agentkit import (
 #     AgentKit,
@@ -89,7 +90,7 @@ from twitter_agent.custom_twitter_actions import (
 ALLOW_DANGEROUS_REQUEST = True
 
 # Initialize base components
-llm = ChatAnthropic(model="claude-3-sonnet-20240229")
+llm = get_llm(model="claude-3-sonnet-20240229") # Model parameter only used if falling back to Anthropic
 
 # Initialize config
 config = {

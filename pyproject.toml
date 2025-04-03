@@ -41,6 +41,7 @@ yt-dlp = "^2025.2.19"
 anthropic = ">=0.41.0,<1.0.0"
 pypdf = "^4.0.1"
 requests = "^2.31.0"
+mira-network = "^0.1.10"
 
 [tool.poetry.group.dev.dependencies]
 pytest-playwright = "^0.6.2"
