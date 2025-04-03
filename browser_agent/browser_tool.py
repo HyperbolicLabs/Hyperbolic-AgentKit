@@ -1,9 +1,20 @@
+import os
+import sys
+from pathlib import Path
 from typing import Optional, Any, Literal
 from langchain_core.tools import BaseTool
 from browser_use import Agent, Browser, BrowserConfig
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from pydantic import Field
+
+# Add the root directory to Python path
+root_dir = Path(__file__).resolve().parent.parent
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+
+from llm_provider import get_llm
+from langchain_core.language_models.chat_models import BaseChatModel
 
 class BrowserTool(BaseTool):
     """Tool for autonomous web browsing and research."""
@@ -21,14 +32,14 @@ class BrowserTool(BaseTool):
     - "Sign up for a gym membership at Planet Fitness"
     - "Schedule a grocery delivery from Whole Foods"
     """
-    llm: ChatAnthropic = Field(default_factory=lambda: ChatAnthropic(model="claude-3-5-sonnet-latest"))
+    llm: BaseChatModel = Field(default_factory=lambda: get_llm(model="claude-3-5-sonnet-latest")) # Model parameter only used if falling back to Anthropic
     browser: Browser = Field(default_factory=lambda: Browser(
         config=BrowserConfig(
             chrome_instance_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
         )
     ))
 
-    def __init__(self, llm: Optional[ChatAnthropic] = None, browser: Optional[Browser] = None):
+    def __init__(self, llm: Optional[BaseChatModel] = None, browser: Optional[Browser] = None):
         """Initialize the browser tool with an optional LLM and browser instance."""
         super().__init__()
         if llm is not None:

@@ -1,13 +1,21 @@
 import os
+import sys
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
 import traceback
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage
 
+# Add the root directory to Python path
+root_dir = Path(__file__).resolve().parent.parent
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+
+from llm_provider import get_llm
 from base_utils.utils import print_system, print_error
-from .web_searcher import WebSearcher
-from .document_sender import DocumentSender
+from writing_agent.web_searcher import WebSearcher
+from writing_agent.document_sender import DocumentSender
 
 class WritingAgent:
     """Main agent for writing content with research and style adaptation."""
@@ -20,33 +28,39 @@ class WritingAgent:
         Initialize the writing agent.
         
         Args:
-            api_key: Optional API key for the language model
+            api_key: Optional API key for the language model (can be either MIRA or Anthropic API key)
         """
         # Set up logging
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         
         # Initialize components
-        self.api_key = api_key or os.environ.get("ANTHROPIC_API_KEY")
-        if not self.api_key:
-            self.logger.warning("No ANTHROPIC_API_KEY provided. API-dependent features will not work.")
+        self.mira_api_key = api_key or os.environ.get("MIRA_API_KEY")
+        self.anthropic_api_key = os.environ.get("ANTHROPIC_API_KEY")
+        
+        if not self.mira_api_key and not self.anthropic_api_key:
+            self.logger.warning("No API keys provided. API-dependent features will not work.")
         else:
-            self.logger.info("API key found and set successfully")
+            provider = "Mira" if self.mira_api_key else "Anthropic"
+            self.logger.info(f"{provider} API key found and set successfully")
         
         self.searcher = WebSearcher()
         self.logger.info("Web searcher initialized")
         
         # Initialize document sender for direct document integration
-        self.document_sender = DocumentSender(api_key=self.api_key)
+        # Pass the appropriate API key to document sender
+        self.document_sender = DocumentSender(api_key=self.anthropic_api_key)  # Document sender still uses Anthropic
         self.logger.info("Document sender initialized")
         
         # Initialize reference tracking
         self.reference_materials = []
         
         # Initialize language model
-        self.llm = ChatAnthropic(model="claude-3-5-sonnet-20240620", 
-                                temperature=0.7,
-                                anthropic_api_key=self.api_key)
+        self.llm = get_llm(
+            api_key=self.mira_api_key,  # Will use Mira if available (with fixed model)
+            anthropic_api_key=self.anthropic_api_key,  # Will fall back to Anthropic if needed
+            model="claude-3-5-sonnet-20240620"  # Only used if falling back to Anthropic
+        )
         self.logger.info("Language model initialized")
         
         # Initialize default article parameters
